@@ -1,7 +1,16 @@
-export const useSetAutoSync = (cb: () => void | Promise<any>, ms: number) => {
-    const { pause, resume, isActive } = useIntervalFn(cb, ms)
+import type { Ref } from 'vue'
 
-    return { pause, resume, isActive }
+export interface UseAutoSyncType {
+  pause: () => void
+  resume: () => void
+  isActive: Ref<boolean>
 }
 
-export const useSetSyncStatusMessage = (isActive: boolean) => unref(isActive) ? 'Autosyncronization stopped' : 'Autosyncronization is runing'
+export const useSetAutoSync = (cb: (option?: any) => void | Promise<any>, ms: number, option?: any) => {
+  const { pause, resume, isActive } = useIntervalFn(cb, ms, option)
+
+  return { pause, resume, isActive }
+}
+
+export const useSetSyncStatusMessage = (isActive: boolean) =>
+  unref(isActive) ? 'Autosyncronization is runing' : 'Autosyncronization stopped'

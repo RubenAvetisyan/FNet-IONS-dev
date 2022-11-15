@@ -1,8 +1,8 @@
-import { getPayments, connect } from "#imports"
+import { connect, getPayments } from '#imports'
 
 export default defineEventHandler(() => {
-    // const app = await getPayments(connect())
-    // console.log('app: ', app);
-    const dbResponse = ''
-    return 'Done'
+  // const app = await getPayments(connect())
+  // console.log('app: ', app);
+  const dbResponse = ''
+  return 'Done'
 })

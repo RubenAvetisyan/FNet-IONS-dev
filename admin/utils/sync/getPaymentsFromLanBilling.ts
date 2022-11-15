@@ -1,4 +1,4 @@
-import type { Connection } from '@types/mysql'
+import type { Connection } from 'mysql'
 
 const query = (date: string) => `select 
   b.vg_id, c.agrm_id,
@@ -22,13 +22,13 @@ inner join billing.payments as payments
 order by pay_date desc`
 
 export const getPayments = async (connection: Connection, date: string) => {
-    return new Promise((resolve, reject) => {
-        // third argument is optional, but can be as fields
-        connection.query(query(date).replace(/\n/, ' '), (error: any, results: any[]) => {
-            if (error)
-                reject(error)
+  return new Promise((resolve, reject) => {
+    // third argument is optional, but can be as fields
+    connection.query(query(date), (error: any, results: any[]) => {
+      if (error)
+        reject(error)
 
-            resolve(results)
-        })
+      resolve(results)
     })
+  })
 }

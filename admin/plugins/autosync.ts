@@ -1,44 +1,42 @@
-import { useSetAutoSync, useSetSyncStatusMessage } from "../composables/autosync"
+import { useSetAutoSync, useSetSyncStatusMessage } from '../composables/autosync'
 
-enum AutoSync {
-    on = 0,
-    off = 1
-}
-let response: unknown = null
-const { pause, resume, isActive } = useSetAutoSync(async () => {
-    response = await $fetch('/api/payments')
-    console.log('response: ', response);
-}, 5000)
-
-pause()
+let intervalState = true
+const setIntervalState = (state: boolean) => intervalState = state
 export default defineNuxtPlugin(() => {
-    let message = 'Autosyncronization is runing'
+  let response: unknown = null
+  const { pause, resume, isActive } = useSetAutoSync(async () => {
+    response = await $fetch('/api/payments')
+    console.log('response: ', response)
+  }, 5000)
+
+  if (!intervalState)
     pause()
-    // addRouteMiddleware('db-syncronization', async () => {
-    //     console.log('this global middleware was added in a plugin')
-    //     if (isStopped) {
+  // addRouteMiddleware('db-syncronization', async () => {
+  //     console.log('this global middleware was added in a plugin')
+  //     if (isStopped) {
 
-    //     } else {
-    //         resume()
-    //     }
-    // }, { global: true })
+  //     } else {
+  //         resume()
+  //     }
+  // }, { global: true })
 
-    return {
-        provide: {
-            autoSync: (mode: AutoSync) => {
-                if (mode) {
-                    console.log('mode: ', mode, pause());
-                    
-                } else {
-                    resume()
-                }
-
-                message = useSetSyncStatusMessage(unref(isActive))
-                console.log(message);
-
-                return { pause, resume, isActive }
-            },
-            getResponse: () => response
-        }
-    }
+  return {
+    provide: {
+      autoSync: () => ({
+        pause: () => {
+          pause()
+          setIntervalState(false)
+        },
+        resume: () => {
+          resume()
+          setIntervalState(true)
+        },
+        isActive,
+      }),
+      isActive,
+      autoSyncMessage: () => useSetSyncStatusMessage(unref(isActive)),
+      getResponse: () => response,
+      setIntervalState: (state: boolean) => intervalState = state,
+    },
+  }
 })

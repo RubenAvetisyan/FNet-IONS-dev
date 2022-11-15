@@ -1,6 +1,6 @@
 <script setup>
 const { data } = await useLazyFetch('/api/lanbilling')
-console.log('data: ', unref(data));
+console.log('data: ', unref(data))
 </script>
 
 <template>
@@ -8,7 +8,7 @@ console.log('data: ', unref(data));
     <Logos mb-6 />
     <Suspense>
       <PageView />
-      <pre></pre>
+      <pre />
       <template #fallback>
         <div op50 italic>
           <span animate-pulse>Loading...</span>

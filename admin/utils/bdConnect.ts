@@ -1,20 +1,12 @@
-import { createConnection, Connection } from 'mysql'
+import type { Connection } from 'mysql'
+import { createConnection } from 'mysql'
 
-const config = {
-    host: '10.120.2.22',
-    port: 3306,
-    user: 'Ruben',
-    password: '',
-    database: 'billing',
-}
+const { syncConfig } = useRuntimeConfig()
 
-const connection: () => Connection = () => {
-    const conn = createConnection(config)
-    conn.connect()
-    return conn
-}
+const config = { ...syncConfig, port: +syncConfig.port || 3306 }
 
-
-console.log('connection: ', connection());
-
-export { connection }
+export const connection: Connection = (() => {
+  const conn = createConnection(config)
+  conn.connect()
+  return conn
+})()

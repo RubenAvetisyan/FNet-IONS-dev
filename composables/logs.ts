@@ -11,7 +11,7 @@ export const useLogStore = defineStore('log', () => {
     if (savedLog.value)
       previousNames.value.add(savedLog.value)
 
-      savedLog.value = log
+    savedLog.value = log
   }
 
   return {

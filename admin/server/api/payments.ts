@@ -1,10 +1,13 @@
 import md5 from 'md5'
-import { differenceInSeconds, formatISO, max, parseISO, startOfToday } from 'date-fns'
+import { differenceInSeconds, format, formatISO, max, parseISO, startOfToday } from 'date-fns'
 import { connection } from '@/admin/utils/bdConnect'
 import { getPayments } from '@/admin/utils/sync/getPaymentsFromLanBilling'
 
+const formatToSqlDate = (date: Date) => format(date, 'yyyy-MM-dd HH:mm:SS')
+const formatToISO = (date: Date) => formatISO(date, { representation: 'complete', format: 'basic' })
+
 let initial = true
-let maxDate: string = formatISO(startOfToday(), { representation: 'complete', format: 'extended' })
+let maxDate: string = formatToSqlDate(startOfToday())
 console.log('maxDate: ', maxDate)
 console.log('DIFFERENCE: ', differenceInSeconds(Date.now(), parseISO(maxDate)))
 
@@ -16,6 +19,25 @@ type Response = {
   TransactID: number
   PaymentSystemName: string
 }[]
+
+interface LanBilling {
+  Inputs: string[]
+  Amount: number
+  TransactID: number
+  Currency: string
+  Checksum: string
+  DtTime: string
+  [key: string]: any
+}
+
+const makePayment = async (LanBillingItem: LanBilling) => {
+  await $fetch('/api/syncWithABilling', {
+    method: 'POST',
+    body: {
+      data: LanBillingItem,
+    },
+  })
+}
 export default defineEventHandler(async () => {
   try {
     if (initial) {
@@ -28,22 +50,22 @@ export default defineEventHandler(async () => {
 
     const dates: (number | Date)[] = []
 
-    const mapedRes = response.map(({ Amount, CONTRACT_ID, DtTime, TransactID, PaymentSystemName }) => {
+    const mapedRes: LanBilling[] | any[] = response.map(({ Amount, CONTRACT_ID, DtTime, TransactID, PaymentSystemName }) => {
       const diff = differenceInSeconds(parseISO(DtTime), parseISO(maxDate))
       console.log('diff: ', diff)
       if (diff <= 0)
-        return {}
+        return
 
       const Checksum = md5(TOKEN + CONTRACT_ID + Amount + TransactID)
       dates.push(parseISO(DtTime))
       return {
-        Inputs: [`${CONTRACT_ID}`, '', '', ''],
-        Amount,
-        TransactID,
+        Inputs: [`${CONTRACT_ID || 0}`, '', '', ''],
+        Amount: Amount || 0,
+        TransactID: TransactID || 0,
         Currency: 'AMD',
-        Checksum,
-        DtTime,
-        PaymentSystemName,
+        Checksum: Checksum || '',
+        DtTime: DtTime || '',
+        PaymentSystemName: PaymentSystemName || '',
       }
     })
 
@@ -51,10 +73,17 @@ export default defineEventHandler(async () => {
     console.log('maxDate: ', maxDate)
 
     console.log('exit from LanBilling...')
-    const result = mapedRes.filter(s => s.Inputs)
+    let result = mapedRes.filter(s => s.Inputs)
+
+    if (result.length) {
+      result = result.map(async (LanBillingItem: LanBilling) => {
+        return makePayment(LanBillingItem)
+      })
+    }
 
     return result
-  } catch (error) {
-    console.log('error: ', error);
+  }
+  catch (error) {
+    console.log('error: ', error)
   }
 })

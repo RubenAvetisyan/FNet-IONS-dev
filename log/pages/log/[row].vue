@@ -32,6 +32,6 @@ watchEffect(() => {
 <template>
   <div>
     <p>{{ name }}</p>
-    <pre>{{ JSON.parse(logs.savedLog)}}</pre>
+    <pre>{{ JSON.parse(logs.savedLog) }}</pre>
   </div>
 </template>
