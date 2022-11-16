@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { PaymentSystem } from '../PaymentSystemClass'
-import { Check } from './check-class'
+import { Check, } from './check-class'
 
 type EasypayOptions = {
     token: string
@@ -13,9 +13,11 @@ export type PropertyList = {
     value: string
 }[]
 
+
+
 export type CheckResponse = {
     ResponseMessage: 'Գործողությունը թույլատրված է'
-    ResponseCode: number
+    ResponseCode: 0
     Debt: number
     Checksum: string
     PropertyList: PropertyList
@@ -35,15 +37,20 @@ export class Easypay extends PaymentSystem {
             Checksum: '',
             PropertyList: [{ key: 'Բաժանորդ', value: '' }, { key: 'Բաժանորդային համար', value: '' }],
         })
+        super.addOption('checkResponseWithError', {
+
+        })
     }
 
     setResponse<T>(value: T) {
-        this.check.check()
+        this.check.result(value)
     }
 
 
-    setLog(value: CheckResponse | { [key: string]: any }) {
-        this.list.set('log - ' + format(Date.now(), 'yyyy.MM.dd'), JSON.stringify(value))
+    setLog(value: CheckResponse | CheckResponseWithError | { [key: string]: any }) {
+        if (value implements CheckResponse) {
+            this.list.set('log - ' + format(Date.now(), 'yyyy.MM.dd'), JSON.stringify(value))
+        }
     }
 
     getToken() {
