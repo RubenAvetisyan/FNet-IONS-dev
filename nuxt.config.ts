@@ -27,10 +27,12 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: '',
   },
+
+  imports: {
+    dirs: ['config'],
+  },
+
   runtimeConfig: {
-    paymentSystems: {
-      easypayTocke: process.env.NUXT_EasyPay_TOKEN,
-    },
     syncConfig: {
       host: process.env.NUXT_DB_HOST,
       port: process.env.NUXT_DB_PORT,
@@ -40,11 +42,5 @@ export default defineNuxtConfig({
     },
   },
 
-  theme: 'bitbucket',
-  // {
-  //   defaultTheme: 'dark',
-  //   colors: {
-  //     primary: '#4c17d0',
-  //   },
-  // }
+  theme: 'http://www.fnet.am',
 })

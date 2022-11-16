@@ -2,5 +2,10 @@
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "strict": true
-  }
+  },
+  "include": [
+    "./*.d.ts",
+    ".nuxt/nuxt.d.ts",
+    "**/*"
+  ]
 }

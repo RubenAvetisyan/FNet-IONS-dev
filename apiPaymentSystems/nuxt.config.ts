@@ -12,4 +12,14 @@ export default defineNuxtConfig({
   css: [
     '@unocss/reset/tailwind.css',
   ],
+
+  imports: {
+    dirs: ['utils'],
+  },
+
+  runtimeConfig: {
+    paymentSystems: {
+      easypayTocke: process.env.NUXT_EasyPay_TOKEN,
+    },
+  },
 })

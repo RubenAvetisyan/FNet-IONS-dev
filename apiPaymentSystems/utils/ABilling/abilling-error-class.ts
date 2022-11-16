@@ -1,12 +1,3 @@
-export interface AbillingERROR {
-  statusCode: number
-  message: {
-    hy: string
-    ru: string
-    en: string
-  }
-}
-
 export class AbillingErrorStatusCode {
   errors: Map<number, AbillingERROR>
   constructor() {
@@ -116,5 +107,9 @@ export class AbillingErrorStatusCode {
         },
       }],
     ])
+  }
+
+  getError(key: string) {
+    return this.errors.get(key)
   }
 }

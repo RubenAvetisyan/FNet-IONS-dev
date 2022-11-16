@@ -1,31 +1,35 @@
-type MapType = Map<string, any>
+import type { MapsType } from '~~/nuxt'
 
 class Settings {
-    private options: MapType
-    constructor(public name: string, option?: MapType) {
-        this.name = name
-        this.options = new Map()
-    }
+  private options = new Map()
+  constructor(public name: string, option?: MapsType<any>) {
+    this.name = name
+    this.options = option || new Map()
+  }
 
-    addOption(key: string, option: any) {
-        this.options.set(key, option)
-    }
+  addOption(key: string, option: any) {
+    this.options.set(key, option)
+  }
 
-    getOptions() {
-        const result: any = {}
-        const entries = [...this.options.entries()]
-        entries.forEach(([key, value]) => {
-            result[key] = value
-        })
+  getOptions() {
+    const result: any = {}
+    const entries = [...this.options.entries()]
+    entries.forEach(([key, value]) => {
+      result[key] = value
+    })
 
-        return result
-    }
+    return result
+  }
+
+  getOption(key: string) {
+    return this.options.get(key)
+  }
 }
 
 export class PaymentSystem extends Settings {
-    [x: string]: any
+  [x: string]: any
 
-    constructor(public name: string, options?: MapType) {
-        super(name, options)
-    }
+  constructor(public name: string, options?: MapsType<any>) {
+    super(name, options)
+  }
 }

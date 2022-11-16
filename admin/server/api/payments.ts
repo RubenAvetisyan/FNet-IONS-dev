@@ -1,7 +1,8 @@
 import md5 from 'md5'
 import { differenceInSeconds, format, formatISO, max, parseISO, startOfToday } from 'date-fns'
-import { connection } from '@/admin/utils/bdConnect'
-import { getPayments } from '@/admin/utils/sync/getPaymentsFromLanBilling'
+import { connection } from '~~/admin/utils/bdConnect'
+import { getPayments } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
+import type { LanBilling, ResponseType } from '~~/nuxt'
 
 const formatToSqlDate = (date: Date) => format(date, 'yyyy-MM-dd HH:mm:SS')
 const formatToISO = (date: Date) => formatISO(date, { representation: 'complete', format: 'basic' })
@@ -12,23 +13,6 @@ console.log('maxDate: ', maxDate)
 console.log('DIFFERENCE: ', differenceInSeconds(Date.now(), parseISO(maxDate)))
 
 const TOKEN = '911f225af566b884fb3501132d65cb68'
-type Response = {
-  Amount: number
-  CONTRACT_ID: number
-  DtTime: string
-  TransactID: number
-  PaymentSystemName: string
-}[]
-
-interface LanBilling {
-  Inputs: string[]
-  Amount: number
-  TransactID: number
-  Currency: string
-  Checksum: string
-  DtTime: string
-  [key: string]: any
-}
 
 const makePayment = async (LanBillingItem: LanBilling) => {
   await $fetch('/api/syncWithABilling', {
@@ -46,15 +30,15 @@ export default defineEventHandler(async () => {
     }
 
     console.log('get from LanBilling...')
-    const response = await getPayments(connection, maxDate) as Response
+    const response = await getPayments(connection, maxDate) as ResponseType[]
 
     const dates: (number | Date)[] = []
 
-    const mapedRes: LanBilling[] | any[] = response.map(({ Amount, CONTRACT_ID, DtTime, TransactID, PaymentSystemName }) => {
+    const mapedRes = response.map(({ Amount, CONTRACT_ID, DtTime, TransactID, PaymentSystemName }) => {
       const diff = differenceInSeconds(parseISO(DtTime), parseISO(maxDate))
       console.log('diff: ', diff)
       if (diff <= 0)
-        return
+        return undefined
 
       const Checksum = md5(TOKEN + CONTRACT_ID + Amount + TransactID)
       dates.push(parseISO(DtTime))
@@ -67,7 +51,7 @@ export default defineEventHandler(async () => {
         DtTime: DtTime || '',
         PaymentSystemName: PaymentSystemName || '',
       }
-    })
+    }) as LanBilling[] | any[]
 
     maxDate = dates.length ? formatISO(max(dates)) : maxDate
     console.log('maxDate: ', maxDate)

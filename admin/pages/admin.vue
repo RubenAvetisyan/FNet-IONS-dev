@@ -3,12 +3,6 @@ import type { Ref } from 'vue'
 
 const { $autoSync, $autoSyncMessage, $isActive } = useNuxtApp()
 
-interface AutoSync {
-  pause: () => void
-  resume: () => void
-  isActive: boolean
-}
-
 const autosync = ref() as Ref<AutoSync>
 
 onMounted(() => autosync.value = $autoSync())

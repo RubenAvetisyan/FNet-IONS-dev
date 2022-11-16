@@ -1,12 +1,17 @@
 import type { Connection } from 'mysql'
 import { createConnection } from 'mysql'
+import { config } from '~~/Config/index'
 
-const { syncConfig } = useRuntimeConfig()
-
-const config = { ...syncConfig, port: +syncConfig.port || 3306 }
+const dbConfig = config.get('dbConfig') as {
+  host: string
+  port: number
+  user: string
+  password: string
+  database: string
+}
 
 export const connection: Connection = (() => {
-  const conn = createConnection(config)
+  const conn = createConnection(dbConfig)
   conn.connect()
   return conn
 })()

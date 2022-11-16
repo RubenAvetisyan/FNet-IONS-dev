@@ -1,11 +1,3 @@
-export interface CredentialType {
-  user: string
-  passowrd: string
-  [key: string]: any
-}
-
-export type DefaultCredentialKey = 'easyPay' | 'idram' | 'tellcell' | 'mobidram'
-
 export class Credential {
   private readonly _credentials: Map<DefaultCredentialKey | string, CredentialType>
   constructor() {

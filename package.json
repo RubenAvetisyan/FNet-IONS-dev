@@ -16,7 +16,8 @@
   "dependencies": {
     "date-fns": "^2.29.3",
     "md5": "^2.3.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.27.0",
@@ -26,6 +27,7 @@
     "@pinia/nuxt": "^0.4.2",
     "@types/md5": "^2.3.2",
     "@types/mysql": "^2.15.21",
+    "@types/xml2js": "^0.4.11",
     "@unocss/nuxt": "^0.45.25",
     "@vueuse/nuxt": "^9.3.0",
     "eslint": "^8.24.0",
