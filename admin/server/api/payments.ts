@@ -1,16 +1,18 @@
 import md5 from 'md5'
 import { differenceInSeconds, format, formatISO, max, parseISO, startOfToday } from 'date-fns'
-import { connection } from '~~/admin/utils/bdConnect'
 import { getPayments } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import type { LanBilling, ResponseType } from '~~/nuxt'
 
-const formatToSqlDate = (date: Date) => format(date, 'yyyy-MM-dd HH:mm:SS')
+const formatToSqlDate = (date: Date) => {
+  console.log('date: ', date)
+  return format(date, 'yyyy-MM-dd HH:mm:SS', { weekStartsOn: 1 })
+}
 const formatToISO = (date: Date) => formatISO(date, { representation: 'complete', format: 'basic' })
 
 let initial = true
-let maxDate: string = formatToSqlDate(startOfToday())
+let maxDate: Date = startOfToday()
 console.log('maxDate: ', maxDate)
-console.log('DIFFERENCE: ', differenceInSeconds(Date.now(), parseISO(maxDate)))
+console.log('DIFFERENCE: ', differenceInSeconds(Date.now(), maxDate))
 
 const TOKEN = '911f225af566b884fb3501132d65cb68'
 
@@ -30,34 +32,34 @@ export default defineEventHandler(async () => {
     }
 
     console.log('get from LanBilling...')
-    const response = await getPayments(connection, maxDate) as ResponseType[]
+    const response = await getPayments(formatToSqlDate(maxDate)) as ResponseType[]
 
     const dates: (number | Date)[] = []
 
-    const mapedRes = response.map(({ Amount, CONTRACT_ID, DtTime, TransactID, PaymentSystemName }) => {
-      const diff = differenceInSeconds(parseISO(DtTime), parseISO(maxDate))
-      console.log('diff: ', diff)
-      if (diff <= 0)
-        return undefined
-
+    const mapedRes: LanBilling[] | any[] = []
+    response.forEach(({ Amount, CONTRACT_ID, DtTime, TransactID, PaymentSystemName }) => {
+      const diff = differenceInSeconds(DtTime, maxDate)
+      // console.log('diff: ', diff)
       const Checksum = md5(TOKEN + CONTRACT_ID + Amount + TransactID)
-      dates.push(parseISO(DtTime))
-      return {
-        Inputs: [`${CONTRACT_ID || 0}`, '', '', ''],
-        Amount: Amount || 0,
-        TransactID: TransactID || 0,
-        Currency: 'AMD',
-        Checksum: Checksum || '',
-        DtTime: DtTime || '',
-        PaymentSystemName: PaymentSystemName || '',
-      }
-    }) as LanBilling[] | any[]
+      if (!Number.isNaN(diff) && diff > 0) {
+        dates.push(DtTime)
 
-    maxDate = dates.length ? formatISO(max(dates)) : maxDate
-    console.log('maxDate: ', maxDate)
+        mapedRes.push({
+          Inputs: [`${CONTRACT_ID || 0}`, '', '', ''],
+          Amount: Amount || 0,
+          TransactID: TransactID || 0,
+          Currency: 'AMD',
+          Checksum: Checksum || '',
+          DtTime: DtTime || '',
+          PaymentSystemName: PaymentSystemName || '',
+        })
+      }
+    })
+
+    maxDate = dates.length ? max(dates) : maxDate
 
     console.log('exit from LanBilling...')
-    let result = mapedRes.filter(s => s.Inputs)
+    let result = mapedRes.filter(s => s?.Inputs)
 
     if (result.length) {
       result = result.map(async (LanBillingItem: LanBilling) => {

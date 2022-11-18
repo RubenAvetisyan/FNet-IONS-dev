@@ -1,7 +1,7 @@
 <script setup>
 const color = useColorMode()
 const cl = computed(() => {
-  return color.preference === 'dark' ? 'text-light' : 'text-purple5' + ' mt--2'
+  return color.preference === 'dark' ? 'text-light' : 'text-[#5723ae]' + ' mt--2'
 })
 </script>
 

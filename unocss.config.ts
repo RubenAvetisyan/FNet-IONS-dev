@@ -8,6 +8,7 @@ import {
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss'
+import { presetFlowbite } from '@julr/unocss-preset-flowbite'
 
 export default defineConfig({
   shortcuts: [
@@ -16,6 +17,7 @@ export default defineConfig({
   ],
   presets: [
     presetUno(),
+    presetFlowbite(),
     presetAttributify(),
     presetIcons({
       scale: 1.2,
@@ -32,5 +34,5 @@ export default defineConfig({
   transformers: [
     transformerDirectives(),
     transformerVariantGroup(),
-  ],
+  ]
 })

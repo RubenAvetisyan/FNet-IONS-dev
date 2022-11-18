@@ -7,6 +7,6 @@
         </div>
       </template>
     </Suspense>
-    <div>Payment Systems API part</div>
+    <!-- <Info /> -->
   </div>
 </template>

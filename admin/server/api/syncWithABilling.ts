@@ -11,13 +11,13 @@ export default defineEventHandler(async (event) => {
 
     switch (data.PaymentSystemName) {
       case 'Easypay':
-        URI = '/api/payment'
+        URI = 'http://localhost:3000/payment'
         break
       case 'Tellcell':
         URI = '/api/tellcell/?action=payment'
         break
       case 'Idram':
-        URI = '/api/idram/?action=payment'
+        URI = 'http://localhost:3000/idram/?action=payment'
         break
       default:
         console.log(`Class for "${data.PaymentSystemName}" is unrealized`)

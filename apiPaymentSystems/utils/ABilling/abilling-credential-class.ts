@@ -1,3 +1,5 @@
+import type { CredentialType, DefaultCredentialKey } from '~~/nuxt'
+
 export class Credential {
   private readonly _credentials: Map<DefaultCredentialKey | string, CredentialType>
   constructor() {

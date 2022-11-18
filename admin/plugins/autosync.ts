@@ -1,6 +1,6 @@
 import { useSetAutoSync, useSetSyncStatusMessage } from '../composables/autosync'
 
-let intervalState = true
+let intervalState = false
 const setIntervalState = (state: boolean) => intervalState = state
 export default defineNuxtPlugin(() => {
   let response: unknown = null
@@ -11,14 +11,6 @@ export default defineNuxtPlugin(() => {
 
   if (!intervalState)
     pause()
-  // addRouteMiddleware('db-syncronization', async () => {
-  //     console.log('this global middleware was added in a plugin')
-  //     if (isStopped) {
-
-  //     } else {
-  //         resume()
-  //     }
-  // }, { global: true })
 
   return {
     provide: {

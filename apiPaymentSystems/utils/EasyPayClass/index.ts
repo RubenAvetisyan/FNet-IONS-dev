@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
-import { CheckResponse, PropertyList, EasypayOptions } from '~~/nuxt'
 import { PaymentSystem } from '../PaymentSystemClass'
+import type { CheckResponse, EasypayOptions, PropertyList } from '~~/nuxt'
 export { Check } from './check-class'
 
 const { paymentSystems } = useRuntimeConfig()

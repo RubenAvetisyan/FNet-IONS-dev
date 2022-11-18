@@ -2,9 +2,9 @@ import md5 from 'md5'
 import type { H3Error } from 'h3'
 import { createError } from 'h3'
 import { easyPay } from '../paymentSystems'
-import { aBilling } from '@/Config'
-import { SuccessResposeType, PropertyList, RequestType } from '~~/nuxt'
 import { Easypay } from '.'
+import { aBilling } from '@/Config'
+import type { PropertyList, RequestType, SuccessResposeType } from '~~/nuxt'
 
 export class Check extends Easypay {
   private ERROR: H3Error

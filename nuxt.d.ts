@@ -28,7 +28,7 @@ interface EasypayOptions {
 type ResponseType = {
     Amount: number
     CONTRACT_ID: number
-    DtTime: string
+    DtTime: Date
     TransactID: number
     PaymentSystemName: string
 }
@@ -39,7 +39,7 @@ interface LanBilling {
     TransactID: number
     Currency: string
     Checksum: string
-    DtTime: string
+    DtTime: Date | string
     [key: string]: any
 }
 
