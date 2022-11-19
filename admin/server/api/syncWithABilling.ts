@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
         URI = 'http://localhost:3000/payment'
         break
       case 'Tellcell':
-        URI = '/api/tellcell/?action=payment'
+        URI = 'http://localhost:3000/telcell/?action=payment'
         break
       case 'Idram':
         URI = 'http://localhost:3000/idram/?action=payment'

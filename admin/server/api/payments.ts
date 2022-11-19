@@ -10,7 +10,7 @@ const formatToSqlDate = (date: Date) => {
 const formatToISO = (date: Date) => formatISO(date, { representation: 'complete', format: 'basic' })
 
 let initial = true
-let maxDate: Date = startOfToday()
+let maxDate: Date = parseISO('2022-11-18') // startOfToday()
 console.log('maxDate: ', maxDate)
 console.log('DIFFERENCE: ', differenceInSeconds(Date.now(), maxDate))
 
@@ -58,7 +58,7 @@ export default defineEventHandler(async () => {
 
     maxDate = dates.length ? max(dates) : maxDate
 
-    console.log('exit from LanBilling...')
+    // console.log('exit from LanBilling...')
     let result = mapedRes.filter(s => s?.Inputs)
 
     if (result.length) {
