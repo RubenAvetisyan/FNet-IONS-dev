@@ -12,7 +12,11 @@ const msgs = computed(() => {
         <Drawer />
 
         <!-- <Header /> -->
-        <Navbar fixed top-0 mx-auto w-full justify-space-between />
+        <navbar fixed top-0 mx-auto w-full justify-space-between>
+            <template #extras>
+                <LoginButton />
+            </template>
+        </navbar>
 
         <div class="fixed w-1/3 left-0 right-0 px-10 top-0 z-100 mx-auto">
             <alert v-if="isAlert" class="flex items-center mx-auto">

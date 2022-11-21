@@ -1,4 +1,4 @@
-import { createError } from 'h3'
+import { createError, sendError } from 'h3'
 import login from '../../utils/login'
 
 export default defineEventHandler(async (event) => {
@@ -11,10 +11,11 @@ export default defineEventHandler(async (event) => {
     }
     catch (error) {
         console.log('error: ', error);
-        return createError({
+        const err = createError({
             statusCode: 401,
             statusMessage: 'Not found',
             message: 'Ստուգեք մուտքգրվող դաշտերի լրացման ճշտությունը',
         })
+        return sendError(event, err)
     }
 })

@@ -1,6 +1,27 @@
+<script setup>
+
+const { alertType } = useAlertStore()
+
+const ALERT_TYPES = {
+  success: {
+    color: 'green'
+  },
+  info: {
+    color: 'blue'
+  },
+  warning: {
+    color: 'red'
+  }
+}
+
+const color = computed(() => {
+  return ALERT_TYPES[alertType].color
+})
+</script>
+
 <template>
   <div
-    class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+    :class="`flex p-4 mb-4 text-sm  rounded-lg text-${color}-700 bg-${color}-100 dark:bg-${color}-200 dark:text-${color}-800`"
     role="alert"
   >
     <svg

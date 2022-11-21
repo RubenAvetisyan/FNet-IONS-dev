@@ -34,8 +34,8 @@ const links = ref([
           </list-item>
         </dropdown-menu>
         <MobileHeaderButton />
-        <div class="flex items-center md:order-2 z-{100000}">
-          <LoginButton />
+        <div v-if="$slots.extra" class="flex items-center md:order-2 z-{100000}">
+          <slot name="extra"></slot>
         </div>
       </div>
       <div id="mobile-menu-language-select"

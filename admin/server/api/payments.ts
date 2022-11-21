@@ -2,6 +2,7 @@ import md5 from 'md5'
 import { differenceInSeconds, format, formatISO, max, parseISO, startOfToday } from 'date-fns'
 import { getPayments } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import type { LanBilling, ResponseType } from '~~/nuxt'
+import { H3Error } from 'h3'
 
 const formatToSqlDate = (date: Date) => {
   console.log('date: ', date)
@@ -32,7 +33,9 @@ export default defineEventHandler(async () => {
     }
 
     console.log('get from LanBilling...')
-    const response = await getPayments(formatToSqlDate(maxDate)) as ResponseType[]
+    const response = await getPayments(formatToSqlDate(maxDate)) as ResponseType[] | H3Error | string
+
+    if (response instanceof H3Error || typeof response === 'string') return response
 
     const dates: (number | Date)[] = []
 

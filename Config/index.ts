@@ -4,7 +4,7 @@ import { ABilling } from '~~/apiPaymentSystems/utils/ABilling'
 import type { Easypay } from '~~/apiPaymentSystems/utils/EasyPayClass'
 
 export const config = new Config()
-
+config.isTest = true
 const { lanbilling, abilling, erp } = useRuntimeConfig()
 config.set('dbConfig', {
     lanbilling: { ...lanbilling, port: +lanbilling.port || 3306 },

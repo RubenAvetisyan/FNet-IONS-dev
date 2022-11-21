@@ -1,3 +1,4 @@
+import { createError, H3Error } from 'h3';
 import { lanbillingConnection } from '../LanBilling/bdConnect'
 import { getQuery } from '../LanBilling/query'
 
@@ -24,5 +25,10 @@ order by pay_date desc`
 
 export const getPayments = async (date: string): Promise<any> => {
   const queryString = query(date)
-  return getQuery(queryString, lanbillingConnection)
+  const billing = await lanbillingConnection
+  if (!billing || billing instanceof H3Error) {
+    return createError('the lanbillingConnection DB conncetion is faild')
+  }
+
+  return getQuery(queryString, billing)
 }

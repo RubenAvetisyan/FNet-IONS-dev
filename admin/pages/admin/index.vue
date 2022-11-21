@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 
+definePageMeta({
+  requiresAuth: true
+})
+
 const { $autoSync, $autoSyncMessage, $isActive } = useNuxtApp()
 
 const autosync = ref()

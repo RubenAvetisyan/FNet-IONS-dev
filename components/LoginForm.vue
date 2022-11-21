@@ -1,8 +1,16 @@
 <script setup lang="ts">
+const props = defineProps({
+    endpoint: {
+        type: String,
+        defaulr: '/api/auth'
+    }
+})
+
+const endpoint = props.endpoint as string
 
 const router = useRouter()
 
-const { setAlert } = useAlertStore()
+const { setAlert, alertType } = useAlertStore()
 
 const name = ref('')
 
@@ -14,13 +22,15 @@ const disabled = ref(false)
 
 const isValidated = ref(true)
 
+const authStore = useAuthStore()
+
 const login = async () => {
     if (!unref(username) || !unref(password))
         return createError('Ստուգեք լրացվող տվյալները')
 
     disabled.value = true
 
-    response.value = await $fetch('/api/auth', {
+    response.value = await $fetch(endpoint, {
         method: 'POST',
         body: { user: unref(username), password: unref(password) },
     })
@@ -31,7 +41,14 @@ const login = async () => {
 watch(() => response.value, (responseValue: any[]) => {
     console.log('responseValue: ', responseValue)
     isValidated.value = !!responseValue.length
-    setAlert('Անհաջող փորձ. Խնդրում ենք նույնականացվել համակարգում')
+
+    if (!isValidated.value) {
+        setAlert('Անհաջող փորձ. Խնդրում ենք նույնականացվել համակարգում', 'warning')
+    } else {
+        setAlert('Ողջույն ' + responseValue[0].title, 'success')
+    }
+
+    authStore.setAuth('login', responseValue[0].title)
     router.push(`/?login=${isValidated.value}`)
 
     if (isValidated.value) {

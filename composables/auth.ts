@@ -25,7 +25,7 @@ export const useAuthStore = defineStore('user', () => {
             user.value.set(name, options)
         }
 
-        if (type === 'login') {
+        if (type === 'logout') {
             state.value = false
             user.value.delete(name)
         }

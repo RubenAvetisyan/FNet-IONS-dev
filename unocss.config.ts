@@ -21,6 +21,10 @@ export default defineConfig({
     presetAttributify(),
     presetIcons({
       scale: 1.2,
+      collections: {
+        carbon: () => import('@iconify-json/carbon/icons.json').then(i => i.default),
+        mdi: () => import('@iconify-json/mdi/icons.json').then(i => i.default)
+      }
     }),
     presetTypography(),
     presetWebFonts({
