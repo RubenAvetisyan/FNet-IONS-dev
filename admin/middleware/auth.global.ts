@@ -7,4 +7,8 @@ export default defineNuxtRouteMiddleware((to) => {
     if (to.meta.requiresAuth && !isUserLogedin && to.path !== '/login') {
         return navigateTo('/login')
     }
+
+    if (to.query.login === 'true') {
+        return navigateTo('/admin')
+    }
 })
