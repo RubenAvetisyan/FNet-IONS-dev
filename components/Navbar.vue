@@ -35,13 +35,16 @@ const links = ref([
         </dropdown-menu>
         <MobileHeaderButton />
         <div v-if="$slots.extra" class="flex items-center md:order-2 z-{100000}">
-          <slot name="extra"></slot>
+          <slot name="extra" />
         </div>
       </div>
-      <div id="mobile-menu-language-select"
-        class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1">
+      <div
+        id="mobile-menu-language-select"
+        class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+      >
         <ul
-          class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+          class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
+        >
           <list-item v-for="l in links" :key="l.name" :link="l.link" :exact="l?.exact" :external="l.external">
             {{ l.name }}
           </list-item>

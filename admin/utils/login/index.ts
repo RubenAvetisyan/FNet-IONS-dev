@@ -13,7 +13,8 @@ export default async function (user: string, password: string) {
   const queryString = setQueryString(user, password)
   const erp = await erpConnection
 
-  if (erp instanceof H3Error) return erp
+  if (erp instanceof H3Error)
+    return erp
 
   return await getQuery(queryString, erp)
 }

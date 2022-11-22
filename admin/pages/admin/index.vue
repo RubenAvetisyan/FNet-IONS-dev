@@ -2,7 +2,7 @@
 import type { Ref } from 'vue'
 
 definePageMeta({
-  requiresAuth: true
+  requiresAuth: true,
 })
 
 const { $autoSync, $autoSyncMessage, $isActive } = useNuxtApp()
@@ -33,9 +33,11 @@ watch(() => autosync, () => {
   <div>
     <ClientOnly>
       <div>{{ message }}</div>
-      <button class="min-w-14 w-48 rounded-md px-2 py-1  text-light-50 border-hidden hover: hover:border-dotted" :class="[
-        color,
-      ]" @click="syncButtonFn(autosync.isActive)">
+      <button
+        class="min-w-14 w-48 rounded-md px-2 py-1  text-light-50 border-hidden hover: hover:border-dotted" :class="[
+          color,
+        ]" @click="syncButtonFn(autosync.isActive)"
+      >
         {{ isActive ? 'STOP' : 'Run' }}
       </button>
     </ClientOnly>

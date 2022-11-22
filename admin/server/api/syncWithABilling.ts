@@ -1,9 +1,9 @@
 export default defineEventHandler(async (event) => {
-  const { data } = await useBody(event)
+  const { data } = await readBody(event)
   // data = { ...data, isTest: true }
   try {
     if (!data.Checksum) {
-      console.log('WRONG DATA !!!')
+      console.warn('WRONG DATA !!!')
       return false
     }
 
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
         URI = 'http://localhost:3000/idram/?action=payment'
         break
       default:
-        console.log(`Class for "${data.PaymentSystemName}" is unrealized`)
+        console.error(`Class for "${data.PaymentSystemName}" is unrealized`)
         break
     }
 
@@ -32,16 +32,10 @@ export default defineEventHandler(async (event) => {
       body: data,
     })
 
-    // const response = await new Promise((resolve) => {
-    //     console.log('data on sync: ', data)
-    //     setTimeout(() => resolve('done'), 1000)
-    // })
-
-    console.log('response: ', response)
+    // console.log('response: ', response)
     return response
   }
   catch (error) {
-    console.log('data: ', data)
-    console.log('error: ', error)
+    console.error('error: ', error)
   }
 })

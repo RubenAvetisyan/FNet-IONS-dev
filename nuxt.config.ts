@@ -24,11 +24,11 @@ export default defineNuxtConfig({
   unocss: {
     preflight: true,
     attributify: true,
-    icons: true
+    icons: true,
   },
   colorMode: {
     classSuffix: '',
-  },  
+  },
 
   imports: {
     dirs: ['config'],
@@ -55,7 +55,7 @@ export default defineNuxtConfig({
       user: process.env.NUXT_DB_ERP_LOGIN,
       password: process.env.NUXT_DB_ERP_PASSWORD,
       database: process.env.NUXT_DB_ERP_NAME,
-    }
+    },
   },
 
   reactStrictMode: true,

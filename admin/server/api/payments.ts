@@ -1,19 +1,18 @@
 import md5 from 'md5'
-import { differenceInSeconds, format, formatISO, max, parseISO, startOfToday } from 'date-fns'
-import { getPayments } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
-import type { LanBilling, ResponseType } from '~~/nuxt'
+import { differenceInSeconds, format, max, startOfToday } from 'date-fns'
 import { H3Error } from 'h3'
+import { getPayments } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 
 const formatToSqlDate = (date: Date) => {
-  console.log('date: ', date)
+  // console.log('date: ', date)
   return format(date, 'yyyy-MM-dd HH:mm:SS', { weekStartsOn: 1 })
 }
-const formatToISO = (date: Date) => formatISO(date, { representation: 'complete', format: 'basic' })
+// const formatToISO = (date: Date) => formatISO(date, { representation: 'complete', format: 'basic' })
 
 let initial = true
-let maxDate: Date = parseISO('2022-11-18') // startOfToday()
-console.log('maxDate: ', maxDate)
-console.log('DIFFERENCE: ', differenceInSeconds(Date.now(), maxDate))
+let maxDate: Date = startOfToday()
+console.info('maxDate: ', maxDate)
+console.info('DIFFERENCE: ', differenceInSeconds(Date.now(), maxDate))
 
 const TOKEN = '911f225af566b884fb3501132d65cb68'
 
@@ -32,10 +31,11 @@ export default defineEventHandler(async () => {
       return []
     }
 
-    console.log('get from LanBilling...')
-    const response = await getPayments(formatToSqlDate(maxDate)) as ResponseType[] | H3Error | string
+    console.info('get from LanBilling...')
+    const response = await getPayments(formatToSqlDate(maxDate)) as PaymentsResponseType[] | H3Error | string
 
-    if (response instanceof H3Error || typeof response === 'string') return response
+    if (response instanceof H3Error || typeof response === 'string')
+      return response
 
     const dates: (number | Date)[] = []
 
@@ -73,6 +73,6 @@ export default defineEventHandler(async () => {
     return result
   }
   catch (error) {
-    console.log('error: ', error)
+    console.error('error: ', error)
   }
 })

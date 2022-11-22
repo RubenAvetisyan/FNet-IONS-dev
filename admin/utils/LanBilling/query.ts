@@ -1,5 +1,4 @@
-import { Connection } from "mysql"
-
+import type { Connection } from 'mysql'
 
 export const getQuery = async (query: string, connection: Connection): Promise<any> => {
   return new Promise((resolve, reject) => {

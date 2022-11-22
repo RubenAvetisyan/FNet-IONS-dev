@@ -1,17 +1,16 @@
 <script setup>
-
 const { alertType } = useAlertStore()
 
 const ALERT_TYPES = {
   success: {
-    color: 'green'
+    color: 'green',
   },
   info: {
-    color: 'blue'
+    color: 'blue',
   },
   warning: {
-    color: 'red'
-  }
+    color: 'red',
+  },
 }
 
 const color = computed(() => {

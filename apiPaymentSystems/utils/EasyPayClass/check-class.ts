@@ -1,10 +1,8 @@
 import md5 from 'md5'
 import type { H3Error } from 'h3'
 import { createError } from 'h3'
-import { easyPay } from '../paymentSystems'
 import { Easypay } from '.'
 import { aBilling } from '@/Config'
-import type { PropertyList, RequestType, SuccessResposeType } from '~~/nuxt'
 
 export class Check extends Easypay {
   private ERROR: H3Error
@@ -92,7 +90,7 @@ export class Check extends Easypay {
       return this.setSuccesResult(data as SuccessResposeType)
     }
     catch (error: unknown) {
-      console.log('error: ', error)
+      console.error('error: ', error)
       return error instanceof createError ? createError(error) : `unknown Error: ${JSON.stringify(error)}`
     }
   }

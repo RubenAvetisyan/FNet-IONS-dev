@@ -15,8 +15,12 @@ console.log('data: ', unref(data))
       </template>
     </Suspense>
     <!-- <InputEntry /> -->
-    
-    <div class="text-2xl font-500 text-[#5723ae]">Ներքին գործառնությունների իրականացման համակարգ</div>
-    <div class="text-1xl text-dark dar:text-light">համակարգ մուտք գործելու համար անհրաժետ է նույնականացվել</div>
+
+    <div class="text-2xl font-500 text-[#5723ae]">
+      Ներքին գործառնությունների իրականացման համակարգ
+    </div>
+    <div class="text-1xl text-dark dar:text-light">
+      համակարգ մուտք գործելու համար անհրաժետ է նույնականացվել
+    </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-let { isAlert, alertMsg } = storeToRefs(useAlertStore())
+const { isAlert, alertMsg } = storeToRefs(useAlertStore())
 
 const msgs = computed(() => {
   return alertMsg.value.split('.')

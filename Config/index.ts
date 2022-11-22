@@ -7,9 +7,9 @@ export const config = new Config()
 config.isTest = false
 const { lanbilling, abilling, erp } = useRuntimeConfig()
 config.set('dbConfig', {
-    lanbilling: { ...lanbilling, port: +lanbilling.port || 3306 },
-    abilling: { ...abilling, port: +abilling.port || 3306 },
-    erp: { ...erp, port: +erp.port || 3306 }
+  lanbilling: { ...lanbilling, port: +lanbilling.port || 3306 },
+  abilling: { ...abilling, port: +abilling.port || 3306 },
+  erp: { ...erp, port: +erp.port || 3306 },
 })
 
 export const aBilling = config.set<ABilling>('aBilling', new ABilling())
