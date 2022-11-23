@@ -130,5 +130,14 @@ declare global {
         PropertyList: PropertyList
     }
 
+    interface AuthResponse {
+        id: number,
+        fullName: string,
+        description: string,
+        email: string,
+        groupId: number | number[],
+        type: string
+    }
+
     type MapsType<T> = Map<string, T>
 }

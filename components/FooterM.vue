@@ -1,8 +1,8 @@
 <template>
   <div
     text="xl gray4"
-    m-5
     flex
+    m-5
     justify-center
     gap-3
   >

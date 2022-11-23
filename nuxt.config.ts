@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   },
 
   imports: {
-    dirs: ['config'],
+    dirs: ['config', 'utils'],
   },
 
   runtimeConfig: {
