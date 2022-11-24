@@ -19,10 +19,9 @@ const msgs = computed(() => {
           {{ msgs[1] || '' }}
         </alert>
       </div>
-      
+
       <!-- <Header /> -->
       <navbar top-0 left-10 right-12 mx-auto w-full justify-space-between>
-      
         <template #logo>
           <FullLogoButton />
         </template>
@@ -34,9 +33,12 @@ const msgs = computed(() => {
         <slot />
       </div>
       <div
-        class="fixed z-20 p-4 w-full right-0 bottom-0 border-t border-gray-200 mx-auto shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600 text-center opacity-25 text-sm">
-        <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2022 <a href="https://flowbite.com/"
-            class="hover:underline">FNet™</a>. Իրավունքները պաշտպանված են.
+        class="fixed z-20 p-4 w-full right-0 bottom-0 border-t border-gray-200 mx-auto shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600 text-center opacity-25 text-sm"
+      >
+        <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2022 <a
+          href="https://flowbite.com/"
+          class="hover:underline"
+        >FNet™</a>. Իրավունքները պաշտպանված են.
         </span>
         <FooterM />
         <ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">

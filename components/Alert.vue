@@ -20,7 +20,7 @@ const color = computed(() => {
 
 <template>
   <div
-    :class="`flex p-4 mb-4 text-sm  rounded-lg text-${color}-700 bg-${color}-100 dark:bg-${color}-200 dark:text-${color}-800`"
+    :class="`flex p-4 mb-4 text-sm  rounded-lg text-dark-700 bg-${color}-100 dark:bg-${color}-200 dark:text-light-800`"
     role="alert"
   >
     <svg

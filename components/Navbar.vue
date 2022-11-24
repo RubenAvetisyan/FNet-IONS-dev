@@ -27,7 +27,7 @@ const links = ref([
         </dropdown-button>
         <!-- Dropdown -->
         <dropdown-menu>
-          <list-item v-for="item in items" :key="item.lang" :is-menuitem="true">
+          <list-item v-for="item in items" :key="item.lang">
             <template #icon>
               <component :is="item.icon" />
             </template>

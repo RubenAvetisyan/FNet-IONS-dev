@@ -8,6 +8,7 @@ specifiers:
   '@julr/unocss-preset-flowbite': ^0.0.2
   '@nuxtjs/color-mode': ^3.1.6
   '@pinia/nuxt': ^0.4.2
+  '@type-challenges/utils': ^0.1.1
   '@types/md5': ^2.3.2
   '@types/mysql': ^2.15.21
   '@types/xml2js': ^0.4.11
@@ -42,6 +43,7 @@ devDependencies:
   '@julr/unocss-preset-flowbite': 0.0.2
   '@nuxtjs/color-mode': 3.1.6
   '@pinia/nuxt': 0.4.2_typescript@4.8.3
+  '@type-challenges/utils': 0.1.1
   '@types/md5': 2.3.2
   '@types/mysql': 2.15.21
   '@types/xml2js': 0.4.11
@@ -1067,6 +1069,10 @@ packages:
   /@trysound/sax/0.2.0:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
+    dev: true
+
+  /@type-challenges/utils/0.1.1:
+    resolution: {integrity: sha512-A7ljYfBM+FLw+NDyuYvGBJiCEV9c0lPWEAdzfOAkb3JFqfLl0Iv/WhWMMARHiRKlmmiD1g8gz/507yVvHdQUYA==}
     dev: true
 
   /@types/estree/0.0.39:

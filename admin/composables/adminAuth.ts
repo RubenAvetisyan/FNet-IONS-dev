@@ -1,27 +1,27 @@
-import { Ref } from '@vue/reactivity'
+import type { Ref } from '@vue/reactivity'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { UserGroupId } from '@/utils/enums'
 
-type User = {
-    id: number;
-    fullName: string;
-    email: string;
-    type: string;
-    description: string;
-    groupId: number[];
+interface User {
+    id: number
+    fullName: string
+    email: string
+    type: string
+    description: string
+    groupId: number[]
 }
 
 export const useAdminAuthStore = defineStore('adminStore', {
     state: () => ({
         sessionId: '',
-        user: {}
+        user: {},
     } as {
-        sessionId: string,
+        sessionId: string
         user: User
     }),
 
     getters: {
-        userData: (state) => state.user
+        userData: state => state.user,
     },
 
     actions: {
@@ -36,17 +36,19 @@ export const useAdminAuthStore = defineStore('adminStore', {
 
             const user = data.value as User
 
-            if (!data.value || user.groupId.includes(UserGroupId.Admin)) {
-                if (setAlert) setAlert('Սխալ տվյալներ', 'warning')
+            if (!data.value || !user.groupId.includes(UserGroupId.Admin)) {
+                if (setAlert)
+                    setAlert('Սխալ տվյալներ', 'warning')
                 return
             }
             const router = useRouter()
 
-            if (setAlert) setAlert('Դուք հաջողությամբ նույնականացվեցիք․․․', 'success')
+            if (setAlert)
+                setAlert('Դուք հաջողությամբ նույնականացվեցիք․․․', 'success')
 
             router.replace('/admin')
 
             this.user = user
-        }
-    }
+        },
+    },
 })

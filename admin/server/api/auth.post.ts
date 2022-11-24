@@ -1,4 +1,4 @@
-import { createError, H3Error, sendError } from 'h3'
+import { H3Error, createError, sendError } from 'h3'
 import login from '../../utils/login'
 import { encrypt } from '@/utils/encryp-decrypt'
 
@@ -7,23 +7,27 @@ export default defineEventHandler(async (event) => {
     const { user, password } = await readBody(event)
     const { type } = getQuery(event)
 
-    if (!type) throw createError({
-      message: 'Check the URL!',
-      statusCode: 406,
-      statusMessage: 'Not Acceptable!'
-    })
+    if (!type) {
+      throw createError({
+        message: 'Check the URL!',
+        statusCode: 406,
+        statusMessage: 'Not Acceptable!',
+      })
+    }
 
     const response = await login(user, password)
     console.log('response in server: ', response)
 
-    if (response instanceof H3Error) throw response
+    if (response instanceof H3Error)
+      throw response
 
-    const token = encrypt(JSON.stringify(response)) || ''
-    console.log('set token: ', token);
+    const rString = JSON.stringify(Object.entries(response))
+    console.log('rString: ', rString)
+    const token = encrypt(rString) || ''
 
-    setCookie(event, type + '_token', token, {
+    setCookie(event, `${type}_token`, token, {
       httpOnly: true,
-      domain: '/',
+      path: '/',
       maxAge: 60 * 60 * 1000,
       sameSite: 'lax',
     })
@@ -37,7 +41,8 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'Not found',
       message: 'Ստուգեք մուտքգրվող դաշտերի լրացման ճշտությունը',
     })
-    if (!(error instanceof H3Error)) return err
+    if (!(error instanceof H3Error))
+      return err
     return sendError(event, error)
   }
 })

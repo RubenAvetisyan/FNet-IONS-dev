@@ -3,7 +3,7 @@ import { erpConnection } from '../LanBilling/bdConnect'
 import { getQuery } from '../LanBilling/query'
 import { config } from '@/Config'
 
-const tableName = config.isTest ? 'erp' : 'erp.user'
+// const tableName = config.isTest ? 'erp' : 'erp.user'
 
 const setQueryString = (user: string, password: string) => {
   return `
@@ -41,12 +41,12 @@ export default async function (user: string, password: string) {
     description: '',
     groupId: [],
   } as {
-    id: number;
-    fullName: string;
-    email: string;
-    type: string;
-    description: string;
-    groupId: number[];
+    id: number
+    fullName: string
+    email: string
+    type: string
+    description: string
+    groupId: number[]
   }
 
   reponse.forEach(({ description, email, fullName, groupId, id, type }) => {
