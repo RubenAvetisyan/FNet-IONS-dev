@@ -1,5 +1,8 @@
-// import flowbite from 'flowbite/plugin'
+// import flowbite from 'flowbite'
 
-// export default defineNuxtPlugin((nuxtApp) => {
-//   nuxtApp.vueApp.use(() => flowbite)
-// })
+// const flowbite = require('flowbite')
+
+export default defineNuxtPlugin(async (nuxtApp) => {
+  const flowbite = await import('flowbite').then(lib => lib.default || lib)
+  nuxtApp.vueApp.use(() => flowbite)
+})

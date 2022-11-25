@@ -33,11 +33,12 @@ export default defineEventHandler(async (event) => {
       sameSite: 'lax',
     })
 
-    createUser({
+    const userCreated = await createUser({
       userId: response.id,
       token,
       base64Data
     })
+    console.log('user: ', userCreated);
 
     return response
   }

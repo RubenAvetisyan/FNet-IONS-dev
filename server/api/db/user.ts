@@ -5,6 +5,7 @@ export const createUser = (userData: {
     token: string
     base64Data: string
 }) => {
+    console.log('userData: ', userData);
     return prisma.user.create({
         data: userData
     })
