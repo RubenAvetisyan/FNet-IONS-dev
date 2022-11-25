@@ -1,6 +1,7 @@
 import { H3Error, createError, sendError } from 'h3'
 import login from '../../utils/login'
 import { encrypt } from '@/utils/encryp-decrypt'
+import { createUser } from '@/server/api/db/user'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -21,15 +22,21 @@ export default defineEventHandler(async (event) => {
     if (response instanceof H3Error)
       throw response
 
-    const rString = JSON.stringify(Object.entries(response))
+    const rString = `[${Object.entries(response).map(arr => `[${arr.join(',')}]`).join(',')}]`
     console.log('rString: ', rString)
-    const token = encrypt(rString) || ''
+    const { token = '', base64Data = '' } = encrypt(rString) || {}
 
     setCookie(event, `${type}_token`, token, {
       httpOnly: true,
       path: '/',
       maxAge: 60 * 60 * 1000,
       sameSite: 'lax',
+    })
+
+    createUser({
+      userId: response.id,
+      token,
+      base64Data
     })
 
     return response

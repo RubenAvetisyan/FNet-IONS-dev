@@ -1,31 +1,10 @@
 <script setup lang="ts">
-const props = defineProps({
-  endpoint: {
-    type: String,
-    defaulr: '/api/auth',
-    required: true,
-  },
-})
-
 const { setAlert } = useAlertStore()
-
 const { login: storeLogin } = useAdminAuthStore()
-
-const endpoint = props.endpoint as string
-
-const router = useRouter()
-
-const name = ref('')
-
 const username = ref('')
 const password = ref('')
-
-const response = ref()
 const disabled = ref(false)
-
 const isValidated = ref(true)
-
-const authStore = useAuthStore()
 
 const login = async () => {
   if (!unref(username) || !unref(password))
@@ -37,16 +16,6 @@ const login = async () => {
 
   disabled.value = false
 }
-
-watch(() => response.value, (responseValue: AuthResponse) => {
-  isValidated.value = Array.isArray(responseValue.groupId) && !!responseValue.groupId.length
-
-  authStore.setAuth('login', responseValue.fullName)
-  router.push(`/?login=${isValidated.value}`)
-
-  if (isValidated.value)
-    name.value = responseValue.fullName
-})
 </script>
 
 <template>

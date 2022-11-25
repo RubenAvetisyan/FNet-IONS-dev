@@ -2,9 +2,19 @@
 import { storeToRefs } from 'pinia'
 const { isAlert, alertMsg } = storeToRefs(useAlertStore())
 
+const route = useRoute()
+
 const msgs = computed(() => {
   return alertMsg.value.split('.')
 })
+
+const links = ref([
+  { name: 'Home', link: '/' },
+  { name: 'Payment API', link: '/payment' },
+  { name: 'Services', link: '/services' },
+  { name: 'Pricing', link: '/price' },
+  { name: 'Contact', link: '/contact' },
+])
 </script>
 
 <template>
@@ -12,7 +22,13 @@ const msgs = computed(() => {
     <!-- <Header /> -->
     <navbar fixed top-0 mx-auto w-full justify-space-between>
       <template #extra>
-        <LoginButton />
+        <LoginButton v-if="route.path !== '/login'" />
+      </template>
+
+      <template #listItems>
+        <n-list-item v-for="l in links" :key="l.name" :link="l.link" :exact="l?.exact" :external="l.external">
+          {{ l.name }}
+        </n-list-item>
       </template>
     </navbar>
     <div class="fixed w-1/3 left-0 right-0 px-10 top-0 z-100 mx-auto">
@@ -22,7 +38,6 @@ const msgs = computed(() => {
       </alert>
     </div>
     <div container h-full mx-auto mb-1 px-10>
-      {{ isAlert }}
       <slot />
     </div>
     <div class="mt-5 mx-auto text-center opacity-25 text-sm">

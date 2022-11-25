@@ -4,13 +4,16 @@ export default defineNuxtConfig({
     './apiPaymentSystems',
     './log',
   ],
-  head: {
-    charset: 'utf-16',
-    viewport: 'width=500, initial-scale=1',
-    title: 'FNet Power system',
-    meta: [
-      { name: 'description', content: 'Internal operations implementation system' },
-    ],
+  app: {
+    head: {
+      charset: 'utf-16',
+      viewport: 'width=500, initial-scale=1',
+      title: 'FNet Power system',
+      meta: [
+        { name: 'description', content: 'Internal operations implementation system' },
+      ],
+    },
+    keepalive: true
   },
   modules: [
     '@vueuse/nuxt',
@@ -58,6 +61,7 @@ export default defineNuxtConfig({
     },
   },
 
-  reactStrictMode: true,
-  swcMinify: true,
+  // reactStrictMode: true,
+  // swcMinify: true,
+
 })

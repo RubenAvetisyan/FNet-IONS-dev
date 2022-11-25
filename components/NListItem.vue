@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from '@vue/reactivity'
+
 const props = defineProps({
   href: {
     type: String,
@@ -28,17 +30,31 @@ const dClass = 'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:tex
 const linkClass = ref(unref(props.isMenuitem) ? dClass : passive)
 
 const isVisible = ref(false)
+
+const hidden = computed(() => isVisible.value ? '' : 'hidden')
+const chevron = computed(() => isVisible.value ? '' : 'mdi-chevron-down')
+
+const expand = () => {
+  isVisible.value = !isVisible.value
+
+  console.log('hidden: ', hidden)
+}
 </script>
 
 <template>
   <li>
-    <nuxt-link :to="link || href" :active-class="active" :exact="exact" :external="external" :class="linkClass"
-      :role="isMenuitem ? 'menuitem' : ''" :aria-current="isMenuitem ? '' : 'page'">
+    <nuxt-link
+      :to="link || href" :active-class="active" :exact="exact" :external="external" :class="linkClass"
+      :role="isMenuitem ? 'menuitem' : ''" :aria-current="isMenuitem ? '' : 'page'" @click="expand"
+    >
       <div v-if="$slots.icon" class="inline-flex items-center">
         <slot name="icon" />
-        <slot />
       </div>
-      <slot v-else />
+      <slot />
+
+      <ul v-if="$slots.list" v-show="isVisible" class="space-y-0" :class="[hidden]">
+        <slot name="list" />
+      </ul>
     </nuxt-link>
   </li>
 </template>

@@ -15,7 +15,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   type V = typeof user[K]
   type Includes = [K, V]
 
-  const { user, setUser } = useAdminAuthStore()
+  const { user, setUser, isLogedin } = useAdminAuthStore()
 
   const { value: token } = useCookie('admin_token', { secure: true })
   console.log('token: ', token)
@@ -32,16 +32,19 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   const { userData } = useAdminAuthStore()
   const isAdmin = userData.groupId?.includes(UserGroupId.Admin)
-  console.log('user: ', userData);
+  console.log('user: ', userData)
   const isUser = userData.groupId?.includes(UserGroupId.User)
   const isAdminOrUser = isAdmin || isUser
 
-  if (to.meta.requiresAuth && !isAdminOrUser && !token && to.path !== '/login')
+  if (to.meta.requiresAuth && !isLogedin && !token && to.path !== '/login')
     return navigateTo('/login')
 
-  console.log('isAdminOrUser: ', isAdminOrUser);
+  console.log('isAdminOrUser: ', isLogedin)
   if (isAdminOrUser && token && to.path === '/login')
     return navigateTo('/')
+
+  if (to.path.includes('/admin') && !token && !isLogedin)
+    navigateTo('/login')
 
   // if (isAdmin && to.path !== '/admin')
   //   return navigateTo('/admin')

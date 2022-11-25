@@ -5,14 +5,6 @@ const items = markRaw([
   { lang: 'Italiano', icon: resolveComponent('SvgItIcon') },
   { lang: '中文 (繁體)', icon: resolveComponent('SvgChIcon') },
 ])
-
-const links = ref([
-  { name: 'Home', link: '/' },
-  { name: 'Payment API', link: '/payment' },
-  { name: 'Services', link: '/services' },
-  { name: 'Pricing', link: '/price' },
-  { name: 'Contact', link: '/contact' },
-])
 </script>
 
 <template>
@@ -27,28 +19,24 @@ const links = ref([
         </dropdown-button>
         <!-- Dropdown -->
         <dropdown-menu>
-          <list-item v-for="item in items" :key="item.lang">
+          <n-list-item v-for="item in items" :key="item.lang">
             <template #icon>
               <component :is="item.icon" />
             </template>
             {{ item.lang }}
-          </list-item>
+          </n-list-item>
         </dropdown-menu>
         <MobileHeaderButton />
         <div v-if="$slots.extra" class="flex items-center md:order-2 z-{100000}">
           <slot name="extra" />
         </div>
       </div>
-      <div
-        id="mobile-menu-language-select"
-        class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
-      >
+      <div id="mobile-menu-language-select" class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1">
         <ul
+          v-if="$slots.listItems"
           class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
         >
-          <list-item v-for="l in links" :key="l.name" :link="l.link" :exact="l?.exact" :external="l.external">
-            {{ l.name }}
-          </list-item>
+          <slot name="listItems" />
         </ul>
       </div>
     </div>

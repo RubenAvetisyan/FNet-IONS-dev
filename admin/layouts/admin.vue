@@ -5,6 +5,14 @@ const { isAlert, alertMsg } = storeToRefs(useAlertStore())
 const msgs = computed(() => {
   return alertMsg.value.split('.')
 })
+
+const links = ref([
+  { name: 'Dashboard', link: '/admin' },
+  { name: 'Payment API', link: '/payment' },
+  { name: 'Services', link: '/services' },
+  { name: 'Pricing', link: '/price' },
+  { name: 'Contact', link: '/contact' },
+])
 </script>
 
 <template>
@@ -25,6 +33,12 @@ const msgs = computed(() => {
         <template #logo>
           <FullLogoButton />
         </template>
+        <template #listItems>
+          <n-list-item v-for="l in links" :key="l.name" :link="l.link" :exact="l?.exact" :external="l?.external">
+            {{ l.name }}
+          </n-list-item>
+        </template>
+
         <template #extras>
           <LoginButton />
         </template>

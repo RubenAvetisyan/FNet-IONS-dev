@@ -1,10 +1,14 @@
 <script setup>
-const { isUserLogedin, setAuth } = useAuthStore()
+const { isLogedin, logout } = useAdminAuthStore()
 
 const fn = ref(() => { })
 
-watch(() => isUserLogedin, (logedin) => {
-  fn.value = logedin ? setAuth('logout') : () => { }
+const btnText = computed(() => {
+  return isLogedin ? 'logout' : 'Login'
+})
+
+watch(() => isLogedin, (logedin) => {
+  fn.value = logedin ? logout : null
 })
 </script>
 
@@ -12,9 +16,9 @@ watch(() => isUserLogedin, (logedin) => {
   <!-- Modal toggle -->
   <button
     class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-    type="button" data-modal-toggle="authentication-modal" @click.stop=""
+    type="button" data-modal-toggle="authentication-modal" @click.stop="fn"
   >
-    {{ isUserLogedin ? 'Logout' : 'Login' }}
+    {{ btnText }}
   </button>
 
   <!-- Main modal -->

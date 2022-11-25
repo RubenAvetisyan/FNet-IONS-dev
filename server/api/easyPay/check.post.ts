@@ -5,7 +5,7 @@ const FILE_PATH = resolve('example.log')
 const counter = 0
 let str: string | boolean = fs.readFileSync(FILE_PATH, 'utf-8')
 export default defineEventHandler(async (event) => {
-  const body: string = await useBody(event)
+  const body: string = await readBody(event)
   let prefix = ''
   if (!str) {
     prefix = ';'

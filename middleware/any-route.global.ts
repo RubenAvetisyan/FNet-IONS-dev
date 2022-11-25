@@ -10,4 +10,6 @@ export default defineNuxtRouteMiddleware((to) => {
 
   if (to.path.includes('admin'))
     setPageLayout('admin')
+  else
+    setPageLayout('default')
 })
