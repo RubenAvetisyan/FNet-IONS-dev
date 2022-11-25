@@ -14,7 +14,7 @@ datasource db {
 
 model User {
   id  String  @id @default(auto())  @map("_id") @db.ObjectId
-  userId Int @unique
+  userId Int
   token String  @unique
   base64Data  String  @unique
   createdAt DateTime  @default(now())
