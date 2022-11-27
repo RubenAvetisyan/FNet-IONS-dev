@@ -6,15 +6,15 @@ import { createUser } from '@/server/api/db/user'
 export default defineEventHandler(async (event) => {
   try {
     const { user, password } = await readBody(event)
-    const { type } = getQuery(event)
+    // const { type } = getQuery(event)
 
-    if (!type) {
-      throw createError({
-        message: 'Check the URL!',
-        statusCode: 406,
-        statusMessage: 'Not Acceptable!',
-      })
-    }
+    // if (!type) {
+    //   throw createError({
+    //     message: 'Check the URL!',
+    //     statusCode: 406,
+    //     statusMessage: 'Not Acceptable!',
+    //   })
+    // }
 
     const response = await login(user, password)
     console.log('response in server: ', response)
@@ -25,6 +25,8 @@ export default defineEventHandler(async (event) => {
     const rString = `[${Object.entries(response).map(arr => `[${arr.join(',')}]`).join(',')}]`
     console.log('rString: ', rString)
     const { token = '', base64Data = '' } = encrypt(rString) || {}
+
+    const type = response.groupId.includes(20) ? 'admin' : 'user'
 
     setCookie(event, `${type}_token`, token, {
       httpOnly: true,

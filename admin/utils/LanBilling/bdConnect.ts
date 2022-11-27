@@ -11,6 +11,7 @@ const dbConfig = config.get('dbConfig') as {
     user: string
     password: string
     database: string
+    insecureAuth?: boolean
   }
 }
 

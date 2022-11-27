@@ -3,7 +3,9 @@ import { erpConnection } from '../LanBilling/bdConnect'
 import { getQuery } from '../LanBilling/query'
 import { config } from '@/Config'
 
-// const tableName = config.isTest ? 'erp' : 'erp.user'
+const { erp } = useRuntimeConfig()
+
+const dbName = config.isTest ? 'sql7579349' : erp.database
 
 const setQueryString = (user: string, password: string) => {
   return `
@@ -14,10 +16,10 @@ const setQueryString = (user: string, password: string) => {
     user.email as email,
     gr.group_id as groupId,
     gr_title.title as type
-  FROM erp.user as user
-inner join erp.user_group as gr
+  FROM ${dbName}.user as user
+inner join ${dbName}.user_group as gr
 on user.id = gr.user_id
-inner join erp.user_group_title as gr_title
+inner join ${dbName}.user_group_title as gr_title
 on gr.group_id = gr_title.id
 where
   (BINARY login = "${user}" or BINARY email = "user")
@@ -33,20 +35,13 @@ export default async function (user: string, password: string) {
     return erp
 
   const reponse = await getQuery(queryString, erp) as AuthResponse[]
-  const result = {
+  const result: AuthResult = {
     id: 0,
     fullName: '',
     email: '',
     type: '',
     description: '',
     groupId: [],
-  } as {
-    id: number
-    fullName: string
-    email: string
-    type: string
-    description: string
-    groupId: number[]
   }
 
   reponse.forEach(({ description, email, fullName, groupId, id, type }) => {

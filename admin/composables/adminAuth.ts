@@ -35,6 +35,7 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       this.user = user
     },
     async login<T extends Ref<string> | string>(username: T, password: T, setAlert?: (msg: string, type: 'warning' | 'success') => void) {
+
       const { data } = await useFetch('/api/auth?type=admin', {
         method: 'POST',
         body: { user: unref(username), password: unref(password) },

@@ -139,5 +139,14 @@ declare global {
         type: string
     }
 
+    interface AuthResult {
+        id: number
+        fullName: string
+        email: string
+        type: string
+        description: string
+        groupId: number[]
+    }
+
     type MapsType<T> = Map<string, T>
 }
