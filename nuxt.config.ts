@@ -1,10 +1,10 @@
 import chalk from 'chalk'
-import { prisma } from "./server/api/db"
+import { prisma } from './server/api/db'
 
 process.on('SIGINT', async (signal) => {
   if (signal === 'SIGINT') {
     await prisma.$disconnect()
-    console.log(signal.toUpperCase() + ':', chalk.underline.green('prisma has been disconnected'))
+    console.log(`${signal.toUpperCase()}:`, chalk.underline.green('prisma has been disconnected'))
   }
 })
 
@@ -23,7 +23,7 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Internal operations implementation system' },
       ],
     },
-    keepalive: true
+    keepalive: true,
   },
   modules: [
     '@vueuse/nuxt',
@@ -73,16 +73,17 @@ export default defineNuxtConfig({
   },
 
   hooks: {
-    'close': async (nuxt) => {
+    close: async () => {
       try {
         await prisma.$disconnect()
-      } catch (error: any) {
+      }
+      catch (error: any) {
         console.warn('error: ', chalk.underline.red(error?.message || error), error.stuck || '')
 
         process.exit(1)
       }
-    }
-  }
+    },
+  },
 
   // reactStrictMode: true,
   // swcMinify: true,

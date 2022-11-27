@@ -17,7 +17,7 @@ export const encrypt = (msg: string) => {
 }
 
 export const decrypt = (encryptedData: {
-  token: string,
+  token: string
   base64Data: string
 }) => {
   const originalData = Buffer.from(encryptedData.base64Data, 'base64')

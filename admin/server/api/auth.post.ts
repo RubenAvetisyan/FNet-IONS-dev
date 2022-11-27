@@ -38,9 +38,9 @@ export default defineEventHandler(async (event) => {
     const userCreated = await createUser({
       userId: response.id,
       token,
-      base64Data
+      base64Data,
     })
-    console.log('user: ', userCreated);
+    console.log('user: ', userCreated)
 
     return response
   }

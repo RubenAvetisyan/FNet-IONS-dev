@@ -27,7 +27,7 @@ export const useAdminAuthStore = defineStore('adminAuth', {
     },
     isAdmin: state => !!state.user.groupId?.includes[UserGroupId.Admin],
     isUser: state => state.user.groupId?.length && !state.user.groupId?.includes[UserGroupId.Admin],
-    userType: state => UserGroupName['Accountent'], // state.groupId
+    userType: state => state.user.groupId[0], // state.groupId
   },
 
   actions: {
@@ -35,7 +35,6 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       this.user = user
     },
     async login<T extends Ref<string> | string>(username: T, password: T, setAlert?: (msg: string, type: 'warning' | 'success') => void) {
-
       const { data } = await useFetch('/api/auth?type=admin', {
         method: 'POST',
         body: { user: unref(username), password: unref(password) },
