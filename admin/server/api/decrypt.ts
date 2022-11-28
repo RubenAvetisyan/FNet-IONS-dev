@@ -1,4 +1,6 @@
-import { decrypt } from '@/utils/encryp-decrypt'
+// import { decrypt } from '@/utils/encryp-decrypt'
+import getUserById from '@/admin/utils/user'
+import { getUserByToken } from '@/server/api/db/user'
 
 export default defineEventHandler(async (event) => {
   const { encrypted } = getQuery(event)
@@ -6,10 +8,17 @@ export default defineEventHandler(async (event) => {
   if (!encrypted)
     return
 
-  const text = encrypted as string
+  const token = encrypted as string
+  let user = await getUserByToken(token)
 
-  const decrypted = decrypt(text)
-  console.log('decrypted: ', decrypted)
+  if (!user) {
+    return sendError(event, createError({
+      message: 'this token is not valid',
+      statusCode: 403,
+    }))
+  }
 
-  return { decrypted }
+  user = await getUserById(user.userId)
+
+  return { decrypted: user }
 })

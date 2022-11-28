@@ -7,9 +7,11 @@
   },
   "scripts": {
     "build": "nuxi build",
-    "dev": "nuxi dev",
+    "dev": "nuxi dev --port=3001",
     "start": "node .output/server/index.mjs",
     "lint": "eslint . --fix",
+    "server": "node ../fNet-payment-api/server.js",
+    "serve": "node_modules/.bin/ttab -t 'Node Server' 'npm run server' & node_modules/.bin/ttab -t 'Building assets' 'npm run dev'",
     "postinstall": "nuxi prepare",
     "generate": "nuxi generate"
   },
@@ -38,10 +40,12 @@
     "@vueuse/nuxt": "9.5.0",
     "eslint": "8.27.0",
     "fs-extra": "^10.1.0",
+    "mitt": "^3.0.0",
     "nuxt": "^3.0.0",
     "pinia": "2.0.23",
     "prisma": "^4.6.1",
     "telegraf": "4.11.2",
+    "ts-enum-util": "^4.0.2",
     "typescript": "4.9.3"
   }
 }

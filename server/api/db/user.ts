@@ -11,20 +11,17 @@ export const createUser = (userData: {
   })
 }
 
-export const getUserById = (userId: number, token: string) => {
+export const getUserByToken = (token: string) => {
   return prisma.user.findFirst({
     where: {
-      AND: [
-        { token },
-        { userId },
-      ],
+      token,
     },
   })
 }
 
 export const upsertUser = async (userId: number, token: string, base64Data: string) => {
   return await prisma.user.upsert({
-    where: {},
+    where: { userId },
     create: { userId, token, base64Data },
     update: { token, base64Data },
   })

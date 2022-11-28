@@ -1,5 +1,6 @@
 import type { Ref } from '@vue/reactivity'
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import { $enum } from 'ts-enum-util'
 import { UserGroupId } from '@/utils/enums'
 
 interface User {
@@ -25,14 +26,18 @@ export const useAdminAuthStore = defineStore('adminAuth', {
     isLogedin() {
       return this.isAdmin || this.isUser
     },
-    isAdmin: state => !!state.user.groupId?.includes[UserGroupId.Admin],
-    isUser: state => state.user.groupId?.length && !state.user.groupId?.includes[UserGroupId.Admin],
+    isAdmin: state => state.user.type === 'Admin' && useCookie('admin_token'),
+    isUser: state => state.user.type !== 'Admin' && useCookie('user_token'),
     userType: state => state.user.groupId[0], // state.groupId
   },
 
   actions: {
     setUser(user: any) {
-      this.user = user
+      this.user = {
+        ...user,
+        description: user.type,
+        type: $enum(UserGroupId).getKeyOrDefault(user.groupId[0]),
+      }
     },
     async login<T extends Ref<string> | string>(username: T, password: T, setAlert?: (msg: string, type: 'warning' | 'success') => void) {
       const { data } = await useFetch('/api/auth?type=admin', {
@@ -57,8 +62,10 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       this.user = user
     },
     logout() {
+      const router = useRouter()
+      $fetch(`/api/logout?type=${this.user.type}`.toLocaleLowerCase())
       this.setUser({})
-      $fetch('/api/logout?type=admin')
+      router.replace('/')
       return true
     },
   },

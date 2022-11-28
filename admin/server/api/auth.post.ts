@@ -1,7 +1,7 @@
 import { H3Error, createError, sendError } from 'h3'
 import login from '../../utils/login'
 import { encrypt } from '@/utils/encryp-decrypt'
-import { createUser } from '@/server/api/db/user'
+import { upsertUser } from '@/server/api/db/user'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -30,16 +30,12 @@ export default defineEventHandler(async (event) => {
 
     setCookie(event, `${type}_token`, token, {
       httpOnly: true,
-      path: '/',
+      path: type === 'admin' ? '/admin' : '/',
       maxAge: 60 * 60 * 1000,
       sameSite: 'lax',
     })
 
-    const userCreated = await createUser({
-      userId: response.id,
-      token,
-      base64Data,
-    })
+    const userCreated = await upsertUser(+response.id, token, base64Data)
     console.log('user: ', userCreated)
 
     return response

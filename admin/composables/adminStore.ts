@@ -27,7 +27,7 @@ export const useAdminStore = defineStore('adminStore', {
             },
             {
               type: 'log',
-              name: 'Համաժամացման',
+              name: 'Համաժամացում',
               icon: 'i-mdi-sync-circle',
             },
           ],

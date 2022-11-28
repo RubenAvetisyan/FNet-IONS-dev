@@ -21,11 +21,13 @@ specifiers:
   flowbite-vue: ^0.0.7
   fs-extra: ^10.1.0
   md5: ^2.3.0
+  mitt: ^3.0.0
   mysql: ^2.18.1
   nuxt: ^3.0.0
   pinia: 2.0.23
   prisma: ^4.6.1
   telegraf: 4.11.2
+  ts-enum-util: ^4.0.2
   typescript: 4.9.3
   xml2js: ^0.4.23
 
@@ -54,10 +56,12 @@ devDependencies:
   '@vueuse/nuxt': 9.5.0_nuxt@3.0.0
   eslint: 8.27.0
   fs-extra: 10.1.0
+  mitt: 3.0.0
   nuxt: 3.0.0_e3uo4sehh4zr4i6m57mkkxxv7y
   pinia: 2.0.23_typescript@4.9.3
   prisma: 4.6.1
   telegraf: 4.11.2
+  ts-enum-util: 4.0.2
   typescript: 4.9.3
 
 packages:
@@ -4616,6 +4620,10 @@ packages:
       yallist: 4.0.0
     dev: true
 
+  /mitt/3.0.0:
+    resolution: {integrity: sha512-7dX2/10ITVyqh4aOSVI9gdape+t9l2/8QxHrFmUXu4EEUpdlxl6RudZUPZoc+zuY2hk1j7XxVroIVIan/pD/SQ==}
+    dev: true
+
   /mkdir/0.0.2:
     resolution: {integrity: sha512-98OnjcWaNEIRUJJe9rFoWlbkQ5n9z8F86wIPCrI961YEViiVybTuJln919WuuSHSnlrqXy0ELKCntoPy8C7lqg==}
     engines: {node: '>=0.4.0'}
@@ -6390,6 +6398,10 @@ packages:
 
   /tr46/0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
+    dev: true
+
+  /ts-enum-util/4.0.2:
+    resolution: {integrity: sha512-BB5qjvHYgYgOB/CaoA1Cy/B2QNnZ+nVBrJ15VV/AXGWx+AO83k5wgeLOJvkSLoKKavvH/M8Wj4ZbgROjsuYwzw==}
     dev: true
 
   /tsconfig-paths/3.14.1:

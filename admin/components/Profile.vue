@@ -53,7 +53,7 @@ const showMenu = () => {
         class="absolute z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700"
       >
         <ul class="py-1" aria-labelledby="dropdownButton">
-          <n-list-item v-for="item in ['Անձնական հաշիվ']" :key="item">
+          <n-list-item v-for="item in ['Անձնական հաշիվ']" :key="item" :is-menuitem="true" class="cursor-pointer">
             {{ item }}
           </n-list-item>
         </ul>
