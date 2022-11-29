@@ -27,7 +27,4 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (to.meta.requiresAuth && !isAdminOrUser && !token && to.path !== '/login')
     return navigateTo('/login')
-
-  // if (isAdmin && to.path !== '/admin')
-  //   return navigateTo('/admin')
 })

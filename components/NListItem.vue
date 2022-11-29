@@ -26,8 +26,8 @@ const props = defineProps({
 
 const { getRoutes } = useRouter()
 
-const active = 'block pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white'
-const passive = 'block pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700'
+const active = 'block pr-4 text-white bg-[#5723ae] rounded md:bg-transparent md:text-[#e30083] md:p-0 dark:text-white'
+const passive = 'block pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-[#e30083] md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700'
 const dClass = 'block text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white'
 const linkClass = ref(props.isMenuitem ? dClass : passive)
 

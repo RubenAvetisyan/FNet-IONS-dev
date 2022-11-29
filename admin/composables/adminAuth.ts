@@ -1,5 +1,5 @@
 import type { Ref } from '@vue/reactivity'
-import { acceptHMRUpdate, defineStore } from 'pinia'
+import { acceptHMRUpdate, defineStore, storeToRefs } from 'pinia'
 import { $enum } from 'ts-enum-util'
 import { UserGroupId } from '@/utils/enums'
 
@@ -11,6 +11,9 @@ interface User {
   description: string
   groupId: number[]
 }
+
+// const appConfig = useAppConfig()
+// console.log('appConfig: ', appConfig);
 
 export const useAdminAuthStore = defineStore('adminAuth', {
   state: () => ({
@@ -26,18 +29,16 @@ export const useAdminAuthStore = defineStore('adminAuth', {
     isLogedin() {
       return this.isAdmin || this.isUser
     },
-    isAdmin: state => state.user.type === 'Admin' && useCookie('admin_token'),
-    isUser: state => state.user.type !== 'Admin' && useCookie('user_token'),
-    userType: state => state.user.groupId[0], // state.groupId
+    isAdmin: state => Array.isArray(state.user.groupId) ? state.user.groupId[0] === UserGroupId.Admin : false,
+    isUser: () => {
+      return useCookie('user_token').value?.length
+    },
+    userType: state => state.user.type, // state.groupId
   },
 
   actions: {
     setUser(user: any) {
-      this.user = {
-        ...user,
-        description: user.type,
-        type: $enum(UserGroupId).getKeyOrDefault(user.groupId[0]),
-      }
+      this.user = user
     },
     async login<T extends Ref<string> | string>(username: T, password: T, setAlert?: (msg: string, type: 'warning' | 'success') => void) {
       const { data } = await useFetch('/api/auth?type=admin', {
@@ -45,25 +46,35 @@ export const useAdminAuthStore = defineStore('adminAuth', {
         body: { user: unref(username), password: unref(password) },
       })
 
+      console.log('login user: ', data.value);
       const user = data.value as User
 
       if (!data.value || !user.groupId.includes(UserGroupId.Admin)) {
-        if (setAlert)
-          setAlert('Սխալ տվյալներ', 'warning')
-        return
+        return setAlert ? setAlert('Սխալ տվյալներ', 'warning') : true
       }
+
       const router = useRouter()
 
       if (setAlert)
         setAlert('Դուք հաջողությամբ նույնականացվեցիք․․․', 'success')
 
-      router.replace('/admin')
+      this.user = {
+        ...user,
+        description: user.type,
+        type: $enum(UserGroupId).getKeyOrDefault(user?.groupId[0]),
+      }
 
-      this.user = user
+      if (this.isAdmin) {
+        router.replace('/admin')
+      } else {
+        router.replace('/operations')
+      }
     },
     logout() {
+      console.log('logout...');
       const router = useRouter()
-      $fetch(`/api/logout?type=${this.user.type}`.toLocaleLowerCase())
+      const loggedinType = this.isAdmin ? 'admin_token' : 'user_token'
+      useFetch(`/api/logout?type=${loggedinType}`.toLocaleLowerCase())
       this.setUser({})
       router.replace('/')
       return true

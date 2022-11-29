@@ -3,13 +3,13 @@ const { alertType } = useAlertStore()
 
 const ALERT_TYPES = {
   success: {
-    color: 'green',
+    color: 'text-green-700 dark:text-green-200',
   },
   info: {
-    color: 'blue',
+    color: 'text-blue-700 dark:text-blue-200',
   },
   warning: {
-    color: 'red',
+    color: 'text-red-700 dark:text-red-200',
   },
 }
 
@@ -20,7 +20,7 @@ const color = computed(() => {
 
 <template>
   <div
-    :class="`flex p-4 mb-4 text-sm  rounded-lg text-dark-700 bg-${color}-100 dark:bg-${color}-200 dark:text-light-800`"
+    :class="`flex p-4 mb-4 text-sm  rounded-lg bg-gray-3 dark:bg-gray-1 ${color}`"
     role="alert"
   >
     <svg

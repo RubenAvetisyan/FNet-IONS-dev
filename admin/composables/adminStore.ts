@@ -13,22 +13,26 @@ export const useAdminStore = defineStore('adminStore', {
             {
               type: 'link',
               name: 'Lan-Billing',
-              icon: 'i-mdi-credit-card-package-variant-closed',
+              icon: 'i-mdi-credit-card-refund',
+              link: '/'
             },
             {
               type: 'link',
               name: 'ABilling',
-              icon: 'i-mdi-credit-card-package-variant-closed',
+              icon: 'i-mdi-credit-card-check-outline',
+              link: '/'
             },
             {
               type: 'link',
               name: 'հաշվետվություններ',
               icon: 'i-mdi-chart-box-outline',
+              link: '/'
             },
             {
               type: 'log',
-              name: 'Համաժամացում',
+              name: 'Համաժամացումների տեղեկագիր',
               icon: 'i-mdi-sync-circle',
+              link: '/log'
             },
           ],
         },

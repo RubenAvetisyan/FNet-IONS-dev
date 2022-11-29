@@ -6,15 +6,6 @@ import { upsertUser } from '@/server/api/db/user'
 export default defineEventHandler(async (event) => {
   try {
     const { user, password } = await readBody(event)
-    // const { type } = getQuery(event)
-
-    // if (!type) {
-    //   throw createError({
-    //     message: 'Check the URL!',
-    //     statusCode: 406,
-    //     statusMessage: 'Not Acceptable!',
-    //   })
-    // }
 
     const response = await login(user, password)
     console.log('response in server: ', response)
@@ -30,8 +21,8 @@ export default defineEventHandler(async (event) => {
 
     setCookie(event, `${type}_token`, token, {
       httpOnly: true,
-      path: type === 'admin' ? '/admin' : '/',
-      maxAge: 60 * 60 * 1000,
+      path: type === 'admin' ? '/' : '/operations',
+      maxAge: 60 * 60,
       sameSite: 'lax',
     })
 
