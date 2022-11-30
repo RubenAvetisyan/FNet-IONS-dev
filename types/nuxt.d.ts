@@ -108,12 +108,12 @@ declare global {
     }
 
     interface RequestType {
-        Inputs: string[],
-        Amount: number,
-        TransactID: number,
-        Currency: 'AMD' | 'RUB' | 'USD',
-        Checksum: string,
-        DtTime: string,
+        Inputs: string[]
+        Amount: number
+        TransactID: number
+        Currency: 'AMD' | 'RUB' | 'USD'
+        Checksum: string
+        DtTime: string
         Lang: 'hy' | 'ru' | 'en'
     }
 
@@ -131,11 +131,13 @@ declare global {
     }
 
     interface AuthResponse {
-        id: number,
-        fullName: string,
-        description: string,
-        email: string,
-        groupId: number | number[],
+        id: number
+        fullName: string
+        roleId: number
+        role: string
+        description: string
+        email: string
+        groupId: number | number[]
         type: string
     }
 

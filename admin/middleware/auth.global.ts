@@ -4,13 +4,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   const { user, setUser, isAdmin, isUser } = useAdminAuthStore()
 
-  const { value: token } = useCookie('admin_token', { secure: true })
-  console.log('token: ', token)
+  const token =
+    useCookie('admin_token', { secure: true }).value || useCookie('user_token', { secure: true }).value
 
   if (token && !user.groupId?.length) {
-    const { decrypted } = await $fetch(`/api/decrypt?encrypted=${token}`)
+    const { data } = await useFetch(`/api/decrypt?encrypted=${token}`)
 
-    setUser(decrypted)
+    setUser(data.value)
   }
 
   const { userData } = useAdminAuthStore()
@@ -23,6 +23,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo('/')
 
   if (to.path.includes('/admin') && !token && !isAdmin)
+    navigateTo('/login')
+  if (to.path.includes('/operations') && !token && !isUser)
     navigateTo('/login')
 
   if (to.meta.requiresAuth && !isAdminOrUser && !token && to.path !== '/login')

@@ -34,7 +34,7 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       return useCookie('user_token').value?.length
     },
     userType: state => state.user.type, // state.groupId
-  },
+  }, 
 
   actions: {
     setUser(user: any) {
@@ -49,7 +49,7 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       console.log('login user: ', data.value);
       const user = data.value as User
 
-      if (!data.value || !user.groupId.includes(UserGroupId.Admin)) {
+      if (!data.value) {
         return setAlert ? setAlert('Սխալ տվյալներ', 'warning') : true
       }
 
@@ -58,11 +58,10 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       if (setAlert)
         setAlert('Դուք հաջողությամբ նույնականացվեցիք․․․', 'success')
 
-      this.user = {
-        ...user,
-        description: user.type,
-        type: $enum(UserGroupId).getKeyOrDefault(user?.groupId[0]),
-      }
+      const description = $enum(UserGroupId).getKeyOrDefault(user?.groupId[0])
+      const type = UserGroupName($enum(UserGroupId).getKeyOrDefault(user?.groupId[0]))
+
+      this.user = user
 
       if (this.isAdmin) {
         router.replace('/admin')

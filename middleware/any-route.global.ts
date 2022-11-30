@@ -1,15 +1,18 @@
 export default defineNuxtRouteMiddleware((to) => {
-  if (to.query.login === 'false') {
-    createError('SDFJ SDFLKJ')
-    return navigateTo('/', {
-      redirectCode: 401,
-    })
-    // return abortNavigation()
-  }
+  const { isAdmin, isUser } = useAdminAuthStore()
+  // if (to.query.login === 'false') {
+  //   createError('SDFJ SDFLKJ')
+  //   return navigateTo('/', {
+  //     redirectCode: 401,
+  //   })
+  //   // return abortNavigation()
+  // }
   // return navigateTo('/')
 
-  if (to.path.includes('admin'))
+  if (to.path.includes('admin') && isAdmin)
     setPageLayout('admin')
-  else
+  else if (to.path.includes('operations') && isUser)
+    setPageLayout('user')
+  else 
     setPageLayout('default')
 })

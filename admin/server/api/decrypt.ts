@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     return
 
   const token = encrypted as string
-  let user = await getUserByToken(token)
+  const user = await getUserByToken(token)
 
   if (!user) {
     return sendError(event, createError({
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     }))
   }
 
-  user = await getUserById(user.userId)
+  const result = await getUserById(user.userId)
 
-  return { decrypted: user }
+  return result
 })
