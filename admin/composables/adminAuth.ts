@@ -16,35 +16,46 @@ interface User {
 // console.log('appConfig: ', appConfig);
 
 export const useAdminAuthStore = defineStore('adminAuth', {
-  state: () => ({
-    sessionId: '',
-    user: {},
-  } as {
+  state: (): {
     sessionId: string
-    user: User | { [key: string]: any }
+    user: User | null
+  } => ({
+    sessionId: '',
+    user: null,
   }),
 
   getters: {
     userData: state => state.user,
-    isLogedin() {
+    isLogedin(): boolean {
       return this.isAdmin || this.isUser
     },
-    isAdmin: state => Array.isArray(state.user.groupId) ? state.user.groupId[0] === UserGroupId.Admin : false,
-    isUser: () => {
-      return useCookie('user_token').value?.length
+    isAdmin(): boolean {
+      if (!this.userData) return false
+
+      return this.userData?.groupId?.includes(UserGroupId.Admin)
     },
-    userType: state => state.user.type, // state.groupId
-  }, 
+    isUser(): boolean {
+      if (!this.user) return false
+      return !this.isAdmin
+    },
+    userType: state => state.user?.type
+  },
 
   actions: {
     setUser(user: any) {
       this.user = user
     },
     async login<T extends Ref<string> | string>(username: T, password: T, setAlert?: (msg: string, type: 'warning' | 'success') => void) {
+      const { $startLoading, $finishLoading } = useNuxtApp()
+
+      $startLoading()
+
       const { data } = await useFetch('/api/auth?type=admin', {
         method: 'POST',
         body: { user: unref(username), password: unref(password) },
       })
+
+      $finishLoading()
 
       console.log('login user: ', data.value);
       const user = data.value as User
@@ -58,9 +69,6 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       if (setAlert)
         setAlert('Դուք հաջողությամբ նույնականացվեցիք․․․', 'success')
 
-      const description = $enum(UserGroupId).getKeyOrDefault(user?.groupId[0])
-      const type = UserGroupName($enum(UserGroupId).getKeyOrDefault(user?.groupId[0]))
-
       this.user = user
 
       if (this.isAdmin) {
@@ -69,11 +77,15 @@ export const useAdminAuthStore = defineStore('adminAuth', {
         router.replace('/operations')
       }
     },
-    logout() {
+    async logout() {
       console.log('logout...');
       const router = useRouter()
       const loggedinType = this.isAdmin ? 'admin_token' : 'user_token'
-      useFetch(`/api/logout?type=${loggedinType}`.toLocaleLowerCase())
+      await useFetch('/api/logout', {
+        query: {
+          type: loggedinType
+        }
+      })
       this.setUser({})
       router.replace('/')
       return true

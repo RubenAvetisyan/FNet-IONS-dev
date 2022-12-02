@@ -1,4 +1,5 @@
 <script setup>
+import { storeToRefs } from 'pinia'
 defineProps({
   fullName: {
     type: String,
@@ -14,6 +15,7 @@ defineProps({
   },
 })
 
+const { isminified } = storeToRefs(usedrawerStore())
 const { user } = useAdminAuthStore()
 
 const avatar = computed(() => {
@@ -23,7 +25,7 @@ const avatar = computed(() => {
 })
 
 const type = computed(() => {
-  return user.groupId?.includes(UserGroupId.Admin) ? UserGroupName.Admin : user.type
+  return user?.groupId?.includes(UserGroupId.Admin) ? UserGroupName.Admin : user?.type || ''
 })
 
 const menu = ref(null)
@@ -37,7 +39,7 @@ const showMenu = () => {
 <template>
   <div class="w-full max-w-sm relative bg-white border-b border-[#5723ae] dark:bg-gray-800 dark:border-gray-700">
     <div
-      :class="`${isSmall && 'absolute right-0 bottom-0 justify-end px-4 pt-4'} transform-gpu duration-500 fade-transition ease-in-out`"
+      :class="`${(!isminified && 'absolute right-0 bottom-0 justify-end px-4 pt-4')} transform-gpu duration-500 fade-transition ease-in-out`"
     >
       <div
         id="dropdownButton"

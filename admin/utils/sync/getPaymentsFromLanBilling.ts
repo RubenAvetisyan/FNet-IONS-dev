@@ -23,7 +23,7 @@ inner join billing.payments as payments
   and (payments.mod_person = 13 or payments.mod_person =14 or payments.mod_person = 94)
 order by pay_date desc`
 
-export const getPayments = async (date: string): Promise<any> => {
+export const getPayments = async (date: string): Promise<PaymentsResponseType[] | H3Error | string> => {
   const queryString = query(date)
   const billing = await lanbillingConnection
   if (!billing || billing instanceof H3Error)

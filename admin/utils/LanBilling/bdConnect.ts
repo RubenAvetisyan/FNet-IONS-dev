@@ -16,6 +16,7 @@ const dbConfig = config.get('dbConfig') as {
 }
 
 function connection(conn: Connection) {
+
   const currentConnection = async () => new Promise((resolve, reject) => {
     conn.connect((err, args: any[]) => {
       if (err)
@@ -23,6 +24,15 @@ function connection(conn: Connection) {
       resolve(args)
     })
   }) as Promise<any[]>
+
+  conn.on('error', async function (err) {
+    console.log('db error', err);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+      await currentConnection();                         // lost due to either server restart, or a
+    } else {                                      // connnection idle timeout (the wait_timeout
+      throw err;                                  // server variable configures this)
+    }
+  })
 
   return { conn, currentConnection }
 }

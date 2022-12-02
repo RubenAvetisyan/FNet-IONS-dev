@@ -1,11 +1,11 @@
 <script setup lang="ts">
 definePageMeta({
-  requiresAuth: true,
+  key: route => route.fullPath
 })
 </script>
 
 <template>
   <div>
-    Dashboard
+    <div>Dashboard</div>
   </div>
 </template>

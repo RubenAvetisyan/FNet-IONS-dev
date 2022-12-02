@@ -22,6 +22,18 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  name: {
+    type: String,
+    default: ''
+  },
+  icon: {
+    type: String,
+    default: ''
+  },
+  isMini: {
+    type: Boolean,
+    default: false
+  }
 })
 
 const { getRoutes } = useRouter()
@@ -33,7 +45,7 @@ const linkClass = ref(props.isMenuitem ? dClass : passive)
 
 const isVisible = ref(false)
 
-const hidden = computed(() => isVisible.value ? '' : 'hidden')
+const isHidden = computed(() => isVisible.value ? '' : 'hidden')
 const chevron = computed(() => isVisible.value ? 'i-mdi-chevron-up' : 'i-mdi-chevron-down')
 
 const expand = () => {
@@ -43,19 +55,43 @@ const expand = () => {
 
 <template>
   <li>
-    <nuxt-link
-      v-if="getRoutes().some(({ path }) => path === props.link || path === props.href) || isMenuitem"
-      :to="link || href" :active-class="active" :exact="exact" :external="external" :class="linkClass"
-      :role="isMenuitem ? 'menuitem' : 'link'" :aria-current="isMenuitem ? '' : 'page'" @click="expand"
-    >
+    <!-- Button -->
+    <div v-if="(isMenuitem)" h-12
+      class="flex-0 pr-4 hover:bg-[#5723ae] select-none items-center w-full text-base font-normal text-gray-900 hover:text-light transition duration-75 group dark:text-white"
+      :class="[
+                                (isVisible && 'flex inline-flex'),
+                                (!isVisible && 'flex items-center justify-center'),
+                              ]" @click="expand">
+      <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
+      <span v-show="!isMini" class="flex-1 text-left whitespace-nowrap max-w-prose">{{ name }}</span>
+      <div v-show="!isMini" :class="[chevron, 'flex-2 w-[2rem]']" />
+    </div>
+    
+    <!-- List -->
+    <ul v-if="$slots.list" v-show="isVisible" class="space-y-0" :class="[isHidden, 'w-full']">
+      <slot name="list" />
+    </ul>
+    
+    <!-- Link -->
+    <nuxt-link v-if="getRoutes().some(({ path }) => path === props.link || path === props.href) || isMenuitem"
+      :to="link || href" :active-class="active" :exact="exact" :external="external" :class="[linkClass, 'w-full']"
+      :role="isMenuitem ? 'menuitem' : 'link'" :aria-current="isMenuitem ? '' : 'page'">
       <div v-if="$slots.icon" class="inline-flex items-center">
         <slot name="icon" />
       </div>
-      <slot />
-
-      <ul v-if="$slots.list" v-show="isVisible" class="space-y-0" :class="[hidden]">
-        <slot name="list" />
-      </ul>
+    
+      <div v-if="(!isMenuitem && $slots.list)" h-12
+        class="flex-0 pr-4 hover:bg-[#5723ae] select-none items-center w-full text-base font-normal text-gray-900 hover:text-light transition duration-75 group dark:text-white"
+        :class="[
+                                  (isVisible && 'flex inline-flex'),
+                                  (!isVisible && 'flex items-center justify-center'),
+                                ]">
+        <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
+        <span v-show="!isMini" class="flex-1 text-left whitespace-nowrap max-w-prose">{{ name }}</span>
+      </div>
+    
+      <slot v-else></slot>
+    
     </nuxt-link>
     <div v-else>
       <div class="w-full text-blue font-bold">
@@ -63,8 +99,8 @@ const expand = () => {
       </div>
       <div class="text-sm font-italic">
         {{ (href || link) && !isMenuitem
-          ? `ADD PAGE AS NAME AS ${(href || link || '').replace(/\//g, '')}.vue`
-          : `ADD ROUTE TO <NuxtLink :to="${href || link}"></NuxtLink>`
+        ? `ADD PAGE AS NAME AS ${(href || link || '').replace(/\//g, '')}.vue`
+        : `ADD ROUTE TO <NuxtLink :to="${href || link}"></NuxtLink>`
         }}
       </div>
     </div>

@@ -47,7 +47,7 @@ on ps_title.id = ps.permset_id
 
 
 
-export default async function (user: string, password: string) {
+export default async function (user: string, password: string): Promise<AuthResult | H3Error> {
   const queryString = setQueryString(user, password)
   const erp = await erpConnection
 

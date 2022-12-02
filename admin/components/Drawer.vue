@@ -1,67 +1,55 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-const route = useRoute()
 
-const isVisible = ref(true)
-
-const width = computed(() => {
-  return isVisible.value ? 'w-86' : 'w-14'
-})
-
+const { getWidth, isminified } = storeToRefs(usedrawerStore())
 const { adminLeftPanel } = storeToRefs(useAdminStore())
+const { minify } = usedrawerStore()
 
-const btnFn = () => {
-  isVisible.value = !isVisible.value
-}
+const list = ref(null)
 
-const chevron = computed(() => isVisible.value ? 'i-mdi-chevron-up' : 'i-mdi-chevron-down')
+watch(adminLeftPanel.value, (panel) => { 
+  list.value = panel.list
+}, {
+  immediate: true,
+  deep: true,
+  flush: 'sync',
+})
 </script>
 
 <template>
   <ClientOnly>
+  <div
+    :class="`fixed h-screen top-0 z-100 ${getWidth} max-${getWidth} shadow-2xl shadow-[#5723ae] bg-light dark:bg-gray-800 relative duration-300 text-[#5723ae]`">
+    <Profile />
     <div
-      class="fixed h-screen z-100 shadow-2xl shadow-[#5723ae] bg-light dark:bg-gray-800 relative duration-300 text-[#5723ae]"
-      :class="[width]">
-      <div class="w-full">
-        <Profile :is-small="isVisible" />
-      </div>
-      <div
-        class="bg-light text-dark-purple rounded-full absolute -right-3 top-1 z-100 border shadow-sm shadow-light-700 hover:shadow-purple-700
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      cursor-pointer"
-        @click="btnFn">
-        <div class="i-mdi-arrow-left-thick text-[#5723ae] text-md transition duration-500"
-          :class="[(!isVisible && '-rotate-180')]" />
-      </div>
-
-      <div class="overflow-y-auto" :class="[(isVisible && 'p-4')]">
-        <ul v-if="adminLeftPanel.list.length" class="space-y-1">
-          <n-list-item v-for="item in adminLeftPanel.list" :key="item.name" :exact="item?.type === 'link'"
-            :link="item?.link || ''" :is-menuitem="item.type === 'button'">
-            <div
-              class="hover:bg-[#5723ae] select-none items-center w-full h-12 text-base font-normal text-gray-900 hover:text-light transition duration-75 group dark:text-white dark:hover:bg-gray-700"
-              :class="[
-                                              (isVisible && 'px-1 flex inline-flex rounded rounded-lg'),
-                                              (!isVisible && 'flex items-center justify-center'),
-                                            ]">
-              <div class="block float-left h-full" :class="[item?.icon || '']" />
-              <span v-show="isVisible" class="flex-1 ml-3 text-left whitespace-nowrap">{{ item.name }}</span>
-              <div v-if="item.type === 'button'" :class="chevron" />
-            </div>
-          
-            <template #list>
-              <n-list-item v-for="sub in item?.sub" :key="sub.name" :exact="sub?.type === 'link'"
-                :is-menuitem="sub?.type === 'button'" :link="sub?.link" :href="sub?.href"
-                class="flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 group hover:bg-gray-500 hover:text-light-700 dark:text-white dark:hover:bg-gray-700"
-                :class="[(isVisible && 'pl-9')]">
-                <div :class="sub?.icon || 'i-mdi-alphabetical'" />
-                <span v-show="isVisible">{{ sub.name }}</span>
-              </n-list-item>
-            </template>
-          </n-list-item>
-          </ul>
-          </div>
-          
-          <login-button v-if="route.path !== '/login'" class="absolute bottom-0 float-left"></login-button>
+      class="bg-light rounded-full absolute -right-3 top-1 z-100 border shadow-sm shadow-light-700 hover:shadow-purple-700 cursor-pointer"
+      @click="() => minify(isminified)">
+      <div class="i-mdi-arrow-left-thick text-[#5723ae] text-md transition duration-500"
+        :class="[!isminified && '-rotate-180']" />
+    </div>
+  
+    <div class="overflow-y-auto">
+      <ul v-if="list.length" class="space-y-0">
+        <n-list-item v-for="item in list" :key="item.name" :exact="item?.type === 'link'"
+          :link="item?.link || item?.href || ''" :is-menuitem="item.type === 'button'" :name="item?.name"
+          :icon="item?.icon" :is-mini="isminified">
+    
+          <template #list>
+            <n-list-item v-for="sub in item?.sub" :key="sub.name" :exact="sub?.type === 'link'"
+              :is-menuitem="sub?.type === 'button'" :link="sub?.link" :href="sub?.href"
+              class="flex items-center select-none w-full h-12 text-base font-normal text-gray-900 transition duration-75 group hover:bg-gray-500 hover:text-light-700 dark:text-white dark:hover:bg-gray-700"
+              :class="[!isminified ? 'pl-12' : 'mx-auto']">
+              <div class="flex block items-center w-full max-w-64">
+                <div :class="[sub?.icon,isminified ?'mx-auto': 'mr-2']" :key="(sub?.icon || sub.name)" />
+                <p v-show="!isminified" class="text-base max-w-prose antialiased text-left">{{ sub.name }}</p>
+              </div>
+            </n-list-item>
+          </template>
+        </n-list-item>
+      </ul>
+    </div>
+    
+    <login-button class="absolute bottom-0 left-0 right-0 w-full pb-5"></login-button>
     </div>
   </ClientOnly>
 </template>

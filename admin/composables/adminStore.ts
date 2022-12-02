@@ -13,7 +13,7 @@ export const useAdminStore = defineStore('adminStore', {
             {
               type: 'link',
               name: 'Lan-Billing',
-              icon: 'i-mdi-credit-card-refund',
+              icon: 'i-mdi-credit-card',
               link: '/'
             },
             {
@@ -29,7 +29,7 @@ export const useAdminStore = defineStore('adminStore', {
               link: '/'
             },
             {
-              type: 'log',
+              type: 'link',
               name: 'Համաժամացումների տեղեկագիր',
               icon: 'i-mdi-sync-circle',
               link: '/log'

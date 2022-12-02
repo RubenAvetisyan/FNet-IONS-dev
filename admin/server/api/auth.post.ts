@@ -10,8 +10,9 @@ export default defineEventHandler(async (event) => {
     const response = await login(user, password)
     console.log('response in server: ', response)
 
-    if (response instanceof H3Error)
-      throw response
+    if (response instanceof H3Error) {
+      return sendError(event, response)
+    }
 
     const rString = `[${Object.entries(response).map(arr => `[${arr.join(',')}]`).join(',')}]`
     console.log('rString: ', rString)
@@ -33,13 +34,16 @@ export default defineEventHandler(async (event) => {
   }
   catch (error: H3Error | any) {
     console.error('error: ', error)
-    const err = createError({
-      statusCode: 401,
-      statusMessage: 'Not found',
-      message: 'Ստուգեք մուտքգրվող դաշտերի լրացման ճշտությունը',
-    })
-    if (!(error instanceof H3Error))
+
+    if (!(error instanceof H3Error)) {
+      const err = createError({
+        statusCode: 401,
+        statusMessage: 'Not found',
+        message: 'Ստուգեք մուտքգրվող դաշտերի լրացման ճշտությունը',
+      })
       return err
+    }
+
     return sendError(event, error)
   }
 })

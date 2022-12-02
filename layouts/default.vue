@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 const { isAlert, alertMsg } = storeToRefs(useAlertStore())
 
 const route = useRoute()
+const { $isLoading } = useNuxtApp()
 
 const msgs = computed(() => {
   return alertMsg.value.split('.')
@@ -19,10 +20,11 @@ const links = ref([
 
 <template>
   <main class="py-20 text-center h-screen">
+    <Loading v-if="$isLoading" />
     <!-- <Header /> -->
     <navbar fixed top-0 mx-auto w-full justify-space-between>
       <template #extra>
-        <LoginButton v-if="route.path !== '/login'" />
+        <LoginButton v-if="route.path !== '/login'" class="rounded-lg" />
       </template>
 
       <template #listItems>
@@ -40,10 +42,11 @@ const links = ref([
     <div container h-full mx-auto mb-1 px-10>
       <slot />
     </div>
-    <div class="mt-5 mx-auto text-center opacity-25 text-sm">
+    <div class="mt-5 mx-auto text-center opacity-90 text-sm">
       <sticky-footer>
         <FooterM mt-1 />
       </sticky-footer>
     </div>
+    <ModalLoginForm />
   </main>
 </template>

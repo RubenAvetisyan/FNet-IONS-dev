@@ -2,7 +2,7 @@
 import type { Ref } from 'vue'
 
 definePageMeta({
-  requiresAuth: true,
+  key: route => route.fullPath
 })
 
 const { $autoSync, $autoSyncMessage, $isActive } = useNuxtApp()

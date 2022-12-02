@@ -44,7 +44,7 @@ declare global {
         Currency: string
         Checksum: string
         DtTime: Date | string
-        [key: string]: any
+        PaymentSystemName?: string
     }
 
     interface CredentialType {
