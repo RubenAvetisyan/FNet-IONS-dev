@@ -151,4 +151,18 @@ declare global {
     }
 
     type MapsType<T> = Map<string, T>
+
+    interface TelegramUser {
+        tg_id: number
+        first_name?: string
+        last_name?: string
+        username?: string
+        is_bot: boolean
+        is_active?: boolean
+        last_action?: string
+        created_at?: Date
+        bot_name?: string
+    }
+
+    type PropType<TObj, TProp extends keyof TObj> = TObj[TProp]
 }

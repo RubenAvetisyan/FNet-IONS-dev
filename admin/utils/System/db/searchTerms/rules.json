@@ -1,0 +1,20 @@
+{
+    "searchItems": {
+        "need-to-pay": {},
+        "connections-by-address-and-creationdate": [
+            {
+                "type": "date",
+                "name": "partialAddress",
+                "label": "date",
+                "vModel": {
+                    "type": "ref",
+                    "defaultValue": "2022-11-01"
+                },
+                "component": {
+                    "name": "FInput",
+                    "options": true
+                }
+            }
+        ]
+    }
+}

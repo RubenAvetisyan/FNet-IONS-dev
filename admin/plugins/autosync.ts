@@ -7,7 +7,7 @@ export default defineNuxtPlugin(() => {
   const { pause, resume, isActive } = useSetAutoSync(async () => {
     response = await $fetch('/api/payments')
     console.info('response: ', response)
-  }, 5000)
+  }, 5000, {})
 
   if (!intervalState)
     pause()

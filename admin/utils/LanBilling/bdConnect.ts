@@ -27,9 +27,11 @@ function connection(conn: Connection) {
 
   conn.on('error', async function (err) {
     console.log('db error', err);
+    console.log('reconnect to: ', conn.config.database);
     if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-      await currentConnection();                         // lost due to either server restart, or a
-    } else {                                      // connnection idle timeout (the wait_timeout
+      return await currentConnection();                         // lost due to either server restart, or a
+    } else {
+      await currentConnection()                                    // connnection idle timeout (the wait_timeout
       throw err;                                  // server variable configures this)
     }
   })

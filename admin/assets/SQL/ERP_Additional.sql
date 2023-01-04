@@ -1,0 +1,1 @@
+SELECT record_id, uuid, descr, cat_id, type_id, is_periodic FROM billing.service_cat;

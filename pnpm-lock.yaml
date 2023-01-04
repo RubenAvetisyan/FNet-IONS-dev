@@ -9,6 +9,7 @@ specifiers:
   '@nuxtjs/color-mode': ^3.1.8
   '@pinia/nuxt': 0.4.3
   '@prisma/client': ^4.6.1
+  '@telegraf/session': ^1.0.1
   '@type-challenges/utils': ^0.1.1
   '@types/md5': ^2.3.2
   '@types/mysql': ^2.15.21
@@ -20,6 +21,7 @@ specifiers:
   flowbite: ^1.5.4
   flowbite-vue: ^0.0.7
   fs-extra: ^10.1.0
+  lodash.drop: ^4.1.1
   md5: ^2.3.0
   mitt: ^3.0.0
   mysql: ^2.18.1
@@ -29,12 +31,15 @@ specifiers:
   telegraf: 4.11.2
   ts-enum-util: ^4.0.2
   typescript: 4.9.3
+  unocss-preset-scrollbar: ^0.2.1
   xml2js: ^0.4.23
 
 dependencies:
+  '@telegraf/session': 1.0.1
   date-fns: 2.29.3
   flowbite: 1.5.4
   flowbite-vue: 0.0.7
+  lodash.drop: 4.1.1
   md5: 2.3.0
   mysql: 2.18.1
   xml2js: 0.4.23
@@ -63,6 +68,7 @@ devDependencies:
   telegraf: 4.11.2
   ts-enum-util: 4.0.2
   typescript: 4.9.3
+  unocss-preset-scrollbar: 0.2.1
 
 packages:
 
@@ -1033,6 +1039,11 @@ packages:
       rollup: 2.79.1
     dev: true
 
+  /@telegraf/session/1.0.1:
+    resolution: {integrity: sha512-HK6CRBFObFCLeMW9fpluWsHM/untpLSnZM12gpU5QTZ12FH6HPRNUqTAvN0/vfW5jGbu4/GD0TJkk1SsQB9zDQ==}
+    engines: {node: '>=13.5'}
+    dev: false
+
   /@trysound/sax/0.2.0:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
@@ -1303,6 +1314,10 @@ packages:
       unconfig: 0.3.7
     dev: true
 
+  /@unocss/core/0.31.17:
+    resolution: {integrity: sha512-DJ3Uk2ePVXvV1qQmgoLK44aqB6f0s+naOEvouI97nzVXDZgxDQPBxIPB/L4vvE4U+gQxEiHwwE3gJ75iPqVzXw==}
+    dev: true
+
   /@unocss/core/0.46.5:
     resolution: {integrity: sha512-apPWISH2ASKySyp4vBAkEzr5XNJDv4mu26eQ4wvg2a32cHRokUsiHLWFNMDe7oJquivTAOHsXqbLQuR9ePKNSg==}
     dev: true
@@ -1351,6 +1366,12 @@ packages:
       ohmyfetch: 0.4.21
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@unocss/preset-mini/0.31.17:
+    resolution: {integrity: sha512-gVgMTOKLt3O1ym348QIBmR5sS9W0Ozkk5xelhH6e0VXcpg0dXDPDrl4hFErMy4x6IB86yyJG6Dz5JhcwQB13Ig==}
+    dependencies:
+      '@unocss/core': 0.31.17
     dev: true
 
   /@unocss/preset-mini/0.46.5:
@@ -4390,6 +4411,10 @@ packages:
     resolution: {integrity: sha512-dS2j+W26TQ7taQBGN8Lbbq04ssV3emRw4NY58WErlTO29pIqS0HmoT5aJ9+TUQ1N3G+JOZSji4eugsWwGp9yPA==}
     dev: true
 
+  /lodash.drop/4.1.1:
+    resolution: {integrity: sha512-1mWKAt1IKL7D0Mtmzr1/15ynBr2D2AfgFkdurZwG/B45qvj4xtT10LFfhoMYfb46aB0GWmfz8eBEz7ddZCKTXw==}
+    dev: false
+
   /lodash.flatten/4.4.0:
     resolution: {integrity: sha512-C5N2Z3DgnnKr0LOpv/hKCgKdb7ZZwafIrsesve6lmzvZIRZRGaZ/l6Q8+2W7NaT+ZwO3fFlSCzCzrDCFdJfZ4g==}
     dev: true
@@ -6585,6 +6610,14 @@ packages:
   /universalify/2.0.0:
     resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
     engines: {node: '>= 10.0.0'}
+    dev: true
+
+  /unocss-preset-scrollbar/0.2.1:
+    resolution: {integrity: sha512-7ubHdOaUwr7xBn1glPpICNNsM2SZGjvWK5uRPNiQYsrZ9YFjsCGHk9x5S2R8pTkuMDQeiaSa/UQbYhjC8Fra5g==}
+    peerDependencies:
+      unocss: '>= 0.31.13 < 1'
+    dependencies:
+      '@unocss/preset-mini': 0.31.17
     dev: true
 
   /unocss/0.46.5_@unocss+webpack@0.46.5:

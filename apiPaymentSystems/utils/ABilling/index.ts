@@ -3,7 +3,6 @@ import { AbillingErrorStatusCode } from './abilling-error-class'
 import { Credential } from './abilling-credential-class'
 import { Param } from './abilling-param-class'
 import { Parser } from './parser-class'
-import type { ABillingParam, CredentialType, DefaultCredentialKey } from '~~/nuxt'
 
 export class ABilling {
   billingCred = new Credential()

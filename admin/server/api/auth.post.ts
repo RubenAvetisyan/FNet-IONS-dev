@@ -2,6 +2,9 @@ import { H3Error, createError, sendError } from 'h3'
 import login from '../../utils/login'
 import { encrypt } from '@/utils/encryp-decrypt'
 import { upsertUser } from '@/server/api/db/user'
+import { Role } from '@prisma/client'
+import { $enum } from 'ts-enum-util'
+import transfrom from '../../utils/user/response-transfrom'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -27,7 +30,18 @@ export default defineEventHandler(async (event) => {
       sameSite: 'lax',
     })
 
-    const userCreated = await upsertUser(+response.id, token, base64Data)
+
+    const roleFromType = type.toUpperCase() as ('ADMIN' | 'USER')
+    const ROLE = $enum(Role).getValues().find(val => val === roleFromType)
+    console.log('ROLE: ', ROLE);
+    const userCreated = upsertUser({
+      userId: +response.id,
+      name: response.fullName,
+      email: response.email,
+      token,
+      base64Data,
+      role: ROLE
+    })
     console.log('user: ', userCreated)
 
     return response

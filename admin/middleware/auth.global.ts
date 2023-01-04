@@ -1,8 +1,11 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { user, setUser, isAdmin, isUser, isLogedin } = useAdminAuthStore()
+  const { user, setUser, isAdmin, isUser, isLogedin, setSessionId } = useAdminAuthStore()
 
   const token =
     useCookie('admin_token').value || useCookie('user_token').value
+
+  if (process.server)
+    setSessionId(token || '')
 
   console.log('token: ', token);
   if (token && !isLogedin) {
@@ -11,5 +14,4 @@ export default defineNuxtRouteMiddleware(async (to) => {
     if (!data.value) return
     setUser(data.value)
   }
-
 })

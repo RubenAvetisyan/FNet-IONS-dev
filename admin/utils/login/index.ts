@@ -23,7 +23,7 @@ on ps.group_id = gr.group_id
 inner join erp.user_permset_title as ps_title
 on ps_title.id = ps.permset_id
   where
-    (BINARY login = "${user}" or BINARY email = "user")
+    (BINARY login = "${user}" or BINARY email = "${user}")
   and BINARY password = "${password}"
   and erp.user.status = 0
   and gr.group_id <> 19

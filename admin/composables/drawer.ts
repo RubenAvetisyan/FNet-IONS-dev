@@ -1,19 +1,19 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
-export const usedrawerStore = defineStore('drawer', {
+export const useDrawerStore = defineStore('drawer', {
     state: () => ({
         width: 86,
         mini: false
     }),
 
     getters: {
-        getWidth: state => `w-${state.width}`,
+        getWidth: state => state.width,
         isminified: (state): boolean => state.mini
     },
 
     actions: {
-        minify(isMinified: boolean) {
-            this.mini = !isMinified
+        minify() {
+            this.mini = !this.mini
             this.setWidth()
             return this.isminified
         },
@@ -24,4 +24,4 @@ export const usedrawerStore = defineStore('drawer', {
 })
 
 if (import.meta.hot)
-    import.meta.hot.accept(acceptHMRUpdate(usedrawerStore, import.meta.hot))
+    import.meta.hot.accept(acceptHMRUpdate(useDrawerStore, import.meta.hot))

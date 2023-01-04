@@ -1,7 +1,7 @@
-export const useSetAutoSync = (cb: (option?: any) => void | Promise<any>, ms: number, option?: any) => {
-  const { pause, resume, isActive } = useIntervalFn(cb, ms, option)
+import { Fn, useIntervalFn, UseIntervalFnOptions } from '@vueuse/core'
 
-  return { pause, resume, isActive }
+export const useSetAutoSync = (cb: Fn, ms: number, option?: UseIntervalFnOptions) => {
+  return option ? useIntervalFn(cb, ms, option) : useIntervalFn(cb, ms)
 }
 
 export const useSetSyncStatusMessage = (isActive: boolean) =>

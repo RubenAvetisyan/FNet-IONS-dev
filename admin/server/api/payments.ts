@@ -1,12 +1,10 @@
 import md5 from 'md5'
-import { differenceInSeconds, format, max, startOfToday } from 'date-fns'
+import { differenceInSeconds, format, max, parseISO, startOfToday } from 'date-fns'
 import { H3Error } from 'h3'
-import { getPayments } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 
-const formatToSqlDate = (date: Date) => {
-  // console.log('date: ', date)
-  return format(date, 'yyyy-MM-dd HH:mm:SS', { weekStartsOn: 1 })
-}
+import { formatToSqlDate } from '@/utils/dateTime'
+
+
 // const formatToISO = (date: Date) => formatISO(date, { representation: 'complete', format: 'basic' })
 
 let initial = true
@@ -31,8 +29,26 @@ export default defineEventHandler(async () => {
     //   return []
     // }
 
+    const abresponse: any[] = await $fetch('/api/get-abilling-payments', {
+      method: 'POST',
+      body: {
+        date: '2022-11-11',
+      },
+    })
+
+    const lastContract = abresponse[0]['Contract ID']
+    console.log('lastContract: ', lastContract);
+
     console.info('get from LanBilling...')
-    const response = await getPayments(formatToSqlDate(maxDate))
+    console.log('maxDate.toString(): ', maxDate);
+    const response = await $fetch('/api/get-lanbilling-payments', {
+      method: 'POST',
+      body: {
+        date: maxDate,
+        lastContract,
+      },
+    })
+
 
     if (response instanceof H3Error || typeof response === 'string')
       return response
@@ -76,12 +92,13 @@ function responseHanler(response: PaymentsResponseType[]): ResponseHanlerParams 
   const mapedRes: MapedRes = []
 
   response.forEach(({ Amount, CONTRACT_ID, DtTime, TransactID, PaymentSystemName }) => {
-    const diff = differenceInSeconds(DtTime, maxDate)
+    const leftTime = typeof DtTime === 'string' ? parseISO(DtTime) : DtTime
+    const diff = differenceInSeconds(leftTime, maxDate)
     // console.log('diff: ', diff)
     const Checksum = md5(TOKEN + CONTRACT_ID + Amount + TransactID)
     if (!Number.isNaN(diff) && diff > 0 && CONTRACT_ID) {
-      const transformedData = transformData({ Amount, CONTRACT_ID, DtTime, TransactID, Checksum, PaymentSystemName })
-      dates.push(DtTime)
+      const transformedData = transformData({ Amount, CONTRACT_ID, DtTime: leftTime, TransactID, Checksum, PaymentSystemName })
+      dates.push(leftTime)
       mapedRes.push(transformedData)
     }
   })

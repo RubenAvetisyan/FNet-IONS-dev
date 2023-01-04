@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
   const { data } = await readBody(event)
+
   // data = { ...data, isTest: true }
   try {
     if (!data.Checksum) {

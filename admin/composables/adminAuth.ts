@@ -38,12 +38,16 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       if (!this.user) return false
       return !this.isAdmin
     },
-    userType: state => state.user?.type
+    userType: state => state.user?.type,
+    getSessionId: state => state.sessionId
   },
 
   actions: {
     setUser(user: any) {
       this.user = user
+    },
+    setSessionId(token: string) {
+      this.sessionId = token
     },
     async login<T extends Ref<string> | string>(username: T, password: T, setAlert?: (msg: string, type: 'warning' | 'success') => void) {
       const { $startLoading, $finishLoading } = useNuxtApp()
@@ -58,7 +62,7 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       $finishLoading()
 
       console.log('login user: ', data.value);
-      const user = data.value as User
+      const user = data.value as unknown as User
 
       if (!data.value) {
         return setAlert ? setAlert('Սխալ տվյալներ', 'warning') : true
@@ -69,6 +73,7 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       if (setAlert)
         setAlert('Դուք հաջողությամբ նույնականացվեցիք․․․', 'success')
 
+      console.log('user: ', user);
       this.user = user
 
       if (this.isAdmin) {

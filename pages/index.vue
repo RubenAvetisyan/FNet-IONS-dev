@@ -16,10 +16,10 @@ console.log('data: ', unref(data))
     </Suspense>
     <!-- <InputEntry /> -->
 
-    <div class="text-2xl font-500 text-[#5723ae] dark:text-light select-none">
+    <div font="500" text="2xl brand-primary dark:light-50" select="none">
       Ներքին գործառնությունների իրականացման համակարգ
     </div>
-    <div class="text-1xl text-dark dark:text-light select-none">
+    <div text="xl dark dark:light-700" select="none">
       համակարգ մուտք գործելու համար անհրաժետ է նույնականացվել
     </div>
   </div>

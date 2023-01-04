@@ -7,6 +7,6 @@
         </div>
       </template>
     </Suspense>
-    <!-- <Info /> -->
+    <Info />
   </div>
 </template>

@@ -25,7 +25,6 @@ export default function (response: AuthResponse[]): AuthResult | H3Error {
             result.groupId = [...result.groupId, ...userGroupIds]
         })
 
-        console.log('result: ', result);
         return result
     } catch (error: any) {
         return createError(error.masssage || 'error in transform fn')
