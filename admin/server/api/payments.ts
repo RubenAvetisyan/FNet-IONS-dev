@@ -40,7 +40,6 @@ export default defineEventHandler(async () => {
     console.log('lastContract: ', lastContract);
 
     console.info('get from LanBilling...')
-    console.log('maxDate.toString(): ', maxDate);
     const response = await $fetch('/api/get-lanbilling-payments', {
       method: 'POST',
       body: {
