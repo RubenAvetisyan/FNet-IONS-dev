@@ -20,7 +20,7 @@ export default defineConfig({
     'i-mdi-chart-box-outline',
     'i-mdi-database-sync',
     'i-mdi-view-dashboard-edit',
-    'mdi-account-plus'
+    'mdi-account-plus',
   ],
   shortcuts: [
     ['btn', 'px-4 py-1 rounded inline-block bg-teal-600 text-white cursor-pointer hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50'],
@@ -44,16 +44,16 @@ export default defineConfig({
     ['login-icon', 'i-mdi-login'],
     ['logout-icon', 'i-mdi-logout'],
     ['media', 'inline-flex items-center justify-center p-2 brand-media rounded-md shadow-lg'],
-    ['card', 'bg-white dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl']
+    ['card', 'bg-white dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl'],
   ],
   theme: {
     colors: {
-      'blueButton': '#2393f6', // class="text-blue-button"
-      'aspectBlueButton': '#0a87f5', // class="text-aspect-blue-button"
-      'brand': {
-        'primary': '#5723ae', //class="bg-brand-primary"
-        'media': '#6366F1'
-      }
+      blueButton: '#2393f6', // class="text-blue-button"
+      aspectBlueButton: '#0a87f5', // class="text-aspect-blue-button"
+      brand: {
+        primary: '#5723ae', // class="bg-brand-primary"
+        media: '#6366F1',
+      },
     },
   },
   presets: [

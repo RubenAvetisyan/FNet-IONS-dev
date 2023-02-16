@@ -1,5 +1,3 @@
-import type { MapsType } from '~~/nuxt'
-
 export class Config {
   private _configs = new Map()
   isTest: boolean

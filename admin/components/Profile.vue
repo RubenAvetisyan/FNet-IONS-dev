@@ -17,7 +17,6 @@ defineProps({
 
 const { isminified } = storeToRefs(useDrawerStore())
 const { user, getSessionId } = useAdminAuthStore()
-console.log('sessionId: ', getSessionId);
 
 const avatar = computed(() => {
   if (!user?.fullName)
@@ -37,7 +36,7 @@ const showMenu = () => {
   notMenu.value = !notMenu.value
 }
 
-const testLink = 'https://t.me/fnetIoSystemBot?start=' + encodeURIComponent(token.value) 
+const testLink = `https://t.me/fnetIoSystemBot?start=${encodeURIComponent(token.value)}`
 </script>
 
 <template>
@@ -45,8 +44,8 @@ const testLink = 'https://t.me/fnetIoSystemBot?start=' + encodeURIComponent(toke
     <div duration="500" transform="gpu" fade="transition" ease="in-out"
       :class="!isminified && 'absolute right-0 bottom-0 justify-end px-4 pt-4'">
       <div id="dropdownButton" cursor="pointer" inline="block" text="sm gray-500 dark:gray-400"
-        bg="hover:gray-100 dark:hover:gray-700" focus="ring-4 outline-none ring-gray-200 dark:ring-gray-700"
-        rounded="lg" p="1.5" @click.stop="showMenu">
+        bg="hover:gray-100 dark:hover:gray-700" focus="ring-4 outline-none ring-gray-200 dark:ring-gray-700" rounded="lg"
+        p="1.5" @click.stop="showMenu">
         <span sr="only">Open dropdown</span>
         <div w="6" h="6" class="i-mdi-dots-horizontal" />
       </div>
@@ -59,7 +58,7 @@ const testLink = 'https://t.me/fnetIoSystemBot?start=' + encodeURIComponent(toke
           </n-list-item>
           <li>
             <nuxt-link :to="testLink" btn-blue h-12>
-              <span class="i-mdi-telegram"></span>
+              <span class="i-mdi-telegram" />
             </nuxt-link>
           </li>
         </ul>
@@ -83,5 +82,5 @@ const testLink = 'https://t.me/fnetIoSystemBot?start=' + encodeURIComponent(toke
         <slot name="footer" />
       </div>
     </div>
-  </div>
+</div>
 </template>

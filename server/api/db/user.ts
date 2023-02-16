@@ -1,4 +1,4 @@
-import { Prisma, Role, User } from '@prisma/client'
+import type { Prisma, Role, User } from '@prisma/client'
 import { prisma } from './index'
 
 type Id = PropType<User, 'id'>

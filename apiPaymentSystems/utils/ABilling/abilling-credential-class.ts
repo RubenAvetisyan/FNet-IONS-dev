@@ -2,38 +2,34 @@ import type { CredentialType, DefaultCredentialKey } from '~~/nuxt'
 
 export class Credential {
   private readonly _credentials: Map<DefaultCredentialKey | string, CredentialType>
+
   constructor() {
     this._credentials = new Map([
       ['easyPay', {
         user: 'onediller',
-        passowrd: '2VzWASS9',
+        password: '2VzWASS9',
       }],
       ['idram', {
         user: 'twodiller',
-        passowrd: '2VzWASS9',
+        password: '2VzWASS9',
       }],
       ['tellcell', {
         user: 'threediller',
-        passowrd: '2VzWASS9',
+        password: '2VzWASS9',
       }],
     ])
   }
 
-  add(key: string, value: CredentialType) {
+  add(key: string, value: CredentialType): void {
     this._credentials.set(key, value)
   }
 
-  get credentials() {
+  get credentials(): Map<DefaultCredentialKey | string, CredentialType> {
     return this._credentials
   }
 
-  getCredKeyTypes() {
+  getCredKeyTypes(): { keys: IterableIterator<string> } {
     const cred = this._credentials.keys()
-    return class Cred {
-      keys: IterableIterator<string>
-      constructor() {
-        this.keys = cred
-      }
-    }
+    return { keys: cred }
   }
 }

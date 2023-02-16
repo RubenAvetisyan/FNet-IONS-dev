@@ -1,43 +1,38 @@
-import { readBody, H3Error, defineEventHandler } from 'h3';
 import path, { dirname } from 'node:path'
-import { getQuery } from '../../../admin/utils/LanBilling/query'
-import { lanbillingConnection, abillingConnection } from '../../../admin/utils/LanBilling/bdConnect'
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath } from 'node:url'
+import { H3Error, defineEventHandler, readBody } from 'h3'
 import { readSql } from '../../../utils/readSQLFile'
+import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 
 const dir = import.meta.url
 
-type ReplaceParams = {
-    from: string,
-    to: string
+interface ReplaceParams {
+  from: string
+  to: string
 }
 
-type Options = {
-    replace: ReplaceParams[]
+interface Options {
+  replace: ReplaceParams[]
 }
 
-type StatementBody = {
-    statementFileName: string,
-    options: Options | undefined
+interface StatementBody {
+  statementFileName: string
+  options: Options | undefined
 }
 
 export default defineEventHandler(async (event) => {
-    const { statementFileName, options = undefined }: StatementBody = await readBody(event)
+  const { statementFileName, options = undefined }: StatementBody = await readBody(event)
 
-    const filePath = path.resolve(dirname(fileURLToPath(dir)), '../../admin/assets/SQL/', statementFileName)
-    let query = readSql(filePath + '.sql')
+  const filePath = path.resolve(dirname(fileURLToPath(dir)), '../../admin/assets/SQL/', statementFileName)
+  let query = readSql(`${filePath}.sql`)
 
-    if (!!options) {
-        options.replace.forEach(item => {
-            query = query.replace(item.from, item.to)
-        })
-    }
+  if (options) {
+    options.replace.forEach((item) => {
+      query = query.replace(item.from, item.to)
+    })
+  }
 
-    const billing = await lanbillingConnection
+  const statement = await executeQuery(query, 'lanbilling')
 
-    if (billing instanceof H3Error) return billing
-
-    const statement = await getQuery(query, billing)
-
-    return statement
+  return statement
 })

@@ -1,6 +1,5 @@
 import { H3Error } from 'h3'
-import { erpConnection } from '../LanBilling/bdConnect'
-import { getQuery } from '../LanBilling/query'
+import { executeQuery } from '../sync/getPaymentsFromLanBilling'
 import transfrom from './response-transfrom'
 
 const setQueryString = (id: number) => {
@@ -47,12 +46,10 @@ const setQueryString = (id: number) => {
 
 export default async function (id: number) {
   const queryString = setQueryString(id)
-  const erp = await erpConnection
 
-  if (erp instanceof H3Error)
-    return erp
-
-  const reponse = await getQuery(queryString, erp) as AuthResponse[]
+  const reponse = await executeQuery<AuthResponse>(queryString, 'erp')
+  if (reponse instanceof H3Error)
+    return reponse
   const result = transfrom(reponse)
 
   return result

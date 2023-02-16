@@ -2,6 +2,11 @@ import type { Ref } from 'vue'
 
 export { };
 
+declare module 'lodash.intersection' {
+  function intersection<T>(...arrays: T[][]): T[];
+  export = intersection;
+}
+
 declare global {
 
     interface UseAutoSyncType {
@@ -32,9 +37,18 @@ declare global {
     type PaymentsResponseType = {
         Amount: number
         CONTRACT_ID: number
-        DtTime: Date
+        DtTime: Date | string
         TransactID: number
         PaymentSystemName: string
+    }
+
+    interface GetPaymentsResponse {
+        ['Transaction ID']: number,
+        ['Contract ID']: string,
+        [User]: string,
+        ['Payment sum']: number,
+        ['Transaction Type']: string,
+        ['Syncronization Date']: string
     }
 
     interface LanBilling {
@@ -165,4 +179,9 @@ declare global {
     }
 
     type PropType<TObj, TProp extends keyof TObj> = TObj[TProp]
+
+    interface QueryDate {
+        dateFrom: string
+        dateTo: string | undefined
+    }
 }

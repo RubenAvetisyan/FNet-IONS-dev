@@ -1,56 +1,58 @@
 import md5 from 'md5'
-import { differenceInSeconds, format, max, parseISO, startOfToday } from 'date-fns'
-import { H3Error } from 'h3'
+import { differenceInSeconds, format, max, parseISO, startOfToday, subDays } from 'date-fns'
+import { H3Error, createError } from 'h3'
+import async from 'async-es'
 
-import { formatToSqlDate } from '@/utils/dateTime'
-
+// import { formatToSqlDate } from '@/utils/dateTime'
 
 // const formatToISO = (date: Date) => formatISO(date, { representation: 'complete', format: 'basic' })
 
-let initial = true
 let maxDate: Date = startOfToday()
-console.info('maxDate: ', maxDate)
-console.info('DIFFERENCE: ', differenceInSeconds(Date.now(), maxDate))
+
+
 
 const TOKEN = '911f225af566b884fb3501132d65cb68'
 
 const makePayment = async (LanBillingItem: LanBilling): Promise<any> => {
-  return await $fetch('/api/syncWithABilling', {
-    method: 'POST',
-    body: {
-      data: LanBillingItem,
-    },
-  })
+  return new Promise(resolve => setTimeout(async () => {
+    const res = await $fetch('/api/syncWithABilling', {
+      method: 'POST',
+      body: {
+        data: LanBillingItem,
+      },
+    })
+
+    
+    resolve(res)
+  }, 1000))
 }
 export default defineEventHandler(async () => {
   try {
-    // if (initial) {
-    //   initial = false
-    //   return []
-    // }
-
     const abresponse: any[] = await $fetch('/api/get-abilling-payments', {
       method: 'POST',
       body: {
-        date: '2022-11-11',
+        date: {
+          dateFrom: format(subDays(new Date(), 10), 'yyyy-MM-dd'),
+          dateTo: '',
+        },
+        replacer: ['11, 12, 13', '12'],
       },
     })
 
     const lastContract = abresponse[0]['Contract ID']
-    console.log('lastContract: ', lastContract);
+    
 
-    console.info('get from LanBilling...')
-    const response = await $fetch('/api/get-lanbilling-payments', {
+    
+    const response: any[] | H3Error = await $fetch('/api/get-lanbilling-payments', {
       method: 'POST',
       body: {
-        date: maxDate,
+        date: format(maxDate, 'yyyy-MM-dd'),
         lastContract,
       },
     })
 
-
     if (response instanceof H3Error || typeof response === 'string')
-      return response
+      return createError(JSON.stringify(response))
 
     // const dates: (number | Date)[] = []
     // const mapedRes: LanBilling[] | any[] = []
@@ -58,7 +60,7 @@ export default defineEventHandler(async () => {
     const { dates, mapedRes } = responseHanler(response)
     maxDate = dates.length ? max(dates) : maxDate
 
-    // console.log('exit from LanBilling...')
+    // 
     // let result = mapedRes //.filter(s => s?.Inputs)
 
     // if (result.length) {
@@ -68,14 +70,30 @@ export default defineEventHandler(async () => {
     return mapedRes.length ? await PropmisifyResult(mapedRes) : []
   }
   catch (error) {
-    console.error('error: ', error)
+    
+    return []
   }
 })
 
 async function PropmisifyResult(result: LanBilling[]) {
-  return Promise.all(result.map(async (LanBillingItem) => {
-    return makePayment(LanBillingItem)
-  }))
+  try {
+    const res = await new Promise((resolve: (r?: any) => any, reject) => {
+      async.eachLimit(result, 8, async (item: any) => {
+        return await makePayment(item)
+      }, (err: TypeError, r?: any) => {
+        if (err)
+          reject(err)
+        else
+          resolve(r)
+      })
+    })
+    
+    return res
+  }
+  catch (error) {
+    
+    return []
+  }
 }
 
 type Dates = (number | Date)[]
@@ -87,35 +105,40 @@ interface ResponseHanlerParams {
 }
 
 function responseHanler(response: PaymentsResponseType[]): ResponseHanlerParams {
-  const dates: Dates = []
-  const mapedRes: MapedRes = []
+  try {
+    const dates: Dates = []
+    const mapedRes: MapedRes = []
 
-  response.forEach(({ Amount, CONTRACT_ID, DtTime, TransactID, PaymentSystemName }) => {
-    const leftTime = typeof DtTime === 'string' ? parseISO(DtTime) : DtTime
-    const diff = differenceInSeconds(leftTime, maxDate)
-    // console.log('diff: ', diff)
-    const Checksum = md5(TOKEN + CONTRACT_ID + Amount + TransactID)
-    if (!Number.isNaN(diff) && diff > 0 && CONTRACT_ID) {
-      const transformedData = transformData({ Amount, CONTRACT_ID, DtTime: leftTime, TransactID, Checksum, PaymentSystemName })
-      dates.push(leftTime)
-      mapedRes.push(transformedData)
-    }
-  })
+    response.forEach(({ Amount, CONTRACT_ID, DtTime, TransactID, PaymentSystemName }) => {
+      const leftTime = typeof DtTime === 'string' ? parseISO(DtTime) : DtTime
+      const diff = differenceInSeconds(leftTime, maxDate)
+      // 
+      const Checksum = md5(TOKEN + CONTRACT_ID + Amount + TransactID)
+      if (!Number.isNaN(diff) && diff > 0 && CONTRACT_ID) {
+        const transformedData = transformData({ Amount, CONTRACT_ID, DtTime: leftTime, TransactID, Checksum, PaymentSystemName })
+        dates.push(leftTime)
+        mapedRes.push(transformedData)
+      }
+    })
 
-  return { dates, mapedRes }
+    return { dates, mapedRes }
+  }
+  catch (error) {
+    
+    return { dates: [Date.now()], mapedRes: [] }
+  }
 }
 
 interface TransformData {
-  CONTRACT_ID: number;
-  Amount: number;
-  TransactID: number;
-  Checksum: string;
-  DtTime: Date;
-  PaymentSystemName: string;
+  CONTRACT_ID: number
+  Amount: number
+  TransactID: number
+  Checksum: string
+  DtTime: Date
+  PaymentSystemName: string
 }
 
-function transformData<T extends TransformData>
-  ({ CONTRACT_ID, Amount, TransactID, Checksum, DtTime, PaymentSystemName }: T): LanBilling {
+function transformData<T extends TransformData>({ CONTRACT_ID, Amount, TransactID, Checksum, DtTime, PaymentSystemName }: T): LanBilling {
   return {
     Inputs: [`${CONTRACT_ID || 0}`, '', '', ''],
     Amount: Amount || 0,

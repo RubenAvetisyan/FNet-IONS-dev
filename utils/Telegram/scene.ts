@@ -1,5 +1,6 @@
 import type { Update } from 'typegram'
-import { Context, Middleware, Scenes, Telegraf, Composer } from 'telegraf'
+import type { Context, Middleware, Telegraf } from 'telegraf'
+import { Composer, Scenes } from 'telegraf'
 import { errorLog } from '../log'
 
 const WizardScene = Scenes.WizardScene
@@ -44,7 +45,8 @@ class SceneRegistrer {
   setWizardScene(id: string, ...args: Array<Middleware<Context<Update>>>) {
     try {
       return new WizardScene(id, ...args)
-    } catch (error: any) {
+    }
+    catch (error: any) {
       errorLog(error?.message)
     }
   }
@@ -53,10 +55,10 @@ class SceneRegistrer {
     // if (callback instanceof this.scene.stepHandler)
 
     return async (ctx: any) => {
-      console.log('callback: ', callback);
+      console.log('callback: ', callback)
       callback && await callback(ctx)
-      ctx.reply(text instanceof Function ? text(ctx) : text); // enter your name
-      return ctx.wizard.next();
+      ctx.reply(text instanceof Function ? text(ctx) : text) // enter your name
+      return ctx.wizard.next()
     }
   }
 }

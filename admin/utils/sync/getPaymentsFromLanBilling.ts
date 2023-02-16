@@ -1,24 +1,26 @@
-import { switchCase } from '@babel/types'
 import { H3Error, createError } from 'h3'
-import { lanbillingConnection, abillingConnection } from '../LanBilling/bdConnect'
-import { getQuery } from '../LanBilling/query'
+import { makeQuery } from '../query'
+import { abilling, erp, lanbilling } from '~~/admin/utils/'
 
-export const getPayments = async (queryString: string, paymentSystem: string): Promise<PaymentsResponseType[] | H3Error | string> => {
-  const billing = await getBillingDb(paymentSystem)
-  if (!billing || billing instanceof H3Error)
-    return createError('the lanbillingConnection DB conncetion is faild')
-
-  return getQuery(queryString, billing)
+const db = {
+  lanbilling,
+  abilling,
+  erp,
 }
 
-function getBillingDb(paymentSystem: string) {
-  switch (paymentSystem.toLowerCase()) {
-    case 'lanbilling':
-      return lanbillingConnection
-    case 'abilling':
-      return abillingConnection
+export const executeQuery = async <T>(queryString: string, paymentSystem: string): Promise<
+  | T[]
+  | H3Error
+> => {
+  try {
+    const dbInstance = db[paymentSystem as 'lanbilling'] // await getBillingDb(paymentSystem)
+    if (!dbInstance || dbInstance instanceof H3Error)
+      return createError(`the ${paymentSystem} DB conncetion is faild`)
 
-    default:
-      break;
+    const result = makeQuery<T>(queryString, dbInstance.connection)
+    return result
+  }
+  catch (error) {
+    return createError(JSON.stringify(error))
   }
 }

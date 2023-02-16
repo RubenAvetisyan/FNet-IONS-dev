@@ -1,5 +1,6 @@
-import { log } from './utils/log';
 import chalk from 'chalk'
+import * as flowbite from 'flowbite'
+import { log } from './utils/log'
 import { prisma } from './server/api/db'
 
 process.on('SIGINT', async (signal) => {
@@ -30,10 +31,11 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@unocss/nuxt',
     '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/color-mode',
     ['./modules', {
-      botToken: process.env.NUXT_BOT_TOKEN || ''
-    }]
+      botToken: process.env.NUXT_BOT_TOKEN || '',
+    }],
   ],
   experimental: {
     reactivityTransform: true,
@@ -77,8 +79,8 @@ export default defineNuxtConfig({
       database: process.env.NUXT_DB_ERP_NAME,
     },
     telegram: {
-      botToken: ''
-    }
+      botToken: '',
+    },
   },
 
   hooks: {
@@ -91,21 +93,22 @@ export default defineNuxtConfig({
 
         process.exit(1)
       }
-    }
+    },
   },
 
   nitro: {
-    preset: 'node-cluster'
+    preset: 'node-cluster',
   },
 
   // vite: {
   //   server: {
   //     hmr: {
-  //       protocol: "wss",
-  //       clientPort: 443,
+  //       host: 'localhost',
+  //       protocol: "ws",
+  //       clientPort: 80,
   //       path: "hmr/",
   //     },
-  //     https: true
+  //     https: false
   //   },
   // }
 

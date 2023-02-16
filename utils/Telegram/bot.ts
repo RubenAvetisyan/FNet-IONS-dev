@@ -1,49 +1,49 @@
 import type { Message, Update } from 'typegram'
 import { $fetch } from 'ofetch'
-import { errorLog, dividerLog, log } from '../../utils/log';
-import { Context, Markup, Middleware, NarrowedContext, Telegraf, session } from 'telegraf'
+import type { Context, Middleware, NarrowedContext } from 'telegraf'
+import { Markup, Telegraf, session } from 'telegraf'
+import { dividerLog, errorLog, log } from '../../utils/log'
 import { getUserFormTelegramBot, upsertTelegramBotUser } from '../../server/api/db/telegram-user'
-import { SceneRegistrer } from './scene';
-import { normalizeMessage } from './helpers';
+import { SceneRegistrer } from './scene'
+import { normalizeMessage } from './helpers'
 
 const commandArgs = () => (ctx: any, next: Function) => {
-  console.log('ctx: ', ctx);
+  console.log('ctx: ', ctx)
   if (ctx.updateType === 'message' && ctx.updateSubType === 'text') {
-    const text = ctx.update.message.text.toLowerCase();
-    console.log('text: ', text);
+    const text = ctx.update.message.text.toLowerCase()
+    console.log('text: ', text)
     if (text.startsWith('/')) {
-      const match = text.match(/^\/([^\s]+)\s?(.+)?/);
-      let args = [];
-      let command;
+      const match = text.match(/^\/([^\s]+)\s?(.+)?/)
+      let args = []
+      let command
       if (match !== null) {
-        if (match[1]) {
-          command = match[1];
-        }
-        if (match[2]) {
-          args = match[2].split(' ');
-        }
+        if (match[1])
+          command = match[1]
+
+        if (match[2])
+          args = match[2].split(' ')
       }
 
       ctx.state.command = {
         raw: text,
         command,
         args,
-      };
+      }
     }
   }
-  return next();
-};
+  return next()
+}
 
 type ContextBody = {
-  message: Update.New & Update.NonChannel & Message.TextMessage;
+  message: Update.New & Update.NonChannel & Message.TextMessage
   update_id: number
 } & Omit<Context<Update>, keyof Context<Update>>
 
 type BotOption = Partial<Telegraf.Options<Context<Update>>> | undefined
 
 type Callback = Middleware<NarrowedContext<Context<Update>, {
-  message: Update.New & Update.NonChannel & Message.TextMessage;
-  update_id: number;
+  message: Update.New & Update.NonChannel & Message.TextMessage
+  update_id: number
 }>>
 
 export class Bot extends SceneRegistrer {
@@ -67,9 +67,9 @@ export class Bot extends SceneRegistrer {
     // })
     this.bot.use(Telegraf.log())
     this.bot.command('start', (ctx) => {
-      console.log('command: ', ctx.state.command); // command object
+      console.log('command: ', ctx.state.command) // command object
     })
-    this.bot.hears('/auth', ctx => {
+    this.bot.hears('/auth', (ctx) => {
       console.log('ctx: ', ctx)
     })
 
@@ -99,7 +99,7 @@ export class Bot extends SceneRegistrer {
     })
   }
 
-  async sendMessage(tg_id: number, message: string, isHTML: boolean = true) {
+  async sendMessage(tg_id: number, message: string, isHTML = true) {
     try {
       await this.bot.telegram.sendMessage(
         tg_id,
@@ -107,7 +107,7 @@ export class Bot extends SceneRegistrer {
         {
           parse_mode: 'MarkdownV2',
           disable_web_page_preview: isHTML,
-        }
+        },
       )
     }
     catch (error) {
@@ -118,7 +118,8 @@ export class Bot extends SceneRegistrer {
   onText() {
     this.bot.on('text', async (ctx) => {
       // const user = await this.getOrCreateUser(ctx)
-      if (ctx.message.text.includes('Hi')) ctx.reply('Hi ' + ctx.message.from['first_name'])
+      if (ctx.message.text.includes('Hi'))
+        ctx.reply(`Hi ${ctx.message.from.first_name}`)
     })
   }
 
@@ -184,7 +185,8 @@ export class Bot extends SceneRegistrer {
   stop(signal: string) {
     try {
       this.bot.stop(signal)
-    } catch (error) {
+    }
+    catch (error) {
       errorLog(error)
     }
   }

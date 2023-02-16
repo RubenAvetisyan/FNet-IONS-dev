@@ -1,29 +1,29 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { Ref } from 'vue'
+import type { Ref } from 'vue'
 
 type LinksKeys = string[]
-type LinksValue = {
-  href: string;
-  link: string;
-  isMenuitem: boolean;
-  exact: boolean;
-  external: boolean;
-  name: string;
-  icon: string;
-  isMini: boolean;
+interface LinksValue {
+  href: string
+  link: string
+  isMenuitem: boolean
+  exact: boolean
+  external: boolean
+  name: string
+  icon: string
+  isMini: boolean
   btn: string[]
 }
 type Links = Ref<Map<string, LinksValue>>
 
-type LinkItemBtnsValue = {
-  parentKey: string;
-  isVisible: boolean;
+interface LinkItemBtnsValue {
+  parentKey: string
+  isVisible: boolean
 }
 type LinkItemBtns = Ref<Map<string, LinkItemBtnsValue>>
 
 interface StateParams {
-  linksKeys: LinksKeys;
-  links: Links;
+  linksKeys: LinksKeys
+  links: Links
   linkItemBtns: LinkItemBtns
 }
 
@@ -31,7 +31,7 @@ export const useSysStore = defineStore('sysStore', {
   state: (): StateParams => ({
     linksKeys: [],
     links: ref(new Map<string, LinksValue>()),
-    linkItemBtns: ref(new Map<string, LinkItemBtnsValue>())
+    linkItemBtns: ref(new Map<string, LinkItemBtnsValue>()),
   }),
 
   getters: {
@@ -43,9 +43,9 @@ export const useSysStore = defineStore('sysStore', {
         // console.log('storeKey: ', storeKey);
 
         // console.log('entries: ', [...this.linkItemBtns.values()].find(({ parentKey }) => parentKey.includes(storeKey)))
-        return  //.find((_, v) => v.parentKey === storeKey)
+        // .find((_, v) => v.parentKey === storeKey)
       }
-    }
+    },
   },
 
   actions: {
@@ -59,7 +59,7 @@ export const useSysStore = defineStore('sysStore', {
         name: '',
         icon: '',
         isMini: false,
-        btn: []
+        btn: [],
       }
 
       const key = setKey()
@@ -71,12 +71,13 @@ export const useSysStore = defineStore('sysStore', {
       return key
     },
     setListItemBtn(parentKey: string) {
-      if (!this.links.has(parentKey)) return createError('parentKey is invalid')
+      if (!this.links.has(parentKey))
+        return createError('parentKey is invalid')
 
       const key = setKey()
       this.linkItemBtns.set(key, {
         parentKey,
-        isVisible: false
+        isVisible: false,
       })
 
       this.links.get(parentKey)?.btn.push(key)
@@ -86,22 +87,22 @@ export const useSysStore = defineStore('sysStore', {
     toggleVisiblity(key: string, parentKey?: string) {
       // const links = parentKey ? this.links.get(parentKey) : null
       const btn = this.linkItemBtns.get(key)
-      if (!btn) return
+      if (!btn)
+        return
 
       return btn.isVisible = !btn.isVisible
     },
-  }
+  },
 })
 
 if (import.meta.hot)
   import.meta.hot.accept(acceptHMRUpdate(useSysStore, import.meta.hot))
 
 function setKey(list?: string | number | (string | number)[]): string {
-  if (list === undefined) {
+  if (list === undefined)
     list = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('')
-  } else if (typeof list === 'number' || typeof list === 'string') {
-    list = ('' + list).split('')
-  }
+  else if (typeof list === 'number' || typeof list === 'string')
+    list = (`${list}`).split('')
 
   return list.map((_, i, arr) => arr[Math.floor(Math.random() * arr.length)]).join('')
 }

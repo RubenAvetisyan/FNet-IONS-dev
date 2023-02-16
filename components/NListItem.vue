@@ -24,16 +24,16 @@ const props = defineProps({
   },
   name: {
     type: String,
-    default: ''
+    default: '',
   },
   icon: {
     type: String,
-    default: ''
+    default: '',
   },
   isMini: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const { getLinks, getListItemBtnVisiblity } = storeToRefs(useSysStore())
@@ -56,23 +56,29 @@ const chevron = computed(() => isVisible ? 'i-mdi-chevron-up' : 'i-mdi-chevron-d
 
 <template>
   <li :key="storeKey" relative>
-    <tooltip>{{ name }}</tooltip>
+    <tooltip invisible class="group/tooltip">
+      {{ name }}
+    </tooltip>
     <!-- Button -->
-    <list-item-btn v-if="(isMenuitem)" :links-key="storeKey" :class="[isVisible && ' pr-4',]">
+    <list-item-btn v-if="(isMenuitem)" :links-key="storeKey" :class="[isVisible && ' pr-4']">
       <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
       <span v-show="!isMini" flex="1" text="left" whitespace="nowrap" max="w-prose">{{ name }}</span>
       <div v-show="!isMini" flex="2" w="[2rem]" :class="[chevron]" />
     </list-item-btn>
     <!-- List -->
-    <ul v-if="$slots.list" role="list" empty="hidden invisible" space="y-0" bg="light-900 dark:gray-700" w="full"
-      :hidden="isVisible">
+    <ul
+      v-if="$slots.list" role="list" empty="hidden invisible" space="y-0" bg="light-900 dark:gray-700" w="full"
+      :hidden="isVisible"
+    >
       <slot name="list" />
     </ul>
-  
+
     <!-- Link -->
-    <nuxt-link v-if="getRoutes().some(({ path }) => path === props.link || path === props.href) || isMenuitem"
-      :to="link || href" :active-class="active" exact :external="external" :class="[linkClass, 'w-full']"
-      :role="isMenuitem ? 'menuitem' : 'link'" :aria-current="isMenuitem ? '' : 'page'">
+    <nuxt-link
+      v-if="getRoutes().some(({ path }) => path === props.link || path === props.href) || isMenuitem"
+      :to="link || href" :active-class="active" exact :external="external" class="w-full" :class="[linkClass]"
+      :role="isMenuitem ? 'menuitem' : 'link'" :aria-current="isMenuitem ? '' : 'page'"
+    >
       <div v-if="$slots.icon" inline="flex" items="center">
         <slot name="icon" />
       </div>
@@ -80,8 +86,7 @@ const chevron = computed(() => isVisible ? 'i-mdi-chevron-up' : 'i-mdi-chevron-d
         <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
         <span v-show="!isMini" flex="1" text="left" whitespace="nowrap" max="w-prose">{{ name }}</span>
       </list-item-btn>
-      <slot v-else></slot>
-  
+      <slot v-else />
     </nuxt-link>
     <div v-else>
       <div w="full" font="bold" text="blue">
@@ -89,8 +94,8 @@ const chevron = computed(() => isVisible ? 'i-mdi-chevron-up' : 'i-mdi-chevron-d
       </div>
       <div font="italic" text="sm">
         {{ (href || link) && !isMenuitem
-        ? `ADD PAGE AS NAME AS ${(href || link || '').replace(/\//g, '')}.vue`
-        : `ADD ROUTE TO <NuxtLink :to="${href || link}"></NuxtLink>`
+          ? `ADD PAGE AS NAME AS ${(href || link || '').replace(/\//g, '')}.vue`
+          : `ADD ROUTE TO <NuxtLink :to="${href || link}"></NuxtLink>`
         }}
       </div>
     </div>

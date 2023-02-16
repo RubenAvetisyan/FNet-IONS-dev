@@ -19,8 +19,8 @@ export default defineNuxtConfig({
       {
         path: '@/admin/components',
         extensions: ['vue'],
-        prefix: 'admin'
-      }
-    ]
-  }
+        prefix: 'admin',
+      },
+    ],
+  },
 })

@@ -13,7 +13,7 @@ inner join billing.contract_payment_types as payment_types
 on ct.id = cp.cid
 	and payment_types.id = cp.pt
 where
-	lm >= 'fromDate' and lm <= 'toDate'
+	lm >= 'dateFrom' and lm <= 'toDate'
 	-- and cp.pt in (8)
     and ct.title in (
 		conractArray

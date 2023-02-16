@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
   const { data } = await readBody(event)
+  console.log('data: ', data)
 
   // data = { ...data, isTest: true }
   try {
@@ -19,6 +20,9 @@ export default defineEventHandler(async (event) => {
         break
       case 'Idram':
         URI = 'http://localhost:3000/idram/?action=payment'
+        break
+      case 'FnetPay':
+        URI = 'http://localhost:3000/fney-pay/?action=payment'
         break
       default:
         console.error(`Class for "${data.PaymentSystemName}" is unrealized`)

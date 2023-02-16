@@ -1,5 +1,12 @@
 <script setup>
 import { storeToRefs } from 'pinia'
+import { initModals } from 'flowbite'
+
+// initialize components based on data attribute selectors
+onMounted(() => {
+  initModals()
+})
+
 const { isAlert, alertMsg } = storeToRefs(useAlertStore())
 
 const route = useRoute()
@@ -12,9 +19,9 @@ const msgs = computed(() => {
 const links = ref([
   { name: 'Home', link: '/' },
   { name: 'Payment API', link: '/payment' },
-  { name: 'Services', link: '/services' },
-  { name: 'Pricing', link: '/price' },
-  { name: 'Contact', link: '/contact' },
+  { name: 'Services', link: '/user' },
+  { name: 'Pricing', link: '/user' },
+  { name: 'Contact', link: '/user' },
 ])
 </script>
 
@@ -47,6 +54,8 @@ const links = ref([
         <FooterM mt-1 />
       </sticky-footer>
     </div>
-    <ModalLoginForm />
+    <teleport to="body">
+      <ModalLoginForm />
+    </teleport>
   </main>
 </template>

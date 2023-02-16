@@ -1,29 +1,20 @@
-import { getPayments } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
-import { formatToSqlDate } from '@/utils/dateTime'
 import { defineEventHandler, readBody } from 'h3'
+import { endOfDay, parseISO, startOfDay } from 'date-fns'
+import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
+import { formatToSqlDate } from '@/utils/dateTime'
+import { readSql } from '~~/utils/readSQLFile'
 
-const query = (date: string) => `select
-	cp.id as 'Transaction ID',
-	ct.title as 'Contract ID',
-    ct.comment as 'User',
-    cp.summa as 'Payment sum',
-    cp.comment as 'Transaction Type',
-    cp.lm as 'Syncronization Date'
-FROM billing.contract as ct
-inner join billing.contract_payment as cp
-on ct.id = cp.cid
-where
-	lm > "${formatToSqlDate(date)}"
-	and (cp.pt = 11
-	or cp.pt = 12
-	or cp.pt = 13
-	)
-order by cp.lm desc`
+const query = (date: QueryDate) => {
+  const dateFrom = formatToSqlDate(startOfDay(parseISO(date.dateFrom))) as string
+  const dateTo = date.dateTo ? formatToSqlDate(endOfDay(parseISO(date.dateTo))) as string : 'now()'
+  const qString = readSql('../../admin/assets/SQL/ABilling/received_payments.sql')
+  return qString.replace('dateFrom', dateFrom).replace('dateTo', dateTo)
+}
 
 export default defineEventHandler(async (event) => {
-  const { date } = await readBody(event)
-  const queryString = query(date)
-  const response = await getPayments(queryString, 'abilling')
+  const { date, replacer } = await readBody<{ date: QueryDate; replacer?: [string, string] }>(event)
+  const queryString = replacer ? query(date).replace(...replacer) : query(date)
+  const response = await executeQuery(queryString, 'abilling')
 
   return response
 })

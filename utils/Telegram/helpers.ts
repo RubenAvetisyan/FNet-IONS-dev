@@ -14,5 +14,5 @@ export const normalizeMessage = (msg: string) => {
 }
 
 export default {
-  normalizeMessage
+  normalizeMessage,
 }
