@@ -40,10 +40,10 @@ const getErpCustomers = async (querySrc: string, contractNumbers: string[]): Pro
  */
 const getResponse = async (customers: Customer[]): Promise<Customer[]> => {
   const response = Promise.all(customers.map(({ phone, contract, ...rest }) => {
-    const updatedPhone = intersection<string>(updatedPhone.replace(/\s/gim, '').split(',')).filter(s => s).join(', ')
+    const updatedPhone = intersection<string>(phone.replace(/\s/gim, '').split(',')).filter(s => s).join(', ')
     const fullObj = customerMap.get(contract) || {}
 
-    return { contract, ...rest, ..fullObj, phone: updatedPhone }
+    return { contract, ...rest, ...fullObj, phone: updatedPhone }
   }))
   return response
 }

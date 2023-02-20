@@ -1,8 +1,8 @@
-import mysql from 'mysql'
+import {createPool, Pool, PoolConfig} from 'mysql'
 import { config } from '~~/Config/index'
 
 const dbConfig = config.get('dbConfig') as {
-  [key: 'lanbilling' | 'abilling' | 'erp' | string]: mysql.PoolConfig
+  [key: 'lanbilling' | 'abilling' | 'erp' | string]: PoolConfig
 }
 
 export interface QueryOptions {
@@ -10,17 +10,27 @@ export interface QueryOptions {
 }
 
 class MySQLConnection {
-  private pool: mysql.Pool
-  public config: mysql.PoolConfig
+  private pool: Pool
+  public config: PoolConfig
 
   constructor(dbName: string, public connectionLimit?: number) {
     this.config = dbConfig[dbName]
     this.connectionLimit = connectionLimit || 10
-    this.pool = mysql.createPool(this.config)
+    this.pool = this.createPool()
+    this.getConnectionThreadId().then(res => console.log('connected as id ' + res))
   }
 
-  createPool(): void {
-    this.pool = mysql.createPool(this.config)
+  createPool(): Pool {
+    return createPool(this.config)
+  }
+
+  async getConnectionThreadId(){    
+    return new Promise((resolve, reject) => {
+      this.pool.getConnection((err, connection) => {
+        if(err) reject(err)
+        resolve(connection.threadId)
+     })
+    })
   }
 
   executeQuery<T>(query: string, options?: QueryOptions): Promise<T> {
