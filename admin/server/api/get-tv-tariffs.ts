@@ -1,7 +1,7 @@
 import { defineEventHandler, readBody } from 'h3'
 import intersection from 'lodash.intersection'
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
-import { readSql } from '~~/utils/readSQLFile'
+import { readSqlFile } from '~~/utils/readSQLFile'
 
 const passiveCustomersQuerySrc = '../../admin/assets/SQL/ABilling/get_TV_tarrif_customers.sql'
 const erpCustomersQuerySrc = '../../admin/assets/SQL/ERP/ERP_Customers.sql'
@@ -30,7 +30,7 @@ const getContractNumbers = async (customers: Customer[]): Promise<string[]> => {
  * Returns an array of ERP customers that match the given contract numbers.
  */
 const getErpCustomers = async (querySrc: string, contractNumbers: string[]): Promise<Customer[]> => {
-  const queryString = readSql(querySrc).replace('contractNumbers', contractNumbers.join(','))
+  const queryString = readSqlFile(querySrc).replace('contractNumbers', contractNumbers.join(','))
   const customers = await executeQuery(queryString, 'erp')
   return customers as Customer[]
 }
@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
   try {
     customerMap.clear()
   // const { date, replacer } = await readBody(event)
-  const queryString = readSql(passiveCustomersQuerySrc)
+    const queryString = readSqlFile(passiveCustomersQuerySrc)
   const customers = await executeQuery(queryString, 'abilling') as Customer[]
   const contractNumbers = await getContractNumbers(customers)
   const erpCustomers = await getErpCustomers(erpCustomersQuerySrc, contractNumbers)

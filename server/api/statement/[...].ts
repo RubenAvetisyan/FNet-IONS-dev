@@ -1,7 +1,7 @@
 import path, { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { H3Error, defineEventHandler, readBody } from 'h3'
-import { readSql } from '../../../utils/readSQLFile'
+import { readSqlFile } from '../../../utils/readSQLFile'
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 
 const dir = import.meta.url
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const { statementFileName, options = undefined }: StatementBody = await readBody(event)
 
   const filePath = path.resolve(dirname(fileURLToPath(dir)), '../../admin/assets/SQL/', statementFileName)
-  let query = readSql(`${filePath}.sql`)
+  let query = readSqlFile(`${filePath}.sql`)
 
   if (options) {
     options.replace.forEach((item) => {

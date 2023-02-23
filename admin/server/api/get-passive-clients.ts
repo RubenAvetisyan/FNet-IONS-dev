@@ -1,7 +1,7 @@
 import { defineEventHandler } from 'h3'
 import intersection from 'lodash.intersection'
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
-import { readSql } from '~~/utils/readSQLFile'
+import { readSqlFile } from '~~/utils/readSQLFile'
 
 const passiveCustomersQuerySrc = '../../admin/assets/SQL/ABilling/get_passive_customers.sql'
 const erpCustomersQuerySrc = '../../admin/assets/SQL/ERP/ERP_Customers.sql'
@@ -18,7 +18,7 @@ const getContractNumbers = async (passiveCustomers: {}[]) => Promise.all(passive
 async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: {}[]): Promise<{ [key: string]: number | string }[]> {
   const contractNumbers = await getContractNumbers(passiveCustomers)
 
-  let queryStringErpCustomers = readSql(erpCustomersQuerySrc)
+  let queryStringErpCustomers = readSqlFile(erpCustomersQuerySrc)
   queryStringErpCustomers = queryStringErpCustomers.replace('contractNumbers', contractNumbers.join(','))
   return executeQuery(queryStringErpCustomers, 'erp') as any
 }
@@ -39,7 +39,7 @@ const getResponse = async (erpCustomers: {}[]) => {
 
 export default defineEventHandler(async () => {
   map.clear()
-  const queryStringPassiveCustomers = readSql(passiveCustomersQuerySrc)
+  const queryStringPassiveCustomers = readSqlFile(passiveCustomersQuerySrc)
   const passiveCustomers = await executeQuery(queryStringPassiveCustomers, 'abilling') as any
 
   const erpCustomers = await getERPCustomers(erpCustomersQuerySrc, passiveCustomers)
