@@ -53,7 +53,7 @@ export const useAdminStore = defineStore('adminStore', {
           icon: 'i-mdi-account-plus',
           direct: true,
         },
-      ],
+      ] as AdminStoreList[],
     },
     log: [] as GetPaymentsResponse[],
     logStartDate: '' || defaultStartDate,

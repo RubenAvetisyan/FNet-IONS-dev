@@ -1,3 +1,7 @@
+<script setup>
+definePageMeta({ auth: false })
+</script>
+
 <template>
   <div class="flex w-full">
     <Suspense>

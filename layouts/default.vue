@@ -12,6 +12,8 @@ const { isAlert, alertMsg } = storeToRefs(useAlertStore())
 const route = useRoute()
 const { $isLoading } = useNuxtApp()
 
+const isLoading = computed(() => $isLoading.value)
+
 const msgs = computed(() => {
   return alertMsg.value.split('.')
 })
@@ -27,7 +29,7 @@ const links = ref([
 
 <template>
   <main class="py-20 text-center h-screen">
-    <Loading v-if="$isLoading" />
+        <Loading v-show="isLoading" />
     <!-- <Header /> -->
     <navbar fixed top-0 mx-auto w-full justify-space-between>
       <template #extra>

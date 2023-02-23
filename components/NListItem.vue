@@ -34,6 +34,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  tooltipPlacement: {
+    type: String,
+    default: 'right'
+  }
 })
 
 const { getLinks, getListItemBtnVisiblity } = storeToRefs(useSysStore())
@@ -51,42 +55,44 @@ const passive = 'block pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-
 const dClass = 'block text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white'
 const linkClass = ref(props.isMenuitem ? dClass : passive)
 
+const tooltipId = (key) => `${key.replaceAll(' ', '-')}-tooltip`
 const chevron = computed(() => isVisible ? 'i-mdi-chevron-up' : 'i-mdi-chevron-down')
 </script>
 
 <template>
-  <li :key="storeKey" relative>
-    <tooltip invisible class="group/tooltip">
-      {{ name }}
-    </tooltip>
-    <!-- Button -->
-    <list-item-btn v-if="(isMenuitem)" :links-key="storeKey" :class="[isVisible && ' pr-4']">
-      <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
-      <span v-show="!isMini" flex="1" text="left" whitespace="nowrap" max="w-prose">{{ name }}</span>
-      <div v-show="!isMini" flex="2" w="[2rem]" :class="[chevron]" />
-    </list-item-btn>
-    <!-- List -->
-    <ul
-      v-if="$slots.list" role="list" empty="hidden invisible" space="y-0" bg="light-900 dark:gray-700" w="full"
-      :hidden="isVisible"
-    >
-      <slot name="list" />
-    </ul>
+      <li :key="storeKey" :links-key="storeKey" :data-tooltip-target="tooltipId(name)"
+        :data-tooltip-placement="tooltipPlacement || 'right'" relative>
+        <NTooltip :id="tooltipId(storeKey)">{{ name }}</NTooltip>
 
-    <!-- Link -->
-    <nuxt-link
-      v-if="getRoutes().some(({ path }) => path === props.link || path === props.href) || isMenuitem"
-      :to="link || href" :active-class="active" exact :external="external" class="w-full" :class="[linkClass]"
-      :role="isMenuitem ? 'menuitem' : 'link'" :aria-current="isMenuitem ? '' : 'page'"
-    >
-      <div v-if="$slots.icon" inline="flex" items="center">
-        <slot name="icon" />
-      </div>
-      <list-item-btn v-if="(!isMenuitem && $slots.list)" :links-key="storeKey">
-        <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
-        <span v-show="!isMini" flex="1" text="left" whitespace="nowrap" max="w-prose">{{ name }}</span>
-      </list-item-btn>
-      <slot v-else />
+        <!-- Button -->
+        <list-item-btn v-if="(isMenuitem)" :class="[isVisible && ' pr-4']">
+          <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
+          <span v-show="!isMini" flex="1" text="left" whitespace="nowrap" max="w-prose">{{ name }}</span>
+          <div v-show="!isMini" flex="2" w="[2rem]" :class="[chevron]" />
+
+        </list-item-btn>
+
+        <!-- List -->
+        <ul v-if="$slots.list" role="list" empty="hidden invisible" space="y-0" bg="light-900 dark:gray-700" w="full"
+          :hidden="isVisible">
+          <slot name="list" />
+        </ul>
+
+        <!-- Link -->
+        <nuxt-link v-if="getRoutes().some(({ path }) => path === props.link || path === props.href) || isMenuitem"
+          :to="link || href" :active-class="active" exact :external="external" class="w-full" :class="[linkClass]"
+          :role="isMenuitem ? 'menuitem' : 'link'" :aria-current="isMenuitem ? '' : 'page'">
+          <div v-if="$slots.icon" inline="flex" items="center">
+            <slot name="icon" />
+          </div>
+          <list-item-btn v-if="(!isMenuitem && $slots.list)" :links-key="`${name}-sub-tooltip`">
+            <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
+            <span v-show="!isMini" flex="1" text="left" whitespace="nowrap" max="w-prose">{{ name }}</span>
+          </list-item-btn>
+          <div v-else>
+            <slot></slot>
+            <NTooltip :id="tooltipId(name)">{{ name }}</NTooltip>
+          </div>
     </nuxt-link>
     <div v-else>
       <div w="full" font="bold" text="blue">

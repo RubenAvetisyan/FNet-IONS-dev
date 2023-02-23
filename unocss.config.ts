@@ -9,7 +9,6 @@ import {
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss'
-import { presetFlowbite } from '@julr/unocss-preset-flowbite'
 import { presetScrollbar } from 'unocss-preset-scrollbar'
 
 export default defineConfig({
@@ -59,7 +58,6 @@ export default defineConfig({
   presets: [
     presetUno(),
     presetWind(),
-    presetFlowbite(),
     presetAttributify(),
     presetIcons({
       scale: 1.2,

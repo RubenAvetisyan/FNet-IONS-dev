@@ -1,11 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 
 const { getWidth, isminified } = storeToRefs(useDrawerStore())
 const { adminLeftPanel } = storeToRefs(useAdminStore())
 const { minify } = useDrawerStore()
 
-const list = ref(null)
+const list = ref<AdminStoreList[]>()
 const rotate = ref(0)
 
 const translate = ref('')
@@ -45,22 +45,25 @@ watch(adminLeftPanel.value, (panel) => {
       </div>
 
       <div overflow="y-auto x-hidden">
-        <ul v-if="list.length" space="y-0">
-          <n-list-item v-for="item in list" :key="item.name" :exact="item?.type === 'link'"
+        <ul v-if="list?.length" space="y-0">
+          <n-list-item v-for="item in list || []" :key="item.name" :exact="item?.type === 'link'"
             :link="item?.link || item?.href || ''" :external="!!item?.href" :href="item?.href"
-            :is-menuitem="item.type === 'button' || item?.direct" :name="item?.name" :icon="item?.icon"
+            :is-menuitem="item.type === 'button' || !!item?.direct" :name="item?.name" :icon="item?.icon"
             :is-mini="isminified">
+
             <template #list>
               <n-list-item v-for="sub in item?.sub" :key="sub.name" :exact="sub?.type === 'link'"
                 :is-menuitem="sub?.type === 'button'" :link="sub?.link" :external="!!sub?.href" :href="sub?.href" flex
                 items="center" w="full" h="12" select="none" text="base gray-900 hover:light-700 dark:hover:gray-700"
                 font="normal" duration="75" transition bg="hover:gray-500" :mx="computedMx" :translate="translate"
-                class="group">
+                tooltip-placement="right" :class="`group/${sub.name}`">
                 <div flex block items="center" w="full" max="md:w-64">
-                  <div :key="sub?.icon || sub.name" :mx="computedMx" :class="sub?.icon" :mr="!isminified && 2" />
+                  <div :key="sub?.icon || sub.name + '-icon'" :mx="computedMx" :class="sub?.icon"
+                    :mr="!isminified && 2" />
                   <p v-show="!isminified" antialiased text="base left" max="w-prose">
                     {{ sub.name }}
                   </p>
+
                 </div>
               </n-list-item>
             </template>
@@ -70,5 +73,5 @@ watch(adminLeftPanel.value, (panel) => {
 
       <login-button class="absolute bottom-0 left-0 right-0 w-full pb-5" />
     </div>
-</ClientOnly>
+  </ClientOnly>
 </template>

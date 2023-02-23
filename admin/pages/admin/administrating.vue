@@ -1,7 +1,8 @@
 <script setup>
-// definePageMeta({
-//   key: route => route.fullPath
-// })
+definePageMeta({
+  // key: route => route.fullPath
+  auth: false
+})
 </script>
 
 <template>

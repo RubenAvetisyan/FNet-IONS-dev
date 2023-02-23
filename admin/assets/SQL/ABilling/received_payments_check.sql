@@ -9,14 +9,13 @@ select
         WHEN cp.pt = 13 THEN 'Telcell'
 	END as 'P_SYSTEM',
     SUBSTRING(cp.comment, LOCATE('#', cp.comment) + 2) as 'Transaction',
+    cp.comment as cmm,
 	cp.dt as 'Syncronization Date'
 FROM billing.contract as ct
 inner join billing.contract_payment as cp
 	on ct.id = cp.cid
 where
-		dt >= 'dateFrom'
-	and dt <= 'dateTo'
-	and cp.pt in (11, 12, 13)
+		cp.pt in (12)
 	and ct.comment not like('%Речкалов%')
 	and ct.comment not like('%ест%')
 	and ct.comment not like('%est%')
@@ -32,5 +31,4 @@ where
 	and ct.comment not like('%անուն%')
 	and ct.comment not like('%Ազգանուն%')
 	and ct.comment not like('%զգանուն%')
-	and ct.title <> 9000019
 order by cp.dt desc

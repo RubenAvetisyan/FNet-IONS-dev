@@ -3,7 +3,8 @@ import ExcelJS from 'exceljs'
 
 export default defineEventHandler(async (event) => {
   try {
-    const { data, headers } = await readBody(event)
+    const { data, headers, filename = 'data' } = await readBody(event)
+    console.log('filename: ', filename);
     const workbook = new ExcelJS.Workbook()
     const worksheet = workbook.addWorksheet('Data')
 
@@ -13,7 +14,7 @@ export default defineEventHandler(async (event) => {
     })
 
     workbook.xlsx
-      .writeFile('data.xlsx')
+      .writeFile(filename + '.xlsx')
       .then(() => {
         console.log('The workbook was written to data.xlsx')
       })

@@ -1,4 +1,4 @@
-SET time_zone = 'Asia/Yerevan';
+SET time_zone = '+04:00';
 
 select
 	cp.id as 'Transaction ID',
@@ -7,15 +7,15 @@ select
 	cp.summa as 'Payment sum',
     cpt.title as 'P_SYSTEM',
     SUBSTRING(cp.comment, LOCATE('# ', cp.comment) + 1) as 'Transaction',
-	cp.lm as 'Syncronization Date'
+	cp.dt as 'Syncronization Date'
 FROM billing.contract as ct
 inner join billing.contract_payment as cp
 	on ct.id = cp.cid
 left join contract_payment_types as cpt
 	on cpt.id = cp.pt
 where
-		lm >= '2023-02-01 00։00։00'
-	and lm <= '2023-02-12 23։59։59'
+		cp.dt >= '2023-02-01 00։00։00'
+	and cp.dt <= '2023-02-21 23։59։59'
 	-- and cp.pt in (11, 12, 13, 8)
 	and ct.comment not like('%Речкалов%')
 	and ct.comment not like('%ест%')
@@ -34,4 +34,4 @@ where
 	and cp.comment not like('%ест%')
     -- and cpt.title ='Безналичный платеж'
 -- group by cpt.id
-order by cp.lm desc
+order by cp.dt desc

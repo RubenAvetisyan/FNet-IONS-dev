@@ -184,4 +184,14 @@ declare global {
         dateFrom: string
         dateTo: string | undefined
     }
+
+    type AdminStoreList = {
+        type: string;
+        name: string;
+        icon?: string;
+        href?: string;
+        link?: string;
+        direct?: string;
+        sub?: AdminStoreList[]
+    }
 }

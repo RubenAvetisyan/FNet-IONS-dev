@@ -1,3 +1,5 @@
+import format from "date-fns/format"
+
 const defaultLinks = [
   {
     text: 'վճարման ենթակա միացումների ցուցակ',
@@ -22,6 +24,27 @@ const defaultLinks = [
   {
     text: 'Պասիվ Հաճախորդներ',
     path: '/user/statements/passivecustomers',
+    components: [
+      {
+        name: 'FTable',
+        type: 'table',
+        props: {
+          id: 'passivecustomers',
+          src: {
+            header: [1, 2, 3],
+            body: [1, 2, 3],
+          },
+          rows: 7,
+          filename: () => {
+            const currentDate = format(Date.now(), 'yyyy-MM-dd - H b', {
+              weekStartsOn: 1,
+            })
+
+            return 'TPASSIVE CUSTOMERS ' + currentDate
+          }
+        },
+      }
+    ]
   },
   {
     text: 'Հաճախորդներ',

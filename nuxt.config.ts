@@ -2,6 +2,8 @@ import chalk from 'chalk'
 import * as flowbite from 'flowbite'
 import { log } from './utils/log'
 import { prisma } from './server/api/db'
+import { description } from './package.json'
+import { addComponent } from '@nuxt/kit'
 
 process.on('SIGINT', async (signal) => {
   if (signal === 'SIGINT') {
@@ -9,6 +11,9 @@ process.on('SIGINT', async (signal) => {
     log(`${signal.toUpperCase()}:`, chalk.underline.green('prisma has been disconnected'))
   }
 })
+
+const host = process.env.HOST
+const port = process.env.PORT
 
 export default defineNuxtConfig({
   extends: [
@@ -33,10 +38,30 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/color-mode',
-    ['./modules', {
-      botToken: process.env.NUXT_BOT_TOKEN || '',
-    }],
+    '@sidebase/nuxt-auth',
+    // ['./modules', {
+    //   botToken: process.env.NUXT_BOT_TOKEN || '',
+    // }],
+    function () {
+      for (const name of Object.keys(flowbite)) {
+        if (name.match(/^[A-Z]/)) {
+          addComponent({
+            export: name,
+            filePath: 'flowbite',
+            name
+          })
+        }
+      }
+    }
   ],
+  auth: {
+    origin: process.env.ORIGIN || 'http://' + host + ':' + port,
+    enableGlobalAppMiddleware: true,
+    globalMiddlewareOptions: {
+      allow404WithoutAuth: false,
+    }
+  },
+
   experimental: {
     reactivityTransform: true,
   },
@@ -57,6 +82,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     isTest: process.env.NUXT_IS_TEST || 'false',
+    AUTH_ORIGIN: process.env.NUXT_AUTH_ORIGIN,
+    authSecret: description,
     lanbilling: {
       host: process.env.NUXT_DB_LanBilling_HOST,
       port: process.env.NUXT_DB_LanBilling_PORT,

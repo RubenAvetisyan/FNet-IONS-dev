@@ -9,6 +9,7 @@ const components = exactLink?.components?.map((component) => {
   const { props = {}, name } = component
   // split the data and the component instance so you can v-bind the data easier in the template
   return {
+    props: props?.props || {},
     data: {
       ...props,
       vModel: props?.vModel !== null && props?.vModel !== undefined ? ref(props.vModel) : null,
@@ -28,22 +29,21 @@ const from = ref(routes.redirectedFrom)
       Ադմինիստրավորում
     </h2>
     <!-- <ClientOnly> -->
-    <div mx-auto flex inline-flex items="center" />
+    <!-- <div mx-auto flex inline-flex items="center" /> -->
     <div mx-auto flex inline-flex items="center">
       <NuxtLink v-if="from" flex w-36 btn m-3 text-sm align-middle justify-between items-center to="/">
         <span i-twemoji:waving-hand text-3xl inline-block animate-shake-x animate-count-infinite animate-duration-5000 />
         Back
       </NuxtLink>
-      <div flex btn h-11 m-3 text-sm align-middle justify-between items-center @click.stop="newRequest">
+      <div flex btn h-11 m-3 text-sm align-middle justify-between items-center @click.stop="() => 'newRequest'">
         Թարմացնել տվյալները
+        {{ components.length }}+
       </div>
     </div>
     <div v-if="components.length" mx-auto flex inline-flex items="center">
       <div v-for="(component, i) in components" :key="`${i}`">
-        <component
-          :is="component.component" v-if="component?.data?.vModel !== null" :id="`${i}`" v-bind="component.data"
-          mx-2
-        />
+        <component :is="component.component" v-if="component?.data?.vModel !== null" :id="`${i}`" v-bind="component.data"
+          mx-2 />
         <!-- <component v-else-if="component?.value" :is="component.value.component" mx-2 /> -->
       </div>
     </div>

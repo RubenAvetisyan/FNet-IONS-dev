@@ -29,18 +29,19 @@ const fn = (e: any) => {
 </script>
 
 <template>
-  <div justify="between" rounded border border-gray-100 mx-0>
-    <label for="name">{{ name }}</label>
-    <select
-      :id="id" :name="name" :value="selectValue" w-full max-h-7 appearance-none border border-gray-500
-      leading-tight focus:outline-none focus:shadow-outline rounded font-medium text=" xs gray-700 dark:white"
-      @change="fn"
-    >
-      <option value="" class="bg-light-300 dark:bg-dark-700" />
-      <option
-        v-for="option in options" :key="getKey(option?.toString() || '')" :value="option"
-        class="bg-light-300 dark:bg-dark-700"
-      >
+                  <div flex flex-col justify="center" mx-auto rounded border border-gray-100 mx-0>
+                    <div flex inline-flex items-center w-full mx-auto justify="between">
+                      <label for="name" px-1>{{ name }}</label>
+                      <div h-full relative>
+                        <slot absolute top-0></slot>
+                      </div>
+                    </div>
+                    <select :id="id" :name="name" :value="selectValue" flex w-full max-h-7 appearance-none border border-gray-500
+                      leading-tight focus:outline-none focus:shadow-outline rounded font-medium text=" xs gray-700 dark:white"
+                      @change="fn">
+                      <option value="" class="bg-light-300 dark:bg-dark-700" />
+                      <option v-for="option in options" :key="getKey(option?.toString() || '')" :value="option"
+                        class="bg-light-300 dark:bg-dark-700">
         {{ option }}
       </option>
     </select>

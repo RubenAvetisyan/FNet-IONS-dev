@@ -1,5 +1,5 @@
 <script setup>
-definePageMeta({ middleware: "guest", auth: false })
+definePageMeta({ auth: false })
 
 const { data } = await useLazyFetch('/api/lanbilling')
 console.log('data: ', unref(data))
