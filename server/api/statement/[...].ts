@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const { statementFileName, options = undefined }: StatementBody = await readBody(event)
 
   const filePath = path.resolve(dirname(fileURLToPath(dir)), '../../admin/assets/SQL/', statementFileName)
-  let query = readSqlFile(`${filePath}.sql`)
+  let query = await readSqlFile(`${filePath}.sql`)
 
   if (options) {
     options.replace.forEach((item) => {

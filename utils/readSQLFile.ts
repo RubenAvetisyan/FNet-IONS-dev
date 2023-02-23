@@ -1,21 +1,27 @@
 import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path, { dirname } from 'node:path'
+export const getAbsoluteFilePath = (src: string): string => {
+  const dir = dirname(fileURLToPath(import.meta.url))
+  return path.join(dir, src)
+}
 
-const dir = import.meta.url
+export const readSqlFile = async (filePath: string): Promise<string> => {
+  try {
+    const absolutePath = getAbsoluteFilePath(filePath)
+    const fileBuffer = await fs.promises.readFile(absolutePath)
+    const fileString = fileBuffer.toString()
+    const statements = fileString
+      .replace(/[\r\n]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .split(';')
+      .map(Function.prototype.call, String.prototype.trim)
+      .filter((el: string) => el.length !== 0)
+      .join('; ')
 
-export const getFilePath = (src: string): string => path.join(dirname(fileURLToPath(dir)), src)
-
-export const readSqlFile = (filePath: string): string => {
-  const path = getFilePath(filePath)
-  const fileBuffer = fs.readFileSync(path).toString()
-  const fileString = fileBuffer
-    .replace(/[\r\n]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .split(';')
-    .map(Function.prototype.call, String.prototype.trim)
-    .filter((el: string) => el.length !== 0)
-    .join('; ')
-
-  return fileString
+    return statements
+  } catch (error) {
+    console.error(`Error reading SQL file: ${filePath}`, error)
+    throw error
+  }
 }

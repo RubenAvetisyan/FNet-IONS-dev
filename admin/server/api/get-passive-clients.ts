@@ -18,7 +18,7 @@ const getContractNumbers = async (passiveCustomers: {}[]) => Promise.all(passive
 async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: {}[]): Promise<{ [key: string]: number | string }[]> {
   const contractNumbers = await getContractNumbers(passiveCustomers)
 
-  let queryStringErpCustomers = readSqlFile(erpCustomersQuerySrc)
+  let queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc)
   queryStringErpCustomers = queryStringErpCustomers.replace('contractNumbers', contractNumbers.join(','))
   return executeQuery(queryStringErpCustomers, 'erp') as any
 }
@@ -39,7 +39,7 @@ const getResponse = async (erpCustomers: {}[]) => {
 
 export default defineEventHandler(async () => {
   map.clear()
-  const queryStringPassiveCustomers = readSqlFile(passiveCustomersQuerySrc)
+  const queryStringPassiveCustomers = await readSqlFile(passiveCustomersQuerySrc)
   const passiveCustomers = await executeQuery(queryStringPassiveCustomers, 'abilling') as any
 
   const erpCustomers = await getERPCustomers(erpCustomersQuerySrc, passiveCustomers)

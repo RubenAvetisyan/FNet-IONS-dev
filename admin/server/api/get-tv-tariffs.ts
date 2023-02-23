@@ -30,7 +30,8 @@ const getContractNumbers = async (customers: Customer[]): Promise<string[]> => {
  * Returns an array of ERP customers that match the given contract numbers.
  */
 const getErpCustomers = async (querySrc: string, contractNumbers: string[]): Promise<Customer[]> => {
-  const queryString = readSqlFile(querySrc).replace('contractNumbers', contractNumbers.join(','))
+  let queryString = await readSqlFile(querySrc)
+  queryString = queryString.replace('contractNumbers', contractNumbers.join(','))
   const customers = await executeQuery(queryString, 'erp')
   return customers as Customer[]
 }
@@ -51,14 +52,14 @@ const getResponse = async (customers: Customer[]): Promise<Customer[]> => {
 export default defineEventHandler(async (event) => {
   try {
     customerMap.clear()
-  // const { date, replacer } = await readBody(event)
-    const queryString = readSqlFile(passiveCustomersQuerySrc)
-  const customers = await executeQuery(queryString, 'abilling') as Customer[]
-  const contractNumbers = await getContractNumbers(customers)
-  const erpCustomers = await getErpCustomers(erpCustomersQuerySrc, contractNumbers)
-  console.log('erpCustomers: ', erpCustomers[0]);
-  const response = await getResponse(erpCustomers)
-  return response
+    // const { date, replacer } = await readBody(event)
+    const queryString = await readSqlFile(passiveCustomersQuerySrc)
+    const customers = await executeQuery(queryString, 'abilling') as Customer[]
+    const contractNumbers = await getContractNumbers(customers)
+    const erpCustomers = await getErpCustomers(erpCustomersQuerySrc, contractNumbers)
+    console.log('erpCustomers: ', erpCustomers[0]);
+    const response = await getResponse(erpCustomers)
+    return response
   } catch (error) {
     console.log('error: ', error);
     return createError(JSON.stringify(error))
