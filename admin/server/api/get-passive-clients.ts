@@ -29,8 +29,7 @@ const getResponse = async (erpCustomers: {}[]) => {
 
     if (!map)
       return { ...customers }
-
-    customers.phone = intersection<string>(customers.phone.replace(/\s/gim, '').split(',')).filter(s => s).join(', ')
+    customers.phone = customers.phone ? intersection<string>(customers.phone.replace(/\s/gim, '').split(',')).filter(s => s).join(', ') : ''
 
     const fullObj = map.get(customers.contract)
     return { ...customers, ...fullObj }

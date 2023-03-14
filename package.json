@@ -63,10 +63,11 @@
     "@whyframe/vue": "^0.1.5",
     "eslint": "8.27.0",
     "fs-extra": "^10.1.0",
+    "h3-zod": "^0.3.10",
     "mitt": "^3.0.0",
     "next-auth": "4.18.8",
     "node-fetch-native": "^1.0.1",
-    "nuxt": "^3.0.0",
+    "nuxt": "^3.2.3",
     "pinia": "2.0.23",
     "prisma": "^4.10.1",
     "telegraf": "4.11.2",
@@ -74,6 +75,7 @@
     "typescript": "4.9.3",
     "ufo": "^1.0.1",
     "unocss-preset-scrollbar": "^0.2.1",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "zod": "^3.21.4"
   }
 }

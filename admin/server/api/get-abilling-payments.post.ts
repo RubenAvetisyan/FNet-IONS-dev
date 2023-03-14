@@ -7,7 +7,7 @@ import { readSqlFile } from '~~/utils/readSQLFile'
 const query = async (date: QueryDate) => {
   const dateFrom = formatToSqlDate(startOfDay(parseISO(date.dateFrom))) as string
   const dateTo = date.dateTo ? formatToSqlDate(endOfDay(parseISO(date.dateTo))) as string : 'now()'
-  const qString = await readSqlFile('../../admin/assets/SQL/ABilling/received_payments.sql')
+  const qString = await readSqlFile('../../admin/assets/SQL/ABilling/received_payments_advanced.sql')
   return qString.replace('dateFrom', dateFrom).replace('dateTo', dateTo)
 }
 

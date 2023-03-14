@@ -1,6 +1,5 @@
 <script setup>
 import {
-  initAccordions,
   initCarousels,
   initCollapses,
   initDials,
@@ -30,7 +29,6 @@ useHead({
 })
 
 onMounted(() => {
-  initAccordions()
   initCarousels()
   initCollapses()
   initDials()

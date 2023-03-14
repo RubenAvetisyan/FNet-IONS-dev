@@ -2,7 +2,7 @@
 const props = defineProps({
   name: {
     type: String,
-    required: true,
+    required: '',
   },
   options: {
     type: Array,
