@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
   let queryString = await readSqlFile(filePath)
   queryString = queryString.replace('?', lastContract).replace('13, 14, 94', '94')
   const response = await executeQuery(queryString, 'lanbilling')
+  console.log('response: ', response);
 
   return response
 })

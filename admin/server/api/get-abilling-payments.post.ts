@@ -12,10 +12,11 @@ const query = async (date: QueryDate) => {
 }
 
 export default defineEventHandler(async (event) => {
-  const { date, replacer } = await readBody<{ date: QueryDate; replacer?: [string, string] }>(event)
+  const { date, replacer = ['', ''] } = await readBody<{ date: QueryDate; replacer?: [string, string] }>(event)
   const requestQuery = await query(date)
   const queryString = replacer ? requestQuery.replace(...replacer) : requestQuery
   const response = await executeQuery(queryString, 'abilling')
+  console.log('response: ', response.header);
 
   return response
 })

@@ -155,91 +155,95 @@ const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark
 </script>
 
 <template>
-              <div :key="body.length" w="sm md:full" h="full" resize="y" overflow="x-auto" shadow="md" rounded="sm:lg"
-                scrollbar="~ track-color-gray-100 dark:track-color-gray-800 thumb-color-indigo-500 dark:thumb-color-indigo-800">
-                <table w="full" text="sm left gray-500 dark:gray-400">
-                  <caption py-2 px-4 font-semibold text="lg left gray-900 dark:white" bg="white dark:gray-800" justify="between">
-                    <slot v-if="$slots.caption" name="caption">
+  <div :key="body.length" w="sm md:full" h="full" resize="y" overflow="x-auto" shadow="md" rounded="sm:lg"
+    scrollbar="~ track-color-gray-100 dark:track-color-gray-800 thumb-color-indigo-500 dark:thumb-color-indigo-800">
+    <table w="full" text="sm left gray-500 dark:gray-400">
+      <caption py-2 px-4 font-semibold text="lg left gray-900 dark:white" bg="white dark:gray-800" justify="between">
+        <slot v-if="$slots.caption" name="caption">
 
-                    </slot>
-                    <p>{{ name && `${name} տեղեկագիր՝ առ ${today}` }}</p>
-                    <div w="full max-prose" mt-1>
-                      <span text="sm gray-500 dark:gray-400 code" font-normal>Արտահանումը՝ *.xlsx ֆորմատով</span>
-                      <FBtn rounded float-right @click="setXls">
-                        Save
-                      </FBtn>
-                    </div>
-                  </caption>
-                  <thead sticky top-0 text="xs indigo-700 dark:gray-300 center" bg="gray-200 dark:indigo-700">
-                    <tr>
-                      <th v-for="(header, i) in src.header" :key="header" scope="col" p="x-3 y-3">
-                        <!-- <p>{{ header }}</p> -->
-                        <FSelect mx-0 w-full break-words text="sm left gray-400 dark:gray-100" :name="header" :options="columns[i]"
-                          :custom-fn="fn(i)" justify="between">
-                          <Chevron aria-disabled="colIndex === i" :is-up="!!chevronIsUp(colIndex, i)" :active="colIndex === i" rounded-1
-                            dark:bg-indigo-50 text="sm left gray-100 dark:gray-800" @click="() => columnFilter(header)" />
-                        </FSelect>
-                      </th>
-                      <th v-if="canBeEdited" scope="col" class="py-3 px-6">
-                        <span class="sr-only">Edit</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
-                      <td v-for="(item, i) in typeof items === 'string' ? items.split(',') : items" :key="`${src.header[i]}-${item}`"
-                        scope="row" p="x-2 y-4" text="center" :class="[i === 0 && firstColumnClass]"
-                        hover="bg-indigo-400 text-indigo-700">
-                        <!-- <template v-if="Array.isArray(items)">
-                          <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
-                      <td v-for="(item, i) in typeof items === 'string' ? items.split(',') : items" :key="`${src.header[i]}-${item}`"
-                        scope="row" p="x-2 y-4" text="center" :class="[i === 0 && firstColumnClass]"
-                        hover="bg-indigo-400 text-indigo-700">
-                        {{ item }}
-                      </td>
-                    <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
-                    </lazy-f-tr>
-                    </template> -->
-                    <span>{{ item }}</span>
-                    </td>
-                    <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
-                    </lazy-f-tr>
-                    <lazy-f-tr v-for="n of Array.from({ length: (body.pageSize - body.data.length) }, (v, i) => i)"
-                      :key="`added-${n}`" h-13>
-                      <td scope="row"
-                        class="h-13 border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
-                      </td>
-              </lazy-f-tr>
-            </tbody>
-          </table>
-          <nav :key="`${body.length}-pagitation`" sticky bottom-0 flex w-full justify-between items-center pt-1 bg-gray-200
-            dark:bg-gray-700 aria-label="Table navigation">
-            <span ml-4 font-semibold text-gray-900 dark:text-white>{{ body.total }} տողից՝
-              <span text-sm font-normal text-gray-500 dark:text-gray-400>Ցուցադրված է
-                <span font-semibold text-gray-900 dark:text-white>
-                  {{ (body.page - 1) * body.pageSize + 1 }}-{{ body.page * body.pageSize }} տողերը
-                </span>
-              </span>
-            </span>
-            <slot :body="body" />
-            <ul v-if="body.total_pages > 1" snap-mandatory snap-x scroll-smooth relative max-w-120 inline-flex items-center
-              overscroll="x-contain">
-              <li cursor="pointer" block py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300
-                hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400
-                dark:hover:bg-gray-700 dark:hover:text-white @click="page > 0 ? page-- : page">
-                <span sr-only>Previous</span>
-                <div i-mdi-chevron-left w-5 h-5 />
-              </li>
-              <li v-for="num in body.total_pages" snap-always cursor="pointer" py-2 px-3 leading-tight text-gray-500 bg-white
-                border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400
-                dark:hover:bg-gray-700 dark:hover:text-white :aria-current="num === body.page && 'page'"
-                :class="num === body.page && 'border text-blue-600 bg-blue-50 border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:bg-gray-700 dark:text-white'"
-                @click="page = num">
-                {{ num }}
-              </li>
-              <li absolute right-0 cursor="pointer" block py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border
-                border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400
-                dark:hover:bg-gray-700 dark:hover:text-white @click="page < body.total_pages ? page++ : page">
+        </slot>
+        <p>{{ name && `${name} տեղեկագիր՝ առ ${today}` }}</p>
+        <div w="full max-prose" mt-1>
+          <span text="sm gray-500 dark:gray-400 code" font-normal>Արտահանումը՝ *.xlsx ֆորմատով</span>
+          <FBtn rounded float-right @click="setXls">
+            Save
+          </FBtn>
+        </div>
+      </caption>
+      <thead sticky top-0 text="xs indigo-700 dark:gray-300 center" bg="gray-200 dark:indigo-700">
+        <tr>
+          <th v-for="(header, i) in src.header" :key="header" scope="col" p="x-3 y-3">
+            <!-- <p>{{ header }}</p> -->
+            <FSelect mx-0 w-full break-words text="sm left gray-400 dark:gray-100" :name="header" :options="{
+              labe: header,
+              values: columns[i],
+              selected: 0
+            }"
+              :custom-fn="fn(i)" justify="between">
+              <Chevron aria-disabled="colIndex === i" :is-up="!!chevronIsUp(colIndex, i)" :active="colIndex === i"
+                rounded-1 dark:bg-indigo-50 text="sm left gray-100 dark:gray-800" @click="() => columnFilter(header)" />
+            </FSelect>
+          </th>
+          <th v-if="canBeEdited" scope="col" class="py-3 px-6">
+            <span class="sr-only">Edit</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
+          <td v-for="(item, i) in typeof items === 'string' ? items.split(',') : items" :key="`${src.header[i]}-${item}`"
+            scope="row" p="x-2 y-4" text="center" :class="[i === 0 && firstColumnClass]"
+            hover="bg-indigo-400 text-indigo-700">
+            <!-- <template v-if="Array.isArray(items)">
+                            <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
+                        <td v-for="(item, i) in typeof items === 'string' ? items.split(',') : items" :key="`${src.header[i]}-${item}`"
+                          scope="row" p="x-2 y-4" text="center" :class="[i === 0 && firstColumnClass]"
+                          hover="bg-indigo-400 text-indigo-700">
+                          {{ item }}
+                        </td>
+                      <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
+                      </lazy-f-tr>
+                      </template> -->
+            <span>{{ item }}</span>
+          </td>
+          <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
+        </lazy-f-tr>
+        <lazy-f-tr v-for="n of Array.from({ length: (body.pageSize - body.data.length) }, (v, i) => i)"
+          :key="`added-${n}`" h-13>
+          <td scope="row"
+            class="h-13 border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
+          </td>
+        </lazy-f-tr>
+      </tbody>
+    </table>
+    <nav :key="`${body.length}-pagitation`" sticky bottom-0 flex w-full justify-between items-center pt-1 bg-gray-200
+      dark:bg-gray-700 aria-label="Table navigation">
+      <span ml-4 font-semibold text-gray-900 dark:text-white>{{ body.total }} տողից՝
+        <span text-sm font-normal text-gray-500 dark:text-gray-400>Ցուցադրված է
+          <span font-semibold text-gray-900 dark:text-white>
+            {{ (body.page - 1) * body.pageSize + 1 }}-{{ body.page * body.pageSize }} տողերը
+          </span>
+        </span>
+      </span>
+      <slot :body="body" />
+      <ul v-if="body.total_pages > 1" snap-mandatory snap-x scroll-smooth relative max-w-120 inline-flex items-center
+        overscroll="x-contain">
+        <li cursor="pointer" block py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300
+          hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400
+          dark:hover:bg-gray-700 dark:hover:text-white @click="page > 0 ? page-- : page">
+          <span sr-only>Previous</span>
+          <div i-mdi-chevron-left w-5 h-5 />
+        </li>
+        <li v-for="num in body.total_pages" snap-always cursor="pointer" py-2 px-3 leading-tight text-gray-500 bg-white
+          border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400
+          dark:hover:bg-gray-700 dark:hover:text-white :aria-current="num === body.page && 'page'"
+          :class="num === body.page && 'border text-blue-600 bg-blue-50 border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:bg-gray-700 dark:text-white'"
+          @click="page = num">
+          {{ num }}
+        </li>
+        <li absolute right-0 cursor="pointer" block py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border
+          border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400
+          dark:hover:bg-gray-700 dark:hover:text-white @click="page < body.total_pages ? page++ : page">
           <span sr-only>Next</span>
           <div i-mdi-chevron-right w-5 h-5 />
         </li>

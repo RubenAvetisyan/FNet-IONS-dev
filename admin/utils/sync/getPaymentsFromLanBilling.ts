@@ -1,6 +1,8 @@
+import { QueryOptions } from '~~/utils/MySQL/connection-class'
 import { H3Error, createError } from 'h3'
 import { makeQuery } from '../query'
 import { abilling, erp, lanbilling } from '~~/admin/utils/'
+import { FieldInfo } from 'mysql'
 
 const db = {
   lanbilling,
@@ -8,8 +10,12 @@ const db = {
   erp,
 }
 
-export const executeQuery = async <T>(queryString: string, paymentSystem: string): Promise<
-  | T[]
+export const executeQuery = async <T>(queryString: string, paymentSystem: string, options?: QueryOptions): Promise<
+  | {
+    header: string[] | [];
+    body: T[];
+    FieldPackets: FieldInfo[] | undefined;
+  }
   | H3Error
 > => {
   try {
@@ -17,7 +23,7 @@ export const executeQuery = async <T>(queryString: string, paymentSystem: string
     if (!dbInstance || dbInstance instanceof H3Error)
       return createError(`the ${paymentSystem} DB conncetion is faild`)
 
-    const result = makeQuery<T>(queryString, dbInstance.connection)
+    const result = makeQuery<T>(queryString, dbInstance.connection, options)
     return result
   }
   catch (error) {

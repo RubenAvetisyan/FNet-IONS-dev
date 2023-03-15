@@ -1,48 +1,77 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { PropType } from 'vue'
+import { z } from 'zod'
+
+interface MyOption {
+  value: string | number | boolean;
+  label: string;
+  selected: boolean
+}
+
 const props = defineProps({
   name: {
     type: String,
-    required: '',
+    required: true
   },
   options: {
-    type: Array,
-    default: [],
+    type: Object,
+    default: {
+      values: [],
+      label: 'default-label-' + Date.now(),
+      selected: false
+    }
   },
   customFn: {
     type: Function,
-    default: (): void => { },
-  },
+    default: () => { }
+  }
 })
 
-const removeSpace = (v: string) => v.replace(/\s/gim, '')
-const id = computed(() => removeSpace(props.name + Date.now()))
-const getKey = (v: string) => removeSpace(v)
-
-const options = computed(() => props.options as (string | number | Date | boolean)[])
-const value = ref()
+const removeSpace = (str: string) => str.replace(/\s/g, '')
+const defaultOption = {
+  value: 'default-value-' + Date.now(),
+  label: 'default-label-' + Date.now(),
+  selected: false
+}
+const getKey = (option: MyOption = defaultOption) => removeSpace(`${option.value}-${option.label}`)
+const value = ref<MyOption['value']>()
 const selectValue = computed(() => value.value)
 
-const fn = (e: any) => {
-  value.value = e
-  props.customFn(e)
+const fn = (e: Event) => {
+  const target = e.target as HTMLSelectElement
+  const newValue = target.value as MyOption['value']
+  value.value = newValue
+  props.customFn(newValue)
 }
+
+const options = computed(() => {
+  console.log('props.options: ', props.options);
+  const label = props.options.label
+  const selected = props.options.selected
+  return props.options.values.map((value: string | number | boolean, i: number) => {
+    return {
+      label,
+      value,
+      key: getKey({ value, label, selected: selected === i})
+    }
+  })
+})
 </script>
 
 <template>
-                  <div flex flex-col justify="center" mx-auto rounded border border-gray-100 mx-0>
-                    <div flex inline-flex items-center w-full mx-auto justify="between">
-                      <label for="name" px-1>{{ name }}</label>
-                      <div h-full relative>
-                        <slot absolute top-0></slot>
-                      </div>
-                    </div>
-                    <select :id="id" :name="name" :value="selectValue" flex w-full max-h-7 appearance-none border border-gray-500
-                      leading-tight focus:outline-none focus:shadow-outline rounded font-medium text=" xs gray-700 dark:white"
-                      @change="fn">
-                      <option value="" class="bg-light-300 dark:bg-dark-700" />
-                      <option v-for="option in options" :key="getKey(option?.toString() || '')" :value="option"
-                        class="bg-light-300 dark:bg-dark-700">
-        {{ option }}
+  <div flex flex-col justify="center" mx-auto rounded border border-gray-100 mx-0>
+    <div flex inline-flex items-center w-full mx-auto justify="between">
+      <label for="name" px-1>{{ name }}</label>
+      <div h-full relative>
+        <slot absolute top-0></slot>
+      </div>
+    </div>
+    <select :id="id" :name="name" :value="selectValue" flex w-full max-h-7 appearance-none border border-gray-500
+      leading-tight focus:outline-none focus:shadow-outline rounded font-medium text=" xs gray-700 dark:white"
+      @change="fn">
+      <option value="" class="bg-light-300 dark:bg-dark-700" />
+      <option v-for="option in options" :key="option.key" :value="option" class="bg-light-300 dark:bg-dark-700">
+        {{ option.value }}
       </option>
     </select>
   </div>

@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import { format } from 'date-fns'
 import { isDate } from '@antfu/utils'
+
 definePageMeta({
   auth: false,
 })
@@ -27,38 +28,35 @@ const MustPaySchema = z.object({
 
 // type MustPay = z.TypeOf<typeof MustPaySchema>;
 
-const { data, pending } = await useLazyFetch('/api/getMustPay', {
+const { data, pending } = await useFetch('/api/get-mustpay', {
   key,
   server: true,
   transform: mustPay => {
-    return [
-      mustPay?.length ? Object.keys(mustPay[0]) : [],
-      mustPay?.map((obj) => {
+    const header = mustPay?.length ? Object.keys(mustPay[0]) : []
+    console.log('header: ', header);
+    const body =  mustPay?.map((obj) => {
         // if (typeof obj === 'object' && !Array.isArray(obj))
         return Object.values(obj)
       }) || []
-    ]
+    return { header, body }
   }
 })
 const mustPay = computed(() => {
-  const result = {
-    header: data.value[0],
-    body: data.value[1]
-  }
-
-  return result
+  console.log('data.value: ', data.value);
+  return data.value ||  {header: [], body: []}
 })
-
-const isLoading = ref(pending.value)
-console.log('isLoading: ', isLoading);
 
 const { $finishLoading, $startLoading, $isLoading } = useNuxtApp()
 
+onMounted(() => {
+  if ($isLoading.value) $startLoading()
+
+  console.log('mustPay: ', data.value, mustPay.value);
+})
+
 watch(() => pending.value, (loading) => {
-  $startLoading(loading)
   console.log('$isLoading: ', $isLoading.value);
-  $finishLoading(!!loading)
-  console.log('isLoading.value: ', isLoading.value);
+  if (!loading) $finishLoading()
 })
 </script>
 
@@ -66,7 +64,7 @@ watch(() => pending.value, (loading) => {
   <ClientOnly>
     <div m="4" p="b-50">
       <p>Վճարման ենթակա ծառայությունների ցանկ</p>
-      {{ isLoading }}
+      {{ $isLoading }}
       <FTable v-if="mustPay.body.length" :src="mustPay" rows="7" class="mt-8" />
     </div>
   </ClientOnly>

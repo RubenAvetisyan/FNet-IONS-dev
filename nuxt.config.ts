@@ -15,6 +15,18 @@ process.on('SIGINT', async (signal) => {
 const host = process.env.HOST
 const port = process.env.PORT
 
+const setDbConfig = (db: string, dbName?: string, insecureAuth: boolean = true) => {
+  const DB = db.toUpperCase()
+  return {
+    host: process.env[`NUXT_DB_${DB}_HOST`],
+    port: process.env[`NUXT_DB_${DB}_PORT`] || 3306,
+    user: process.env[`NUXT_DB_${DB}_LOGIN`] || '',
+    password: process.env[`NUXT_DB_${DB}_PASSWORD`] || '',
+    database: process.env[`NUXT_DB_${DB || dbName}_NAME`] || '',
+    insecureAuth
+  }
+}
+
 export default defineNuxtConfig({
   extends: [
     './admin',
@@ -56,7 +68,7 @@ export default defineNuxtConfig({
   ],
   auth: {
     origin: process.env.ORIGIN || 'http://' + host + ':' + port,
-    enableGlobalAppMiddleware: true,
+    enableGlobalAppMiddleware: false,
     globalMiddlewareOptions: {
       allow404WithoutAuth: false,
     }
@@ -84,26 +96,10 @@ export default defineNuxtConfig({
     isTest: process.env.NUXT_IS_TEST || 'false',
     AUTH_ORIGIN: process.env.NUXT_AUTH_ORIGIN,
     authSecret: description,
-    lanbilling: {
-      host: process.env.NUXT_DB_LanBilling_HOST,
-      port: process.env.NUXT_DB_LanBilling_PORT,
-      user: process.env.NUXT_DB_LanBilling_LOGIN,
-      password: process.env.NUXT_DB_LanBilling_PASSWORD,
-      database: process.env.NUXT_DB_LanBilling_NAME,
-    },
-    abilling: {
-      host: process.env.NUXT_DB_ABilling_HOST,
-      port: process.env.NUXT_DB_ABilling_PORT,
-      user: process.env.NUXT_DB_ABilling_LOGIN,
-      password: process.env.NUXT_DB_ABilling_PASSWORD,
-      database: process.env.NUXT_DB_ABilling_NAME,
-    },
-    erp: {
-      host: process.env.NUXT_DB_ERP_HOST,
-      port: process.env.NUXT_DB_ERP_PORT,
-      user: process.env.NUXT_DB_ERP_LOGIN,
-      password: process.env.NUXT_DB_ERP_PASSWORD,
-      database: process.env.NUXT_DB_ERP_NAME,
+    dbConfigs: {
+      lanbilling: setDbConfig('LanBilling', 'billing'),
+      abilling: setDbConfig('ABilling', 'billing'),
+      erp: setDbConfig('ERP')
     },
     telegram: {
       botToken: '',

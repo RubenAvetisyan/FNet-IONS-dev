@@ -6,9 +6,9 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     // 'nuxt-security',
   ],
-  security: {
-    hidePoweredBy: false,
-  },
+  // security: {
+  //   hidePoweredBy: false,
+  // },
 
   experimental: {
     reactivityTransform: true,
