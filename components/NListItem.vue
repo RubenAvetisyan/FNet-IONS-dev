@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from '@vue/reactivity'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps({
   href: {
@@ -24,83 +24,84 @@ const props = defineProps({
   },
   name: {
     type: String,
-    default: ''
+    default: '',
   },
   icon: {
     type: String,
-    default: ''
+    default: '',
   },
   isMini: {
     type: Boolean,
-    default: false
+    default: false,
+  },
+  tooltipPlacement: {
+    type: String,
+    default: 'right'
   }
 })
 
+const { getLinks, getListItemBtnVisiblity } = storeToRefs(useSysStore())
+const { onInit } = useSysStore()
+
+const storeKey = onInit()
+const links = getLinks.value(storeKey)
+
+const isVisible = getListItemBtnVisiblity.value(storeKey)
+// console.log('isVisible: ', isVisible);
 const { getRoutes } = useRouter()
 
-const active = 'block pr-4 text-white bg-[#5723ae] rounded md:bg-transparent md:text-[#e30083] md:p-0 dark:text-white'
+const active = 'block pr-4 text-white bg-brand-primary rounded md:bg-transparent md:text-[#e30083] md:p-0 dark:md:text-white'
 const passive = 'block pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-[#e30083] md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700'
 const dClass = 'block text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white'
 const linkClass = ref(props.isMenuitem ? dClass : passive)
 
-const isVisible = ref(false)
-
-const isHidden = computed(() => isVisible.value ? '' : 'hidden')
-const chevron = computed(() => isVisible.value ? 'i-mdi-chevron-up' : 'i-mdi-chevron-down')
-
-const expand = () => {
-  isVisible.value = !isVisible.value
-}
+const tooltipId = (key) => `${key.replaceAll(' ', '-')}-tooltip`
+const chevron = computed(() => isVisible ? 'i-mdi-chevron-up' : 'i-mdi-chevron-down')
 </script>
 
 <template>
-  <li>
-    <!-- Button -->
-    <div v-if="(isMenuitem)" h-12
-      class="flex-0 pr-4 hover:bg-[#5723ae] select-none items-center w-full text-base font-normal text-gray-900 hover:text-light transition duration-75 group dark:text-white"
-      :class="[
-                                (isVisible && 'flex inline-flex'),
-                                (!isVisible && 'flex items-center justify-center'),
-                              ]" @click="expand">
-      <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
-      <span v-show="!isMini" class="flex-1 text-left whitespace-nowrap max-w-prose">{{ name }}</span>
-      <div v-show="!isMini" :class="[chevron, 'flex-2 w-[2rem]']" />
-    </div>
-    
-    <!-- List -->
-    <ul v-if="$slots.list" v-show="isVisible" class="space-y-0" :class="[isHidden, 'w-full']">
-      <slot name="list" />
-    </ul>
-    
-    <!-- Link -->
-    <nuxt-link v-if="getRoutes().some(({ path }) => path === props.link || path === props.href) || isMenuitem"
-      :to="link || href" :active-class="active" :exact="exact" :external="external" :class="[linkClass, 'w-full']"
-      :role="isMenuitem ? 'menuitem' : 'link'" :aria-current="isMenuitem ? '' : 'page'">
-      <div v-if="$slots.icon" class="inline-flex items-center">
-        <slot name="icon" />
-      </div>
-    
-      <div v-if="(!isMenuitem && $slots.list)" h-12
-        class="flex-0 pr-4 hover:bg-[#5723ae] select-none items-center w-full text-base font-normal text-gray-900 hover:text-light transition duration-75 group dark:text-white"
-        :class="[
-                                  (isVisible && 'flex inline-flex'),
-                                  (!isVisible && 'flex items-center justify-center'),
-                                ]">
+    <li :key="storeKey" :links-key="storeKey" :data-tooltip-target="tooltipId(name)"
+      :data-tooltip-placement="tooltipPlacement || 'right'" relative>
+      <NTooltip :id="tooltipId(storeKey)">{{ name }}</NTooltip>
+
+      <!-- Button -->
+      <list-item-btn v-if="(isMenuitem)" :class="[isVisible && ' pr-4']">
         <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
-        <span v-show="!isMini" class="flex-1 text-left whitespace-nowrap max-w-prose">{{ name }}</span>
-      </div>
-    
-      <slot v-else></slot>
-    
-    </nuxt-link>
-    <div v-else>
-      <div class="w-full text-blue font-bold">
-        {{ props.href || props.link }}
-      </div>
-      <div class="text-sm font-italic">
+        <span v-show="!isMini" flex="1" text="left" whitespace="nowrap" max="w-prose">{{ name }}</span>
+        <div v-show="!isMini" flex="2" w="[2rem]" :class="[chevron]" />
+
+      </list-item-btn>
+
+      <!-- List -->
+      <ul v-if="$slots.list" role="list" empty="hidden invisible" space="y-0" bg="light-900 dark:gray-700" w="full"
+        :hidden="isVisible">
+        <slot name="list" />
+      </ul>
+
+      <!-- Link -->
+      <nuxt-link v-if="getRoutes().some(({ path }) => path === props.link || path === props.href) || isMenuitem"
+        :to="link || href" :active-class="active" exact :external="external" class="w-full" :class="[linkClass]"
+        :role="isMenuitem ? 'menuitem' : 'link'" :aria-current="isMenuitem ? '' : 'page'">
+        <div v-if="$slots.icon" inline="flex" items="center">
+          <slot name="icon" />
+        </div>
+        <list-item-btn v-if="(!isMenuitem && $slots.list)" :links-key="`${name}-sub-tooltip`">
+          <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
+          <span v-show="!isMini" flex="1" text="left" whitespace="nowrap" max="w-prose">{{ name }}</span>
+        </list-item-btn>
+        <div v-else>
+          <slot></slot>
+          <NTooltip :id="tooltipId(name)">{{ name }}</NTooltip>
+        </div>
+      </nuxt-link>
+      <div v-else>
+        <div w="full" font="bold" text="blue">
+          {{ props.href || props.link }}
+        </div>
+        <div font="italic" text="sm">
         {{ (href || link) && !isMenuitem
-        ? `ADD PAGE AS NAME AS ${(href || link || '').replace(/\//g, '')}.vue`
-        : `ADD ROUTE TO <NuxtLink :to="${href || link}"></NuxtLink>`
+          ? `ADD PAGE AS NAME AS ${(href || link || '').replace(/\//g, '')}.vue`
+          : `ADD ROUTE TO <NuxtLink :to="${href || link}"></NuxtLink>`
         }}
       </div>
     </div>
