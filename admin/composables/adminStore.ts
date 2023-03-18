@@ -3,7 +3,8 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import { differenceInMilliseconds, format, parseISO } from 'date-fns'
 
 interface Log {
-  [key: string]: string | number
+  header: string[];
+  body: {[key: string]: string | number}
 }
 export const formatSimpleDate = (date: Date | number) => format(date, 'yyyy-MM-dd')
 const defaultStartDate = formatSimpleDate(Date.now()) as string
@@ -94,21 +95,16 @@ export const useAdminStore = defineStore('adminStore', {
         return 'Not done'
 
       const { data } = await useFetch('/api/get-abilling-payments', {
+        key: Date.now() + '',
         method: 'POST',
         body: {
           date: dates,
         },
-        transform: (data) => {
-          const src = data as {
-            'Transaction ID': number;
-            'Contract ID': string;
-            User: string;
-            'Payment sum': Number;
-            P_TYPE: string;
-            P_SYSTEM: string;
-            Transaction: string;
-            'Syncronization Date': string
-          }[]
+        transform: data => {
+          const src = {
+            header: data.header,
+            body: data.body
+          }
           return updatedData(src)
         }
       })

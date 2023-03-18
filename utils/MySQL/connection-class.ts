@@ -19,7 +19,7 @@ class MySQLConnection {
   private pool: Pool
   public config: PoolConfig
 
-  constructor(dbName: string, public connectionLimit?: number) {
+  constructor(dbName: DbName, public connectionLimit?: number) {
     this.config = dbConfig[dbName]
     this.connectionLimit = connectionLimit || 10
     this.pool = this.createPool()

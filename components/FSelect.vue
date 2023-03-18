@@ -39,7 +39,9 @@ const selectValue = computed(() => value.value)
 
 const fn = (e: Event) => {
   const target = e.target as HTMLSelectElement
-  const newValue = target.value as MyOption['value']
+  console.log('target: ', target);
+  const newValue = target.value
+  console.log('newValue: ', JSON.stringify(newValue));
   value.value = newValue
   props.customFn(newValue)
 }

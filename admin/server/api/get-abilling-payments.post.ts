@@ -15,8 +15,17 @@ export default defineEventHandler(async (event) => {
   const { date, replacer = ['', ''] } = await readBody<{ date: QueryDate; replacer?: [string, string] }>(event)
   const requestQuery = await query(date)
   const queryString = replacer ? requestQuery.replace(...replacer) : requestQuery
-  const response = await executeQuery(queryString, 'abilling')
-  console.log('response: ', response.header);
+  const response = await executeQuery<{
+    'Transaction ID': number;
+    'Contract ID': string;
+    User: string;
+    'Payment sum': Number;
+    P_TYPE: string;
+    P_SYSTEM: string;
+    Transaction: string;
+    'Syncronization Date': string
+  }>(queryString, 'abilling')
+  console.log('header: ', response.header);
 
   return response
 })

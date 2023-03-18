@@ -1,5 +1,13 @@
 <script setup>
 import md5 from 'md5'
+import { v4 as uuid } from 'uuid';
+
+function generateTransactionCode() {
+  const randomPart = Math.floor(Math.random() * 100000000);
+  const timestampPart = String(Date.now()).slice(-8).replace(/\D/g, '');
+
+  return `${randomPart}${timestampPart}`.substring(0, 8);
+}
 
 definePageMeta({
   // key: route => route.fullPath
@@ -9,8 +17,14 @@ definePageMeta({
 const TOKEN = '911f225af566b884fb3501132d65cb68'
 const CONTRACT_ID = ref('')
 const Amount = ref('')
-const TransactID = ref('')
-const paymentSystemNames = ref(['Easypay', 'Tellcell', 'Idram', 'FnetPay'])
+const TransactID = ref(generateTransactionCode())
+const paymentSystemNames = ref(
+  {
+    values: ['Easypay', 'Tellcell', 'Idram', 'FnetPay'],
+    label: 'Select Payment System',
+    selected: false
+  },
+)
 const PaymentSystemName = ref('')
 
 const transformedData = computed(() => {
@@ -38,7 +52,8 @@ function transformData({ CONTRACT_ID, Amount, TransactID, Checksum, DtTime, Paym
 }
 
 const fn = (v) => {
-  PaymentSystemName.value = v.target.value
+  console.log('v: ', v);
+  PaymentSystemName.value = v.target.value.join()
 }
 
 const processing = async () => {
@@ -78,5 +93,5 @@ const processing = async () => {
         Send
       </FBtn>
     </div>
-</div>
+                    </div>
 </template>
