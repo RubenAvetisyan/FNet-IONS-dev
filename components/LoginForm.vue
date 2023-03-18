@@ -81,71 +81,37 @@ function createComponents(component: { componentName: string, id: string;[key: s
 </script>
 
 <template>
-  <div class="py-6 px-6 lg:px-8">
-<<<<<<< HEAD
-      <Tab>
-        <template #default>
-          <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-            Խնդրում ենք նույնականացվել համակարգում
-          </h3>
-        </template>
-
-        <template #head>
-          <TabHead v-for="({ tab }, i) in tabs" :key="tab.component.data.id">
-            {{ tab.component.data.label }}
-          </TabHead>
-        </template>
-
-        <template #list>
-          <TabLi v-for="({ tab }) in tabs" :key="tab.component?.data.id" :id="tab.component.data.id"
-            :selected="tab.component.data?.selected">
-            {{ tab.component.data.label }}
-          </TabLi>
-        </template>
-
-        <template #content>
-          <component v-for="({ tab }) in tabs" :key="tab.component.data.id" :is="tab.component.component"
-            v-bind="tab.component.data" mx-2>
-            <template v-if="tab.components.length">
-              <component v-for="({ component }) in tab.components" :key="component.data.id" :is="component.component"
-                v-bind="component.data" mx-2 />
+    <div class="py-6 px-6 lg:px-8">
+          <Tab>
+            <template #default>
+              <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                Խնդրում ենք նույնականացվել համակարգում
+              </h3>
             </template>
-          </component>
-        </template>
 
-      </Tab>
-=======
-        <Tab>
-          <template #default>
-            <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-              Խնդրում ենք նույնականացվել համակարգում
-            </h3>
-          </template>
+            <template #head>
+              <TabHead v-for="({ tab }, i) in tabs" :key="tab.component.data.id">
+                {{ tab.component.data.label }}
+              </TabHead>
+            </template>
 
-          <template #head>
-            <TabHead v-for="({ tab }, i) in tabs" :key="tab.component.data.id">
-              {{ tab.component.data.label }}
-            </TabHead>
-          </template>
+            <template #list>
+              <TabLi v-for="({ tab }) in tabs" :key="tab.component?.data.id" :id="tab.component.data.id"
+                :selected="tab.component.data?.selected">
+                {{ tab.component.data.label }}
+              </TabLi>
+            </template>
 
-          <template #list>
-            <TabLi v-for="({ tab }) in tabs" :key="tab.component?.data.id" :id="tab.component.data.id"
-              :selected="tab.component.data?.selected">
-              {{ tab.component.data.label }}
-            </TabLi>
-          </template>
+            <template #content>
+              <component v-for="({ tab }) in tabs" :key="tab.component.data.id" :is="tab.component.component"
+                v-bind="tab.component.data" mx-2>
+                <template v-if="tab.components.length">
+                  <component v-for="({ component }) in tab.components" :key="component.data.id" :is="component.component"
+                    v-bind="component.data" mx-2 />
+                </template>
+              </component>
+            </template>
 
-          <template #content>
-            <component v-for="({ tab }) in tabs" :key="tab.component.data.id" :is="tab.component.component"
-              v-bind="tab.component.data" mx-2>
-              <template v-if="tab.components.length">
-                <component v-for="({ component }) in tab.components" :key="component.data.id" :is="component.component"
-                  v-bind="component.data" mx-2 />
-              </template>
-            </component>
-          </template>
-
-        </Tab>
->>>>>>> f5706a3247861dfc68df5f8e6d220a3792543abe
+          </Tab>
   </div>
 </template>
