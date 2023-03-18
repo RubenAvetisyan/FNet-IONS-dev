@@ -60,47 +60,6 @@ const chevron = computed(() => isVisible ? 'i-mdi-chevron-up' : 'i-mdi-chevron-d
 </script>
 
 <template>
-<<<<<<< HEAD
-    <li :key="storeKey" :links-key="storeKey" :data-tooltip-target="tooltipId(name)"
-      :data-tooltip-placement="tooltipPlacement || 'right'" relative>
-      <NTooltip :id="tooltipId(storeKey)">{{ name }}</NTooltip>
-
-      <!-- Button -->
-      <list-item-btn v-if="(isMenuitem)" :class="[isVisible && ' pr-4']">
-        <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
-        <span v-show="!isMini" flex="1" text="left" whitespace="nowrap" max="w-prose">{{ name }}</span>
-        <div v-show="!isMini" flex="2" w="[2rem]" :class="[chevron]" />
-
-      </list-item-btn>
-
-      <!-- List -->
-      <ul v-if="$slots.list" role="list" empty="hidden invisible" space="y-0" bg="light-900 dark:gray-700" w="full"
-        :hidden="isVisible">
-        <slot name="list" />
-      </ul>
-
-      <!-- Link -->
-      <nuxt-link v-if="getRoutes().some(({ path }) => path === props.link || path === props.href) || isMenuitem"
-        :to="link || href" :active-class="active" exact :external="external" class="w-full" :class="[linkClass]"
-        :role="isMenuitem ? 'menuitem' : 'link'" :aria-current="isMenuitem ? '' : 'page'">
-        <div v-if="$slots.icon" inline="flex" items="center">
-          <slot name="icon" />
-        </div>
-        <list-item-btn v-if="(!isMenuitem && $slots.list)" :links-key="`${name}-sub-tooltip`">
-          <div w-6 h-6 :class="[icon || '', isMini ? 'mx-auto' : 'mx-2']" />
-          <span v-show="!isMini" flex="1" text="left" whitespace="nowrap" max="w-prose">{{ name }}</span>
-        </list-item-btn>
-        <div v-else>
-          <slot></slot>
-          <NTooltip :id="tooltipId(name)">{{ name }}</NTooltip>
-        </div>
-      </nuxt-link>
-      <div v-else>
-        <div w="full" font="bold" text="blue">
-          {{ props.href || props.link }}
-        </div>
-        <div font="italic" text="sm">
-=======
       <li :key="storeKey" :links-key="storeKey" :data-tooltip-target="tooltipId(name)"
         :data-tooltip-placement="tooltipPlacement || 'right'" relative>
         <NTooltip :id="tooltipId(storeKey)">{{ name }}</NTooltip>
@@ -139,8 +98,7 @@ const chevron = computed(() => isVisible ? 'i-mdi-chevron-up' : 'i-mdi-chevron-d
       <div w="full" font="bold" text="blue">
         {{ props.href || props.link }}
       </div>
-      <div font="italic" text="sm">
->>>>>>> f5706a3247861dfc68df5f8e6d220a3792543abe
+        <div font="italic" text="sm">
         {{ (href || link) && !isMenuitem
           ? `ADD PAGE AS NAME AS ${(href || link || '').replace(/\//g, '')}.vue`
           : `ADD ROUTE TO <NuxtLink :to="${href || link}"></NuxtLink>`
