@@ -1,19 +1,15 @@
-<<<<<<< HEAD
 import { acceptHMRUpdate, defineStore } from 'pinia'
 // import hy from 'date-fns/locale/hy'
 import { differenceInMilliseconds, format, parseISO } from 'date-fns'
-=======
 import type { Ref } from '@vue/reactivity'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 // import { $enum } from 'ts-enum-util'
 import { UserGroupId } from '@/utils/enums'
->>>>>>> f5706a3247861dfc68df5f8e6d220a3792543abe
 
 interface Log {
   header: string[];
   body: { [key: string]: string | number }
 }
-<<<<<<< HEAD
 export const formatSimpleDate = (date: Date | number) => format(date, 'yyyy-MM-dd')
 const defaultStartDate = formatSimpleDate(Date.now()) as string
 export const useAdminStore = defineStore('adminStore', {
@@ -80,7 +76,6 @@ export const useAdminStore = defineStore('adminStore', {
         return Object.values(obj)
       })
       // .filter(s => s)
-=======
 
 // const appConfig = useAppConfig()
 // 
@@ -102,14 +97,12 @@ export const useAdminAuthStore = defineStore('adminAuth', {
     isAdmin(): boolean {
       if (!this.userData)
         return false
->>>>>>> f5706a3247861dfc68df5f8e6d220a3792543abe
 
       return {
         header,
         body,
       }
     },
-<<<<<<< HEAD
     logDate: (state) => {
       return state.logStartDate
     },
@@ -118,7 +111,6 @@ export const useAdminAuthStore = defineStore('adminAuth', {
   actions: {
     async setLog(date: QueryDate) {
       const dates = { ...date }
-=======
     isUser(): boolean {
       if (!this.user)
         return false
@@ -137,7 +129,6 @@ export const useAdminAuthStore = defineStore('adminAuth', {
     },
     async login<T extends Ref<string> | string>(username: T, password: T, setAlert?: (msg: string, type: 'warning' | 'success') => void) {
       const { $startLoading, $finishLoading } = useNuxtApp()
->>>>>>> f5706a3247861dfc68df5f8e6d220a3792543abe
 
       dates.dateFrom = setDateFrom(date.dateFrom)
       dates.dateTo = setDateTo(date.dateTo)
@@ -149,7 +140,6 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       const { data } = await useFetch('/api/get-abilling-payments', {
         key: Date.now() + '',
         method: 'POST',
-<<<<<<< HEAD
         body: {
           date: dates,
         },
@@ -160,7 +150,6 @@ export const useAdminAuthStore = defineStore('adminAuth', {
           }
           return updatedData(src)
         }
-=======
         body: { user: unref(username), password: unref(password) },
       })
 
@@ -193,7 +182,6 @@ export const useAdminAuthStore = defineStore('adminAuth', {
         query: {
           type: loggedinType,
         },
->>>>>>> f5706a3247861dfc68df5f8e6d220a3792543abe
       })
 
       this.log = data.value || []
