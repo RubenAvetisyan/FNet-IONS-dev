@@ -32,6 +32,8 @@ export default defineNuxtConfig({
     './admin',
     './apiPaymentSystems',
     './log',
+    'github.com:RubenAvetisyan/BGBilling.git'
+
   ],
   app: {
     head: {
