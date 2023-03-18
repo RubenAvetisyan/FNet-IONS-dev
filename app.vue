@@ -1,4 +1,16 @@
 <script setup>
+import {
+  initCarousels,
+  initCollapses,
+  initDials,
+  initDismisses,
+  initDrawers,
+  initDropdowns,
+  initModals,
+  initPopovers,
+  initTabs,
+  initTooltips
+} from 'flowbite'
 useHead({
   title: 'FNet Payment System',
   htmlAttrs: {
@@ -15,6 +27,19 @@ useHead({
     { rel: 'manifest', href: '/site.webmanifest' },
   ],
 })
+
+onMounted(() => {
+  initCarousels()
+  initCollapses()
+  initDials()
+  initDismisses()
+  initDrawers()
+  initDropdowns()
+  initModals()
+  initPopovers()
+  initTabs()
+  initTooltips()
+})
 </script>
 
 <template>
@@ -24,7 +49,9 @@ useHead({
 </template>
 
 <style>
-html, body , #__nuxt{
+html,
+body,
+#__nuxt {
   height: 100vh;
   margin: 0;
   padding: 0;

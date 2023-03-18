@@ -15,8 +15,8 @@ defineProps({
   },
 })
 
-const { isminified } = storeToRefs(usedrawerStore())
-const { user } = useAdminAuthStore()
+const { isminified } = storeToRefs(useDrawerStore())
+const { user, getSessionId } = useAdminAuthStore()
 
 const avatar = computed(() => {
   if (!user?.fullName)
@@ -24,57 +24,63 @@ const avatar = computed(() => {
   return user.fullName[0].toUpperCase()
 })
 
+const token = computed(() => getSessionId)
+
 const type = computed(() => {
   return user?.groupId?.includes(UserGroupId.Admin) ? UserGroupName.Admin : user?.type || ''
 })
 
-const menu = ref(null)
+const notMenu = ref(true)
 
 const showMenu = () => {
-  if (menu.value instanceof HTMLElement)
-    menu.value.classList.toggle('hidden')
+  notMenu.value = !notMenu.value
 }
+
+const testLink = `https://t.me/fnetIoSystemBot?start=${encodeURIComponent(token.value)}`
 </script>
 
 <template>
-  <div class="w-full max-w-sm relative bg-white border-b border-[#5723ae] dark:bg-gray-800 dark:border-gray-700">
-    <div
-      :class="`${(!isminified && 'absolute right-0 bottom-0 justify-end px-4 pt-4')} transform-gpu duration-500 fade-transition ease-in-out`"
-    >
-      <div
-        id="dropdownButton"
-        class="cursor-pointer inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
-        @click="showMenu"
-      >
-        <span class="sr-only">Open dropdown</span>
-        <div class="w-6 h-6 i-mdi-dots-horizontal" />
+  <div w="full" max="w-sm" bg="white dark:gray-800" border="b brand-primary dark:gray-700" relative>
+    <div duration="500" transform="gpu" fade="transition" ease="in-out"
+      :class="!isminified && 'absolute right-0 bottom-0 justify-end px-4 pt-4'">
+      <div id="dropdownButton" cursor="pointer" inline="block" text="sm gray-500 dark:gray-400"
+        bg="hover:gray-100 dark:hover:gray-700" focus="ring-4 outline-none ring-gray-200 dark:ring-gray-700" rounded="lg"
+        p="1.5" @click.stop="showMenu">
+        <span sr="only">Open dropdown</span>
+        <div w="6" h="6" class="i-mdi-dots-horizontal" />
       </div>
       <!-- Dropdown menu -->
-      <div
-        id="dropdown" ref="menu"
-        class="absolute z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700"
-      >
-        <ul class="py-1" aria-labelledby="dropdownButton">
-          <n-list-item v-for="item in ['Անձնական հաշիվ']" :key="item" :is-menuitem="true" class="cursor-pointer">
+      <div id="dropdown" absolute z="100" w="44" rounded :hidden="notMenu" text="base" list="none"
+        bg="white dark:gray-700" divide="y gray-100" shadow>
+        <ul p="y-1" aria-labelledby="dropdownButton">
+          <n-list-item v-for="item in ['Անձնական հաշիվ']" :key="item" :is-menuitem="true" cursor="pointer">
             {{ item }}
           </n-list-item>
+          <li>
+            <nuxt-link :to="testLink" btn-blue h-12>
+              <span class="i-mdi-telegram" />
+            </nuxt-link>
+          </li>
         </ul>
       </div>
     </div>
-    <div class="flex flex-col items-center pb-4">
-      <img v-if="srcImg" class="w-12 h-12 mb-3 rounded-full shadow-lg" :src="srcImg" alt="Bonnie image">
-      <div v-else class="w-12 h-12 mb-3 flex rounded-full shadow-lg font-bold text-3xl items-center text-center">
-        <span class="flex  mx-auto">{{ avatar }}</span>
+    <div display="flex" flex="col" items="center" p="b-4">
+      <!-- AVATAR -->
+      <img v-if="srcImg" w="12" h="12" m="b-3" rounded="full" shadow="lg" :src="srcImg" alt="Bonnie image">
+      <div v-else w="12" h="12" m="b-3" flex rounded="full" shadow="lg bg-brand-media" font="bold" text="3xl center"
+        items="center">
+        <span flex m="x-auto">{{ avatar }}</span>
       </div>
-      <h5 v-if="fullName" class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
+      <!-- USER FULL NAME -->
+      <h5 v-if="fullName" m="b-1" text="xl gray-900 dark:white" font="medium">
         Bonnie Green
       </h5>
-      <div class="w-full text-sm text-gray-500 dark:text-gray-400 overflow-x-hidden">
+      <div w="full" text="sm gray-500 dark:gray-400" overflow="x-hidden">
         {{ type }}
       </div>
-      <div v-if="$slots.footer" class="flex mt-4 space-x-3 md:mt-6">
+      <div v-if="$slots.footer" flex space="x-3" m="t-4 md:t-6">
         <slot name="footer" />
       </div>
     </div>
-  </div>
+</div>
 </template>

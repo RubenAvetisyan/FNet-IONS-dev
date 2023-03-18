@@ -1,5 +1,3 @@
-import type { MapsType } from '~~/nuxt'
-
 class Settings {
   private options = new Map()
   constructor(public name: string, option?: MapsType<any>) {

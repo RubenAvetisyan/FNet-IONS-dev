@@ -1,13 +1,27 @@
+<script setup>
+import { useSysStore } from '~~/composables/sysStore'
+
+const props = defineProps({
+  linksKey: {
+    type: String,
+    default: '',
+  },
+})
+
+if (!props.linksKey)
+  createError(`props.linksKey value is "${props.linksKey}"`)
+
+const { setListItemBtn, toggleVisiblity } = useSysStore()
+const key = setListItemBtn(props.linksKey)
+
+const expand = () => toggleVisiblity(key)
+</script>
+
 <template>
   <div
-    ref="listBtn"
-    :class="`${$refs.parent isVisible && 'px-1 flex inline-flex rounded rounded-lg'} ${!isVisible && 'flex items-center justify-center'} hover:bg-[#5723ae] select-none items-center w-full h-12 text-base font-normal text-gray-900 hover:text-light transition duration-75 group dark:text-white dark:hover:bg-gray-700`"
-    @click="expand"
+    w="full" h-12 empty="hidden" flex items-center justify-center select-none bg="hover:brand-primary"
+    text="base gray-900 dark:white hover:light-50" font="normal" duration="75" transition class="group" @click="expand"
   >
-    <div class="i-mdi-credit-card-outline block float-left" />
-    <div v-show="isVisible" class="flex-1 ml-3 text-left whitespace-nowrap">
-      Payment System
-    </div>
-    <div class="i-mdi-chevron-down" />
+    <slot />
   </div>
 </template>

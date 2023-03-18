@@ -9,11 +9,18 @@ export default defineNuxtConfig({
     reactivityTransform: true,
     inlineSSRStyles: false,
   },
-  css: [
-    '@unocss/reset/tailwind.css',
-  ],
 
   imports: {
     dirs: ['utils'],
+  },
+
+  components: {
+    dirs: [
+      {
+        path: '@/admin/components',
+        extensions: ['vue'],
+        prefix: 'admin',
+      },
+    ],
   },
 })

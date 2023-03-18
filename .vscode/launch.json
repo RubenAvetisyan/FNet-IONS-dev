@@ -1,0 +1,59 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "client: chrome",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
+    },
+    // {
+    //     "type": "node",
+    //     "request": "launch",
+    //     "name": "client: chrome",
+    //     // "url": "http://localhost:3000",
+    //     // "port": 3000,
+    //     // "webRoot": "${workspaceFolder}"
+    //     "program": "${workspaceFolder}"
+    // },
+    {
+      "name": "server: nuxt",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ]
+    },
+    {
+      "name": "Run and debug",
+      "type": "node",
+      "request": "launch",
+      "args": [
+        "dev",
+        "development"
+      ],
+      "osx": {
+        "program": "${workspaceFolder}/node_modules/.bin/nuxt"
+      },
+      "linux": {
+        "program": "${workspaceFolder}/node_modules/.bin/nuxt"
+      },
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/.bin/nuxt"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "fullstack: nuxt",
+      "configurations": [
+        "server: nuxt",
+        "client: chrome"
+      ]
+    }
+  ]
+}

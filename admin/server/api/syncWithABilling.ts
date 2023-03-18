@@ -1,41 +1,41 @@
-export default defineEventHandler(async (event) => {
-  const { data } = await readBody(event)
-  // data = { ...data, isTest: true }
+import { readBody, H3Event } from 'h3';
+
+type PaymentSystemName = 'Easypay' | 'Tellcell' | 'Idram' | 'FnetPay';
+
+const paymentSystemUrls: Record<PaymentSystemName, string> = {
+  Easypay: 'http://localhost:3000/payment',
+  Tellcell: 'http://localhost:3000/telcell/?action=payment',
+  Idram: 'http://localhost:3000/idram/?action=payment',
+  FnetPay: 'http://localhost:3000/fnet-pay/?action=payment',
+};
+
+interface Data {data: {PaymentSystemName: PaymentSystemName; Checksum?: string}}
+const handler = async (event: H3Event): Promise<any> => {
+  const { data }: Data = await readBody(event)
+  console.log('data: ', data);
+
   try {
     if (!data.Checksum) {
-      console.warn('WRONG DATA !!!')
-      return false
+      console.warn('WRONG DATA !!!');
+      return false;
     }
 
-    let URI = ''
+    let url = paymentSystemUrls[data.PaymentSystemName];
 
-    switch (data.PaymentSystemName) {
-      case 'Easypay':
-        URI = 'http://localhost:3000/payment'
-        break
-      case 'Tellcell':
-        URI = 'http://localhost:3000/telcell/?action=payment'
-        break
-      case 'Idram':
-        URI = 'http://localhost:3000/idram/?action=payment'
-        break
-      default:
-        console.error(`Class for "${data.PaymentSystemName}" is unrealized`)
-        break
+    if (!url) {
+      console.error(`Class for "${data.PaymentSystemName}" is unrealized`);
+      return 'not Done';
     }
 
-    if (!URI)
-      return 'not Done'
-
-    const response = await $fetch(URI, {
+    const response = await $fetch(url, {
       method: 'POST',
       body: data,
-    })
+    });
 
-    // console.log('response: ', response)
-    return response
+    return response;
+  } catch (error) {
+    console.error('error: ', error);
   }
-  catch (error) {
-    console.error('error: ', error)
-  }
-})
+};
+
+export default defineEventHandler(handler);

@@ -1,3 +1,7 @@
+<script setup lang="ts">
+definePageMeta({ auth: false })
+</script>
+
 <template>
   <div>
     <Suspense>
@@ -7,6 +11,6 @@
         </div>
       </template>
     </Suspense>
-    <!-- <Info /> -->
+    <Info />
   </div>
 </template>

@@ -1,6 +1,5 @@
 import { H3Error } from 'h3'
-import { erpConnection } from '../LanBilling/bdConnect'
-import { getQuery } from '../LanBilling/query'
+import { executeQuery } from '../sync/getPaymentsFromLanBilling'
 import transfrom from '../user/response-transfrom'
 
 const setQueryString = (user: string, password: string) => {
@@ -23,7 +22,7 @@ on ps.group_id = gr.group_id
 inner join erp.user_permset_title as ps_title
 on ps_title.id = ps.permset_id
   where
-    (BINARY login = "${user}" or BINARY email = "user")
+    (BINARY login = "${user}" or BINARY email = "${user}")
   and BINARY password = "${password}"
   and erp.user.status = 0
   and gr.group_id <> 19
@@ -45,17 +44,13 @@ on ps_title.id = ps.permset_id
     )`
 }
 
-
-
 export default async function (user: string, password: string): Promise<AuthResult | H3Error> {
   const queryString = setQueryString(user, password)
-  const erp = await erpConnection
 
-  if (erp instanceof H3Error)
-    return erp
+  const reponse = await executeQuery<AuthResponse>(queryString, 'erp')
+  if (reponse instanceof H3Error)
+    return reponse
 
-  const reponse = await getQuery(queryString, erp) as AuthResponse[]
   const result = transfrom(reponse)
-
   return result
 }

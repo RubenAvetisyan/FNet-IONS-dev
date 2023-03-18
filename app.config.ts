@@ -3,9 +3,9 @@ export default defineAppConfig({
   alerts: {
     login: {
       true: 'Դուք հաջողությամբ նույնականացվեցիք․․․',
-      fasle: 'Սխալ տվյալներ'
+      fasle: 'Սխալ տվյալներ',
     },
-    logout: 'Դուք դուրս եկակք համակարգից։'
+    logout: 'Դուք դուրս եկակք համակարգից։',
   },
   theme: {
     dark: true,

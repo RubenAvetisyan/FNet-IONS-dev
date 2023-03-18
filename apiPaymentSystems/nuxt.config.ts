@@ -4,11 +4,17 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@pinia/nuxt',
     '@nuxtjs/color-mode',
+    // 'nuxt-security',
   ],
+  // security: {
+  //   hidePoweredBy: false,
+  // },
+
   experimental: {
     reactivityTransform: true,
     inlineSSRStyles: false,
   },
+
   css: [
     '@unocss/reset/tailwind.css',
   ],

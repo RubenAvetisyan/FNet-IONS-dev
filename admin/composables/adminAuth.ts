@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 import { acceptHMRUpdate, defineStore } from 'pinia'
 // import hy from 'date-fns/locale/hy'
 import { differenceInMilliseconds, format, parseISO } from 'date-fns'
+=======
+import type { Ref } from '@vue/reactivity'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+// import { $enum } from 'ts-enum-util'
+import { UserGroupId } from '@/utils/enums'
+>>>>>>> f5706a3247861dfc68df5f8e6d220a3792543abe
 
 interface Log {
   header: string[];
   body: { [key: string]: string | number }
 }
+<<<<<<< HEAD
 export const formatSimpleDate = (date: Date | number) => format(date, 'yyyy-MM-dd')
 const defaultStartDate = formatSimpleDate(Date.now()) as string
 export const useAdminStore = defineStore('adminStore', {
@@ -72,12 +80,36 @@ export const useAdminStore = defineStore('adminStore', {
         return Object.values(obj)
       })
       // .filter(s => s)
+=======
+
+// const appConfig = useAppConfig()
+// 
+
+export const useAdminAuthStore = defineStore('adminAuth', {
+  state: (): {
+    sessionId: string
+    user: User | null
+  } => ({
+    sessionId: '',
+    user: null,
+  }),
+
+  getters: {
+    userData: state => state.user,
+    isLogedin(): boolean {
+      return this.isAdmin || this.isUser
+    },
+    isAdmin(): boolean {
+      if (!this.userData)
+        return false
+>>>>>>> f5706a3247861dfc68df5f8e6d220a3792543abe
 
       return {
         header,
         body,
       }
     },
+<<<<<<< HEAD
     logDate: (state) => {
       return state.logStartDate
     },
@@ -86,6 +118,26 @@ export const useAdminStore = defineStore('adminStore', {
   actions: {
     async setLog(date: QueryDate) {
       const dates = { ...date }
+=======
+    isUser(): boolean {
+      if (!this.user)
+        return false
+      return !this.isAdmin
+    },
+    userType: state => state.user?.type,
+    getSessionId: state => state.sessionId,
+  },
+
+  actions: {
+    setUser(user: any) {
+      this.user = user
+    },
+    setSessionId(token: string) {
+      this.sessionId = token
+    },
+    async login<T extends Ref<string> | string>(username: T, password: T, setAlert?: (msg: string, type: 'warning' | 'success') => void) {
+      const { $startLoading, $finishLoading } = useNuxtApp()
+>>>>>>> f5706a3247861dfc68df5f8e6d220a3792543abe
 
       dates.dateFrom = setDateFrom(date.dateFrom)
       dates.dateTo = setDateTo(date.dateTo)
@@ -97,6 +149,7 @@ export const useAdminStore = defineStore('adminStore', {
       const { data } = await useFetch('/api/get-abilling-payments', {
         key: Date.now() + '',
         method: 'POST',
+<<<<<<< HEAD
         body: {
           date: dates,
         },
@@ -107,6 +160,40 @@ export const useAdminStore = defineStore('adminStore', {
           }
           return updatedData(src)
         }
+=======
+        body: { user: unref(username), password: unref(password) },
+      })
+
+      $finishLoading()
+
+      
+      const user = data.value as unknown as User
+
+      if (!data.value)
+        return setAlert ? setAlert('Սխալ տվյալներ', 'warning') : true
+
+      const router = useRouter()
+
+      if (setAlert)
+        setAlert('Դուք հաջողությամբ նույնականացվեցիք․․․', 'success')
+
+      
+      this.user = user
+
+      if (this.isAdmin)
+        router.replace('/admin')
+      else
+        router.replace('/operations')
+    },
+    async logout() {
+      
+      const router = useRouter()
+      const loggedinType = this.isAdmin ? 'admin_token' : 'user_token'
+      await useFetch('/api/logout', {
+        query: {
+          type: loggedinType,
+        },
+>>>>>>> f5706a3247861dfc68df5f8e6d220a3792543abe
       })
 
       this.log = data.value || []
