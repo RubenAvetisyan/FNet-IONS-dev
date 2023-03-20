@@ -20,7 +20,7 @@ async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: {
   contractNumbers = contractNumbers.join(',')
 
   let queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc)
-  await executeQuery('SET @contractNumbers := ?', 'erp');
+  await executeQuery('SET @contractNumbers := null', 'erp');
   queryStringErpCustomers = queryStringErpCustomers.replace('@contractNumbers := null', `@contractNumbers := ( ${contractNumbers} )`)
   return executeQuery<ErpCustomers>(queryStringErpCustomers, 'erp')
 }
@@ -46,8 +46,6 @@ export default defineEventHandler(async () => {
 
   if (erpCustomers instanceof H3Error) throw erpCustomers
 
-  console.log('erpCustomers: ', erpCustomers.body[0]);
-  return []
-  // const respone = await getResponse(erpCustomers)
-  // return respone
+  const body = await getResponse(erpCustomers.body)
+  return { ...erpCustomers, body }
 })
