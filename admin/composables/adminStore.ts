@@ -1,10 +1,13 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 // import hy from 'date-fns/locale/hy'
 import { differenceInMilliseconds, format, parseISO } from 'date-fns'
+import { FieldInfo } from 'mysql';
+import { ZodObject } from 'zod';
+import { H3Error } from 'h3';
 
 interface Log {
   header: string[];
-  body: {[key: string]: string | number}
+  body: { [key: string]: string | number }[]
 }
 export const formatSimpleDate = (date: Date | number) => format(date, 'yyyy-MM-dd')
 const defaultStartDate = formatSimpleDate(Date.now()) as string
@@ -59,15 +62,15 @@ export const useAdminStore = defineStore('adminStore', {
         },
       ] as AdminStoreList[],
     },
-    log: [] as Log[],
+    log: { header: [], body: [] } as Log,
     logStartDate: '' || defaultStartDate,
   }),
 
   getters: {
     adminLeftPanel: state => state.leftPanel,
     logTable: (state) => {
-      const header = state.log.length ? Object.keys(state.log[0]) : []
-      const body = state.log.map((obj) => {
+      const header = state.log.header || []
+      const body = state.log.body.map((obj) => {
         // if (typeof obj === 'object' && !Array.isArray(obj))
         return Object.values(obj)
       })
@@ -100,25 +103,15 @@ export const useAdminStore = defineStore('adminStore', {
         body: {
           date: dates,
         },
-        transform: data => {
-          const src = {
-            header: data.header,
-            body: data.body
-          }
-          return updatedData(src)
-        }
+        pick: ['header', 'body']
       })
 
-      this.log = data.value || []
+      if (data.value instanceof H3Error) {
+        throw new Error(data.value.message)
+      } else {
+        this.log = { header: [], body: [] }
+      }
 
-      // if (Array.isArray(data.value)) {
-      //   this.log = data.value
-      //     .map((item) => {
-      //       const key = 'Syncronization Date'
-      //       item[key] = item[key].replace('T', ' ').replace('.000Z', '')
-      //       return item
-      //     })
-      // }
 
       return 'Done'
     },
@@ -146,26 +139,20 @@ function setDateTo(d: Date | number | string | undefined) {
 if (import.meta.hot)
   import.meta.hot.accept(acceptHMRUpdate(useAdminStore, import.meta.hot))
 
-function updatedData(data: {
-  'Transaction ID': number;
-  'Contract ID': string;
-  User: string;
-  'Payment sum': Number;
-  P_TYPE: string;
-  P_SYSTEM: string;
-  Transaction: string;
-  'Syncronization Date': string
-}[]) {
-  return data.map((item) => {
-    return {
-      'Տրանզակցիոն Կոդ': item['Transaction ID'],
-      'Պայմանագրի №': item['Contract ID'],
-      'Անուն ազգանուն': item.User,
-      'Վճարված գումար': item['Payment sum'],
-      'Վճարման եղանակ': item.P_TYPE,
-      'Վճարման տեսակ': item.P_SYSTEM,
-      'Տրանզակցիոն №': item.Transaction.includes(';') ? item.Transaction.split(';')[1].trim() : item.Transaction,
-      'Վճարման ամսաթիվ': item['Syncronization Date'].replace('T', ' ').replace('.000Z', ''),
-    } as unknown as Log;
-  });
+function updatedData(data: Log) {
+  return {
+    header: data.header,
+    body: data.body.map((item) => {
+      return {
+        'Տրանզակցիոն Կոդ': item['Transaction ID'],
+        'Պայմանագրի №': item['Contract ID'],
+        'Անուն ազգանուն': item.User,
+        'Վճարված գումար': item['Payment sum'],
+        'Վճարման եղանակ': item.P_TYPE,
+        'Վճարման տեսակ': item.P_SYSTEM,
+        'Տրանզակցիոն №': typeof item.Transaction === 'string' && item.Transaction.includes(';') ? item.Transaction.split(';')[1].trim() : item.Transaction,
+        'Վճարման ամսաթիվ': typeof item['Syncronization Date'] === 'string' ? item['Syncronization Date'].replace('T', ' ').replace('.000Z', '') : item['Syncronization Date'],
+      } as unknown as Log;
+    })
+  };
 }
