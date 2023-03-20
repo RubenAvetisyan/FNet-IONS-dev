@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { z } from 'zod'
 
-const erpCustomersSchema = z.object({
+export const erpCustomersSchema = z.object({
     header: z.array(z.string()),
     body: z.array(z.object({
         city: z.string().optional().nullable(),
