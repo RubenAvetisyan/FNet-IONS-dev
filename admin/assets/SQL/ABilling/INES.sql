@@ -1,5 +1,6 @@
 SELECT `contract`, `balance`, `tariff`, `Discount`, `totalCostTariff`, `discountEndDate`, `dayOfPayment`, `status` 
 FROM (SELECT
+	contract.id as contract_id,
 	if(CTO.time_to > curdate(), tariff_option.title, null) AS `Discount`,
 	if(CTO.time_to > curdate(), CTO.time_from, null) AS `Discount_Start_Date`,
 	if(CTO.time_to > curdate(), CTO.time_to, null) AS `discountEndDate`,
@@ -87,39 +88,40 @@ LEFT JOIN (SELECT
 FROM
     contract_tariff
     LEFT JOIN tariff_plan ON tariff_plan.id = contract_tariff.tpid
-WHERE
-    (contract_tariff.date1 IS NULL OR contract_tariff.date1 <= CURDATE())
+		AND (contract_tariff.date1 IS NULL OR contract_tariff.date1 <= CURDATE())
     AND (contract_tariff.date2 IS NULL OR contract_tariff.date2 >= CURDATE())
+    AND tariff_plan.id <> 22
 ) as CT ON CT.cid = contract.id
-LEFT JOIN (
-	SELECT
-cto.id,
-cto.time_from,
-cto.time_to,
-cto.cid,
-cto.option_id
-FROM contract_tariff_option AS cto
-INNER JOIN (
-SELECT cid, MAX(activated_time) AS max_activated_time
-FROM contract_tariff_option
-GROUP BY cid
-) AS max_cto
-ON cto.cid = max_cto.cid AND cto.activated_time = max_cto.max_activated_time AND cto.deactivated_time is null
-) AS CTO ON CTO.cid = CT.cid
+LEFT JOIN (SELECT
+						cto.id,
+						cto.time_from,
+						cto.time_to,
+						cto.cid,
+						cto.option_id
+					 FROM contract_tariff_option AS cto
+           INNER JOIN (SELECT cid, MAX(activated_time) AS max_activated_time
+											 FROM contract_tariff_option
+											 GROUP BY cid
+											) AS max_cto
+					 ON cto.cid = max_cto.cid AND cto.deactivated_time is null
+					) AS CTO ON CTO.cid = CT.cid
 LEFT JOIN tariff_option ON tariff_option.id = CTO.option_id
-LEFT JOIN (SELECT c.id,c.title,c.comment, COALESCE(
-																										REPLACE(REPLACE(DATA,'cost&',''),'%type&1',''),
-                                                    p.title
-																									)AS abon
-					FROM contract c
-					LEFT JOIN contract_balance b ON c.id=b.cid
-					LEFT JOIN contract_tariff AS t ON c.id=t.cid AND t.date2 IS NULL
-					LEFT JOIN tariff_plan AS p ON t.tpid=p.id
-					LEFT JOIN tariff_tree ON tariff_tree.id=t.tpid
-					LEFT JOIN module_tariff_tree ON module_tariff_tree.tree_id=tariff_tree.id
-					LEFT JOIN mtree_node ON mtree_node.mtree_id=module_tariff_tree.id 
-					WHERE b.yy=YEAR(NOW()) AND (mtree_node.type='day_cost')
-					GROUP BY c.id
+LEFT JOIN (SELECT
+						c.id,c.title,
+            c.comment,
+						COALESCE(
+							REPLACE(REPLACE(DATA,'cost&',''),'%type&1',''),
+							p.title
+						) AS abon
+					 FROM contract c
+           LEFT JOIN contract_balance b ON c.id=b.cid
+           LEFT JOIN contract_tariff AS t ON c.id=t.cid AND t.date2 IS NULL
+           LEFT JOIN tariff_plan AS p ON t.tpid=p.id
+           LEFT JOIN tariff_tree ON tariff_tree.id=t.tpid
+           LEFT JOIN module_tariff_tree ON module_tariff_tree.tree_id=tariff_tree.id
+           LEFT JOIN mtree_node ON mtree_node.mtree_id=module_tariff_tree.id
+           WHERE b.yy=YEAR(NOW()) AND (mtree_node.type='day_cost')
+           GROUP BY c.id
 					) as TCost ON TCost.id = contract.id
 WHERE LEFT(contract.title, 1) > 3
 	AND contract.comment NOT REGEXP '(Речкалов|ест|Նոր Արեշ 11, д. 91|est|юл|TEst|Yan|եստ|բաժանորդ|TEST|Անուն|անուն|ազգանուն|Ազգանուն)'
@@ -129,7 +131,6 @@ WHERE LEFT(contract.title, 1) > 3
   AND CG.id = (CASE WHEN day(current_date()) < 11 THEN 1 
 										WHEN  day(current_date()) < 16 and day(current_date()) > 11 THEN 2 
 										WHEN day(current_date()) > 16 and day(current_date()) <= 21 THEN 3 
-							 END
-							)
+							 END)
 group by contract.id) as MAIN
 WHERE MAIN.`Balance` < MAIN.`totalCostTariff`
