@@ -6,8 +6,8 @@ definePageMeta({
 const { data, pending } = useFetch('/api/get-passive-clients')
 const passiveCustomers = data.value
 
-const header = passiveCustomers?.length ? Object.keys(passiveCustomers[0]) : []
-const body = passiveCustomers?.map((obj) => {
+const header = passiveCustomers?.header || []
+const body = passiveCustomers?.body.map((obj) => {
   // if (typeof obj === 'object' && !Array.isArray(obj))
   return Object.values(obj)
 }) || []
