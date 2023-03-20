@@ -5,7 +5,6 @@ import { p } from '@antfu/utils'
 
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import { readSqlFile } from '~~/utils/readSQLFile'
-import { erpCustomersSchema } from '~~/types/nuxt'
 import intersection from 'lodash.intersection'
 
 const mustPaySchema = z.object({
