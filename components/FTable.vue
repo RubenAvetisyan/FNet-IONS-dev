@@ -38,7 +38,7 @@ const colIndex = ref(0)
 const isMin = ref(false)
 
 const setColums = (headers, body) => headers.forEach((header, i) => {
-  columns.value.push(sordby(intersection(body.map(item => item[i]))))
+  columns.value.push(sordby(intersection(body.map(item => item[header] || item[i]))))
 })
 
 onMounted(() => {
@@ -127,13 +127,20 @@ const filename = computed(() => {
 })
 
 function getData() {
+  console.log('body.value.filteredArray: ', body.value.filteredArray[0]);
+  console.log('props.src.header: ', props.src.header);
   return body.value.filteredArray.map((item) => {
-    return zipobject(props.src.header, item)
+    const result = {}
+    props.src.header.forEach(header => {
+      result[header] = item[header]
+    })
+    return result // zipobject(props.src.header, item)
   })
 }
 
 const setXls = async () => {
   const data = getData()
+  console.log('data: ', data);
 
   return await useFetch('/api/saveInoExcel', {
     method: 'POST',
