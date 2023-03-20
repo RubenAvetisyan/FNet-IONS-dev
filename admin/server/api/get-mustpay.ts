@@ -30,22 +30,6 @@ const mustPaySchema = z.object({
   ).nonempty()
 })
 
-const erpCustomersSchema = z.object({
-  header: z.array(z.string()),
-  body: z.array(z.object({
-    city: z.string().optional().nullable(),
-    street: z.string().optional().nullable(),
-    quarter: z.string().optional().nullable(),
-    house: z.string().optional().nullable(),
-    contract: z.string().optional(),
-    agreementDate: z.string().optional(),
-    customerName: z.string().optional(),
-    phone: z.string().optional().nullable(),
-    contractId: z.number().optional(),
-    customerType: z.string().optional(),
-  })).nonempty()
-})
-
 const responeSchema = z.object({
   header: z.array(z.string()),
   body: z.array(z.object({
@@ -67,7 +51,6 @@ const responeSchema = z.object({
 })
 
 type MustPay = z.TypeOf<typeof mustPaySchema>;
-type ErpCustomers = z.TypeOf<typeof erpCustomersSchema>;
 type MustPayErpCustomer = z.TypeOf<typeof responeSchema>;
 
 const mustPayCustomersQuerySrc = '../../admin/assets/SQL/ABilling/LENINGRADIAN.sql'
@@ -76,7 +59,7 @@ const erpCustomersQuerySrc = '../../admin/assets/SQL/ERP/ERP_Customers.sql'
 const map: Map<string, any> = new Map()
 
 
-const getContractNumbers = (passiveCustomers: MustPay) => passiveCustomers.map((obj) => {
+const getContractNumbers = (passiveCustomers: MustPay) => passiveCustomers.body.map((obj) => {
   if (map && obj.contract)
     map.set(obj.contract, obj)
 
@@ -95,7 +78,7 @@ async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: M
 }
 
 const getResponse = async (erpCustomers: ErpCustomers) => {
-  return await Promise.all(erpCustomers.map((customers) => {
+  return await Promise.all(erpCustomers.body.map((customers) => {
     // customers.phone = customers.phone.split(',').join(', ')
 
     if (!map)
@@ -118,7 +101,7 @@ export default defineEventHandler(async event => {
       return []
     }
 
-    console.log('mustPayCustomers length: ', mustPayCustomers.length);
+    console.log('mustPayCustomers length: ', mustPayCustomers.body.length);
 
     // const erpCustomers = await getERPCustomers(erpCustomersQuerySrc, mustPaySchema.parse(mustPayCustomers))
     // if (erpCustomers instanceof H3Error) {

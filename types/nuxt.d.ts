@@ -1,4 +1,21 @@
 import type { Ref } from 'vue'
+import { z } from 'zod'
+
+const erpCustomersSchema = z.object({
+    header: z.array(z.string()),
+    body: z.array(z.object({
+        city: z.string().optional().nullable(),
+        street: z.string().optional().nullable(),
+        quarter: z.string().optional().nullable(),
+        house: z.string().optional().nullable(),
+        contract: z.string().optional(),
+        agreementDate: z.string().optional(),
+        customerName: z.string().optional(),
+        phone: z.string().optional().nullable(),
+        contractId: z.number().optional(),
+        customerType: z.string().optional(),
+    })).nonempty()
+})
 
 export { };
 
@@ -194,4 +211,6 @@ declare global {
         direct?: string;
         sub?: AdminStoreList[]
     }
+
+    type ErpCustomers = z.TypeOf<typeof erpCustomersSchema>;
 }

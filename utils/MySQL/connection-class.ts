@@ -1,5 +1,5 @@
 import { createPool, FieldInfo, Pool, PoolConfig } from 'mysql'
-import { config } from '~~/Config/index'
+import { config } from '@/config/index'
 
 enum DbName {
   LAN_BILLING = 'lanbilling',
@@ -39,9 +39,8 @@ class MySQLConnection {
     })
   }
 
-  executeQuery<T>(query: string, options?: QueryOptions): Promise<{ header: string[] | [], body: T[], FieldPackets: FieldInfo[] | undefined }> {
+  executeQuery<T>(query: string, options: QueryOptions = { timezone: '+04:00' }): Promise<{ header: string[] | [], body: T[], FieldPackets: FieldInfo[] | undefined }> {
     const queryOptions: QueryOptions = { ...options }
-    queryOptions.timezone = '+04:00'
 
     return new Promise((resolve, reject) => {
       this.pool.query(query, queryOptions, (error, results = [], fields) => {
