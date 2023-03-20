@@ -1,4 +1,4 @@
-import { defineEventHandler } from 'h3'
+import { defineEventHandler, H3Error } from 'h3'
 import intersection from 'lodash.intersection'
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import { readSqlFile } from '~~/utils/readSQLFile'
@@ -15,12 +15,14 @@ const getContractNumbers = async (passiveCustomers: {}[]) => Promise.all(passive
 
   return obj.contract
 }))
-async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: {}[]): Promise<{ [key: string]: number | string }[]> {
-  const contractNumbers = await getContractNumbers(passiveCustomers)
+async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: {}[]) {
+  let contractNumbers: string | string[] = await getContractNumbers(passiveCustomers)
+  contractNumbers = contractNumbers.join(',')
 
   let queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc)
-  queryStringErpCustomers = queryStringErpCustomers.replace('contractNumbers', contractNumbers.join(','))
-  return executeQuery(queryStringErpCustomers, 'erp') as any
+  await executeQuery('SET @contractNumbers := ?', 'erp');
+  queryStringErpCustomers = queryStringErpCustomers.replace('@contractNumbers := null', `@contractNumbers := ( ${contractNumbers} )`)
+  return executeQuery<ErpCustomers>(queryStringErpCustomers, 'erp')
 }
 
 const getResponse = async (erpCustomers: {}[]) => {
@@ -40,8 +42,12 @@ export default defineEventHandler(async () => {
   map.clear()
   const queryStringPassiveCustomers = await readSqlFile(passiveCustomersQuerySrc)
   const passiveCustomers = await executeQuery(queryStringPassiveCustomers, 'abilling') as any
+  const erpCustomers = await getERPCustomers(erpCustomersQuerySrc, passiveCustomers.body)
 
-  const erpCustomers = await getERPCustomers(erpCustomersQuerySrc, passiveCustomers)
-  const respone = await getResponse(erpCustomers)
-  return respone
+  if (erpCustomers instanceof H3Error) throw erpCustomers
+
+  console.log('erpCustomers: ', erpCustomers.body[0]);
+  return []
+  // const respone = await getResponse(erpCustomers)
+  // return respone
 })
