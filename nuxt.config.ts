@@ -15,10 +15,19 @@ process.on('SIGINT', async (signal) => {
 const host = process.env.HOST
 const port = process.env.PORT
 
-const setDbConfig = (db: string, dbName?: string, insecureAuth: boolean = true) => {
+type DB_CONFIG = {
+  host: string;
+  port: number | string;
+  user: string;
+  password: string;
+  database: string;
+  insecureAuth: boolean;
+} | undefined
+
+const setDbConfig = (db: string, dbName?: string, insecureAuth: boolean = true): DB_CONFIG => {
   const DB = db.toUpperCase()
   return {
-    host: process.env[`NUXT_DB_${DB}_HOST`],
+    host: process.env[`NUXT_DB_${DB}_HOST`] || '',
     port: process.env[`NUXT_DB_${DB}_PORT`] || 3306,
     user: process.env[`NUXT_DB_${DB}_LOGIN`] || '',
     password: process.env[`NUXT_DB_${DB}_PASSWORD`] || '',
@@ -27,12 +36,14 @@ const setDbConfig = (db: string, dbName?: string, insecureAuth: boolean = true) 
   }
 }
 
+const lanbilling = setDbConfig('LanBilling', 'billing')
+
 export default defineNuxtConfig({
   extends: [
     './admin',
     './apiPaymentSystems',
     './log',
-    'github.com:RubenAvetisyan/BGBilling.git'
+    // 'github.com:RubenAvetisyan/BGBilling.git'
 
   ],
   app: {
@@ -99,7 +110,7 @@ export default defineNuxtConfig({
     AUTH_ORIGIN: process.env.NUXT_AUTH_ORIGIN,
     authSecret: description,
     dbConfigs: {
-      lanbilling: setDbConfig('LanBilling', 'billing'),
+      lanbilling,
       abilling: setDbConfig('ABilling', 'billing'),
       erp: setDbConfig('ERP')
     },
