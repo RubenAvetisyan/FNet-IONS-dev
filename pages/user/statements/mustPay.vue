@@ -29,21 +29,13 @@ const MustPaySchema = z.object({
 // type MustPay = z.TypeOf<typeof MustPaySchema>;
 
 const { data, pending } = await useFetch('/api/get-mustpay', {
-  key,
-  server: true,
-  transform: mustPay => {
-    const header = mustPay?.length ? Object.keys(mustPay[0]) : []
-    console.log('header: ', header);
-    const body =  mustPay?.map((obj) => {
-        // if (typeof obj === 'object' && !Array.isArray(obj))
-        return Object.values(obj)
-      }) || []
-    return { header, body }
-  }
+  pick: ['header', 'body']
 })
 const mustPay = computed(() => {
   console.log('data.value: ', data.value);
-  return data.value ||  {header: [], body: []}
+  const header = data.value?.header || []
+  const body = data.value?.body || []
+  return { header, body }
 })
 
 const { $finishLoading, $startLoading, $isLoading } = useNuxtApp()
