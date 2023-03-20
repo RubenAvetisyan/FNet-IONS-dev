@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { setAlert } = useAlertStore()
-const { login: storeLogin } = useAdminAuthStore()
+// const { login: storeLogin } = useAdminAuthStore()
 
 const { signIn, getProviders } = useSession()
 
