@@ -62,5 +62,7 @@ WHERE
     customer.title NOT REGEXP '(Речкалов|ест|est|юл|TEst|Yan|եստ|բաժանորդ|TEST|նուն|ազգանուն)'
     AND customer_link.object_title <> 9000019
     AND LEFT(customer_link.object_title, 1) > 3
-    AND if(@contractNumbers is not null,customer_link.object_title IN (@contractNumbers), 1=1)
-GROUP BY customer_link.object_title
+    AND customer_link.object_title IN (@contractNumbers)
+GROUP BY customer_link.object_title;
+
+--if(@contractNumbers is not null,customer_link.object_title IN (@contractNumbers), 1=1)
