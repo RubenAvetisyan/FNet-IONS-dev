@@ -33,10 +33,8 @@ FROM (SELECT
 			 ELSE CT.cost
   END as `totalCostTariff`
 FROM contract
-LEFT JOIN contract_group AS CG ON CG.id = CASE WHEN day(current_date()) < 11 THEN 1 
-											WHEN  day(current_date()) < 16 and day(current_date()) > 11 THEN 2 
-											WHEN day(current_date()) >= 21 THEN 3 
-											END
+LEFT JOIN contract_group AS CG
+		ON contract.gr&(1<<CG.id) > 0
 LEFT JOIN contract_parameter_type_1 as param1 ON param1.cid = contract.scid AND param1.pid = 13
 INNER JOIN contract_parameter_type_2 AS param2 ON contract.id = param2.cid
 INNER JOIN address_house AS ah ON param2.hid = ah.id
@@ -128,10 +126,10 @@ WHERE LEFT(contract.title, 1) > 3
   AND contract.status = 0
   AND contract.del = 0
   AND length(contract.title) > 7
-  AND contract.gr&(1<<CASE WHEN day(current_date()) < 11 THEN 1 
-											WHEN  day(current_date()) < 16 and day(current_date()) > 11 THEN 2 
-											WHEN day(current_date()) >= 21 THEN 3 
-											END
-									) > 0
+  AND CG.id = (CASE WHEN day(current_date()) < 11 THEN 1 
+										WHEN  day(current_date()) < 16 and day(current_date()) > 11 THEN 2 
+										WHEN day(current_date()) > 16 and day(current_date()) <= 21 THEN 3 
+							 END
+							)
 group by contract.id) as MAIN
 WHERE MAIN.`Balance` < MAIN.`totalCostTariff`
