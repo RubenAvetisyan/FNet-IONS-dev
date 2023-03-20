@@ -1,17 +1,10 @@
-<script setup lang="ts">
-import { PropType } from 'vue'
-import { z } from 'zod'
-
-interface MyOption {
-  value: string | number | boolean;
-  label: string;
-  selected: boolean
-}
+<script setup>
 
 const props = defineProps({
   name: {
     type: String,
-    required: true
+    required: true,
+    default: ''
   },
   options: {
     type: Object,
@@ -27,18 +20,18 @@ const props = defineProps({
   }
 })
 
-const removeSpace = (str: string) => str.replace(/\s/g, '')
+const removeSpace = (str) => str.replace(/\s/g, '')
 const defaultOption = {
   value: 'default-value-' + Date.now(),
   label: 'default-label-' + Date.now(),
   selected: false
 }
-const getKey = (option: MyOption = defaultOption) => removeSpace(`${option.value}-${option.label}`)
-const value = ref<MyOption['value']>()
+const getKey = (option = defaultOption) => removeSpace(`${option.value}-${option.label}`)
+const value = ref()
 const selectValue = computed(() => value.value)
 
-const fn = (e: Event) => {
-  const target = e.target as HTMLSelectElement
+const fn = (e) => {
+  const target = e.target
   console.log('target: ', target);
   const newValue = target.value
   console.log('newValue: ', JSON.stringify(newValue));
@@ -50,13 +43,18 @@ const options = computed(() => {
   console.log('props.options: ', props.options);
   const label = props.options.label
   const selected = props.options.selected
-  return props.options.values.map((value: string | number | boolean, i: number) => {
+  return props.options.values.map((value, i) => {
     return {
       label,
       value,
-      key: getKey({ value, label, selected: selected === i})
+      key: getKey({ value, label, selected: selected === i })
     }
   })
+})
+
+const id = computed(() => {
+  const name = props.name
+  return name.replace(/\s/gim, '-')
 })
 </script>
 
@@ -68,7 +66,7 @@ const options = computed(() => {
         <slot absolute top-0></slot>
       </div>
     </div>
-    <select :id="id" :name="name" :value="selectValue" flex w-full max-h-7 appearance-none border border-gray-500
+      <select :id="id" :name="name || ''" :value="selectValue" flex w-full max-h-7 appearance-none border border-gray-500
       leading-tight focus:outline-none focus:shadow-outline rounded font-medium text=" xs gray-700 dark:white"
       @change="fn">
       <option value="" class="bg-light-300 dark:bg-dark-700" />
