@@ -5,6 +5,8 @@ import { p } from '@antfu/utils'
 
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import { readSqlFile } from '~~/utils/readSQLFile'
+import { erpCustomersSchema } from '~~/types/nuxt'
+import intersection from 'lodash.intersection'
 
 const mustPaySchema = z.object({
   header: z.array(z.string()),
@@ -53,40 +55,37 @@ const responeSchema = z.object({
 type MustPay = z.TypeOf<typeof mustPaySchema>;
 type MustPayErpCustomer = z.TypeOf<typeof responeSchema>;
 
-const mustPayCustomersQuerySrc = '../../admin/assets/SQL/ABilling/LENINGRADIAN.sql'
+const mustPayCustomersQuerySrc = '../../admin/assets/SQL/ABilling/INES.sql'
 const erpCustomersQuerySrc = '../../admin/assets/SQL/ERP/ERP_Customers.sql'
 
 const map: Map<string, any> = new Map()
 
 
-const getContractNumbers = (passiveCustomers: MustPay) => passiveCustomers.body.map((obj) => {
-  if (map && obj.contract)
+const getContractNumbers = async (passiveCustomers: {}[]) => Promise.all(passiveCustomers.map((obj: any) => {
+  if (map)
     map.set(obj.contract, obj)
 
   return obj.contract
-}).filter(s => !!s)
+}))
 
-async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: MustPay) {
-  const contractNumbers = getContractNumbers(passiveCustomers)
-  console.log('contractNumbers: ', contractNumbers[0]);
+async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: {}[]) {
+  let contractNumbers: string | string[] = await getContractNumbers(passiveCustomers)
+  contractNumbers = contractNumbers.join(',')
 
   let queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc)
-
-  await executeQuery('SET @contractNumbers := ?', 'erp', {});
-  queryStringErpCustomers = queryStringErpCustomers.replace('@contractNumbers := null', `@contractNumbers := ( ${contractNumbers.join(',')} )`)
-  return executeQuery<ErpCustomers>(queryStringErpCustomers, 'erp')
+  // await executeQuery(`SET @contractNumbers := '${contractNumbers}';`, 'erp');
+  return executeQuery<ErpCustomers>(queryStringErpCustomers.replace('@contractNumbers', contractNumbers), 'erp')
 }
 
-const getResponse = async (erpCustomers: ErpCustomers) => {
-  return await Promise.all(erpCustomers.body.map((customers) => {
+const getResponse = async (erpCustomers: {}[]) => {
+  return Promise.all(erpCustomers.map((customers: any) => {
     // customers.phone = customers.phone.split(',').join(', ')
 
     if (!map)
       return { ...customers }
+    customers.phone = customers.phone ? intersection<string>(customers.phone.replace(/\s/gim, '').split(',')).filter(s => s).join(', ') : ''
 
-    // customers.phone = intersection<string>(customers.phone.replace(/\s/gim, '').split(',')).filter(s => s).join(', ')
-
-    const fullObj = customers.contract ? map.get(customers.contract) : {}
+    const fullObj = map.get(customers.contract)
     return { ...customers, ...fullObj }
   }))
 }
@@ -103,14 +102,14 @@ export default defineEventHandler(async event => {
 
     console.log('mustPayCustomers length: ', mustPayCustomers.body.length);
 
-    // const erpCustomers = await getERPCustomers(erpCustomersQuerySrc, mustPaySchema.parse(mustPayCustomers))
-    // if (erpCustomers instanceof H3Error) {
-    //   console.error('erpCustomers: ', erpCustomers);
-    //   return []
-    // }
+    const erpCustomers = await getERPCustomers(erpCustomersQuerySrc, mustPaySchema.parse(mustPayCustomers).body)
+    console.log('erpCustomers: ', erpCustomers);
+    if (erpCustomers instanceof H3Error) {
+      throw erpCustomers
+    }
 
-    // const respone = await getResponse(erpCustomersSchema.parse(erpCustomers)) as { [key: string]: any }[]
-    return [] // responeSchema.parse(respone)
+    const body = await getResponse(erpCustomers.body)
+    return { ...erpCustomers, body }
   } catch (error) {
     console.error('error: ', error);
   }
