@@ -8,7 +8,7 @@ export const erpCustomersSchema = z.object({
         street: z.string().optional().nullable(),
         quarter: z.string().optional().nullable(),
         house: z.string().optional().nullable(),
-        contract: z.string().optional(),
+        contract: z.string(),
         agreementDate: z.string().optional(),
         customerName: z.string().optional(),
         phone: z.string().optional().nullable(),
@@ -59,13 +59,21 @@ declare global {
         PaymentSystemName: string
     }
 
+    type GetPaymentsResponseBody = {
+        'Transaction ID': number;
+        'Contract ID': string;
+        User: string;
+        'Payment sum': Number;
+        P_TYPE: string;
+        P_SYSTEM: string;
+        Transaction: string;
+        'Syncronization Date': string;
+    }
+
     interface GetPaymentsResponse {
-        ['Transaction ID']: number,
-        ['Contract ID']: string,
-        [User]: string,
-        ['Payment sum']: number,
-        ['Transaction Type']: string,
-        ['Syncronization Date']: string
+        header: string[];
+        body: GetPaymentsResponseBody[];
+        FieldPackets?: FieldInfo[] | undefined;
     }
 
     interface LanBilling {

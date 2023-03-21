@@ -1,14 +1,13 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 // import hy from 'date-fns/locale/hy'
 import { differenceInMilliseconds, format, parseISO } from 'date-fns'
-import { FieldInfo } from 'mysql';
-import { ZodObject } from 'zod';
 import { H3Error } from 'h3';
 
-interface Log {
-  header: string[];
-  body: { [key: string]: string | number }[]
+type Log = {
+  header: string[],
+  body: GetPaymentsResponseBody[]
 }
+
 export const formatSimpleDate = (date: Date | number) => format(date, 'yyyy-MM-dd')
 const defaultStartDate = formatSimpleDate(Date.now()) as string
 export const useAdminStore = defineStore('adminStore', {
@@ -62,7 +61,7 @@ export const useAdminStore = defineStore('adminStore', {
         },
       ] as AdminStoreList[],
     },
-    log: { header: [], body: [] } as Log,
+    log: { header: [], body: [] },
     logStartDate: '' || defaultStartDate,
   }),
 
@@ -103,13 +102,14 @@ export const useAdminStore = defineStore('adminStore', {
         body: {
           date: dates,
         },
-        pick: ['header', 'body']
+        pick: ['body', 'header']
       })
 
-      if (data.value instanceof H3Error) {
-        throw new Error(data.value.message)
+      if (data.value instanceof H3Error || !data.value) {
+        throw new Error(data.value?.message || 'Something goes wrong')
       } else {
-        this.log = { header: [], body: [] }
+        this.log.header = data.value?.header || []
+        this.log.body = data.value?.body || []
       }
 
 

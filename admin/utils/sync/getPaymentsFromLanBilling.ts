@@ -12,7 +12,7 @@ const db = {
 
 export const executeQuery = async <T>(queryString: string, paymentSystem: string, options?: QueryOptions): Promise<
   | {
-    header: string[] | [];
+    header: string[];
     body: T[];
     FieldPackets: FieldInfo[] | undefined;
   }
