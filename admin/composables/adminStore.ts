@@ -4,9 +4,9 @@ import { differenceInMilliseconds, format, parseISO } from 'date-fns'
 import { H3Error } from 'h3';
 
 type Log = {
-  header: string[],
-  body: GetPaymentsResponseBody[]
-}
+  header: string[];
+  body: GetPaymentsResponseBody[];
+};
 
 export const formatSimpleDate = (date: Date | number) => format(date, 'yyyy-MM-dd')
 const defaultStartDate = formatSimpleDate(Date.now()) as string
@@ -61,24 +61,22 @@ export const useAdminStore = defineStore('adminStore', {
         },
       ] as AdminStoreList[],
     },
-    log: { header: [], body: [] },
+    log: { header: [], body: [] } as Log,
     logStartDate: '' || defaultStartDate,
   }),
 
   getters: {
     adminLeftPanel: state => state.leftPanel,
     logTable: (state) => {
-      const header = state.log.header || []
-      const body = state.log.body.map((obj) => {
-        // if (typeof obj === 'object' && !Array.isArray(obj))
-        return Object.values(obj)
-      })
-      // .filter(s => s)
+      const header = state.log.header || [];
+      const body = (state.log.body as GetPaymentsResponseBody[]).map((obj) => {
+        return Object.values(obj);
+      });
 
       return {
         header,
         body,
-      }
+      };
     },
     logDate: (state) => {
       return state.logStartDate
@@ -87,33 +85,38 @@ export const useAdminStore = defineStore('adminStore', {
 
   actions: {
     async setLog(date: QueryDate) {
-      const dates = { ...date }
+      const dates = { ...date };
 
-      dates.dateFrom = setDateFrom(date.dateFrom)
-      dates.dateTo = setDateTo(date.dateTo)
-      const difference = differenceInMilliseconds(parseISO(dates.dateTo), parseISO(dates.dateFrom))
+      dates.dateFrom = setDateFrom(date.dateFrom);
+      dates.dateTo = setDateTo(date.dateTo);
+      const difference = differenceInMilliseconds(parseISO(dates.dateTo), parseISO(dates.dateFrom));
 
-      if (difference < 0)
-        return 'Not done'
-
-      const { data } = await useFetch('/api/get-abilling-payments', {
-        key: Date.now() + '',
-        method: 'POST',
-        body: {
-          date: dates,
-        },
-        pick: ['body', 'header']
-      })
-
-      if (data.value instanceof H3Error || !data.value) {
-        throw new Error(data.value?.message || 'Something goes wrong')
-      } else {
-        this.log.header = data.value?.header || []
-        this.log.body = data.value?.body || []
+      if (difference < 0) {
+        throw new Error('Дата начала должна быть раньше даты окончания');
       }
 
+      try {
+        const { data } = await useFetch('/api/get-abilling-payments', {
+          key: Date.now() + '',
+          method: 'POST',
+          body: {
+            date: dates,
+          },
+          pick: ['body', 'header'],
+        });
 
-      return 'Done'
+        if (!data.value || data.value instanceof H3Error) {
+          throw new Error(data.value?.message || 'Что-то пошло не так');
+        } else {
+          this.log.header = Array.isArray(data.value.header) ? data.value.header : [];
+          this.log.body = Array.isArray(data.value.body) ? data.value.body as GetPaymentsResponseBody[] : [];
+        }
+
+        return 'Завершено';
+      } catch (error) {
+        console.error(error);
+        throw new Error('Ошибка при получении данных');
+      }
     },
     setLogStartDate(dateFrom: Date | string) {
       this.logStartDate = dateFrom instanceof Date ? formatSimpleDate(dateFrom) : formatSimpleDate(parseISO(dateFrom))
