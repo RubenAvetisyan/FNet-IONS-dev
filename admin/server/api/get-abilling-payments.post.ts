@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   const response = await executeQuery<GetPaymentsResponseBody>(queryString, 'abilling')
 
   if (response instanceof H3Error) {
-    return response
+    return createError(response)
   }
 
   console.log('header: ', response.header);

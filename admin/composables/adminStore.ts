@@ -68,20 +68,18 @@ export const useAdminStore = defineStore('adminStore', {
   getters: {
     adminLeftPanel: state => state.leftPanel,
     logTable: (state) => {
-      const header = state.log.header || [];
-      const body = (state.log.body as GetPaymentsResponseBody[]).map((obj) => {
-        return Object.values(obj);
-      });
+      const updatedDataResult = updatedData(state.log);
 
       return {
-        header,
-        body,
+        header: updatedDataResult.header,
+        body: updatedDataResult.body,
       };
     },
     logDate: (state) => {
-      return state.logStartDate
+      return state.logStartDate;
     },
   },
+
 
   actions: {
     async setLog(date: QueryDate) {
@@ -106,6 +104,7 @@ export const useAdminStore = defineStore('adminStore', {
         });
 
         if (!data.value || data.value instanceof H3Error) {
+          console.log('data.value: ', data.value);
           throw new Error(data.value?.message || 'Что-то пошло не так');
         } else {
           this.log.header = Array.isArray(data.value.header) ? data.value.header : [];
@@ -114,8 +113,9 @@ export const useAdminStore = defineStore('adminStore', {
 
         return 'Завершено';
       } catch (error) {
-        console.error(error);
-        throw new Error('Ошибка при получении данных');
+        console.error('Ошибка при получении данных');
+        if (error)
+          return createError(error);
       }
     },
     setLogStartDate(dateFrom: Date | string) {
@@ -143,8 +143,18 @@ if (import.meta.hot)
   import.meta.hot.accept(acceptHMRUpdate(useAdminStore, import.meta.hot))
 
 function updatedData(data: Log) {
+  const header = [
+    'Տրանզակցիոն Կոդ',
+    'Պայմանագրի №',
+    'Անուն ազգանուն',
+    'Վճարված գումար',
+    'Վճարման եղանակ',
+    'Վճարման տեսակ',
+    'Տրանզակցիոն №',
+    'Վճարման ամսաթիվ'
+  ]
   return {
-    header: data.header,
+    header,
     body: data.body.map((item) => {
       return {
         'Տրանզակցիոն Կոդ': item['Transaction ID'],
