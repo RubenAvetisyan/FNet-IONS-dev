@@ -4,8 +4,8 @@ const { setAlert } = useAlertStore()
 
 const { signIn, getProviders } = useSession()
 
-const provifers = ref(await getProviders())
-console.log('provifers: ', provifers.value);
+const providers = ref(await getProviders())
+console.log('providers: ', providers.value);
 
 const mySignInHandler = () => async ({ username, password }: { username: string, password: string }) => {
   const { error, url } = await signIn('credentials', { username, password, redirect: true })
@@ -37,13 +37,14 @@ const tabs = ref([{
       componentName: 'TabContent',
       id: 'main',
       label: 'Հիմնական',
+      class: 'hidden',
       selected: true
     }),
     components: [
       {
         component: createComponents({
           componentName: 'Form',
-          id: 'main',
+          id: 'main-form',
           submit: mySignInHandler
         })
       }
@@ -61,7 +62,7 @@ const tabs = ref([{
       {
         component: createComponents({
           componentName: 'Form',
-          id: 'erp',
+          id: 'erp-form',
           submit: mySignInHandler
         })
       }

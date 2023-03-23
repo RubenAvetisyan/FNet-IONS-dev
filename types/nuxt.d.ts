@@ -20,11 +20,19 @@ export const erpCustomersSchema = z.object({
 export { };
 
 declare module 'lodash.intersection' {
-  function intersection<T>(...arrays: T[][]): T[];
-  export = intersection;
+    function intersection<T>(...arrays: T[][]): T[];
+    export = intersection;
 }
 
 declare global {
+
+    type ExecuteQuery<T> =
+        | {
+            header: string[];
+            body: T[];
+            FieldPackets: FieldInfo[] | undefined;
+        }
+        | H3Error
 
     interface UseAutoSyncType {
         pause: () => void

@@ -1,8 +1,10 @@
-import { defineEventHandler, H3Error, readBody } from 'h3'
+import { defineEventHandler, H3Error, readBody, send } from 'h3'
 import { endOfDay, parseISO, startOfDay } from 'date-fns'
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import { formatToSqlDate } from '@/utils/dateTime'
 import { readSqlFile } from '~~/utils/readSQLFile'
+
+
 
 const query = async (date: QueryDate) => {
   const dateFrom = formatToSqlDate(startOfDay(parseISO(date.dateFrom))) as string

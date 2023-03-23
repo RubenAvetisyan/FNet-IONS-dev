@@ -7,10 +7,8 @@ const { data, pending } = useFetch('/api/get-passive-clients')
 const passiveCustomers = data.value
 
 const header = passiveCustomers?.header || []
-const body = passiveCustomers?.body.map((obj) => {
-  // if (typeof obj === 'object' && !Array.isArray(obj))
-  return Object.values(obj)
-}) || []
+const body = passiveCustomers?.body || []
+console.log('body: ', body);
 </script>
 
 <template>

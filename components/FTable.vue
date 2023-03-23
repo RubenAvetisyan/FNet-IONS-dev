@@ -180,37 +180,36 @@ const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark
       <thead sticky top-0 text="xs indigo-700 dark:gray-300 center" bg="gray-200 dark:indigo-700">
         <tr>
           <th v-for="(header, i) in src.header" :key="header" scope="col" p="x-3 y-3">
-            <!-- <p>{{ header }}</p> -->
-            <FSelect mx-0 w-full break-words text="sm left gray-400 dark:gray-100" :name="header" :options="{
-              labe: header,
-              values: columns[i],
-              selected: 0
-            }"
-              :custom-fn="fn(i)" justify="between">
-              <Chevron aria-disabled="colIndex === i" :is-up="!!chevronIsUp(colIndex, i)" :active="colIndex === i"
-                rounded-1 dark:bg-indigo-50 text="sm left gray-100 dark:gray-800" @click="() => columnFilter(header)" />
-            </FSelect>
-          </th>
-          <th v-if="canBeEdited" scope="col" class="py-3 px-6">
-            <span class="sr-only">Edit</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
-          <td v-for="(item, i) in typeof items === 'string' ? items.split(',') : items" :key="`${src.header[i]}-${item}`"
-            scope="row" p="x-2 y-4" text="center" :class="[i === 0 && firstColumnClass]"
-            hover="bg-indigo-400 text-indigo-700">
-            <!-- <template v-if="Array.isArray(items)">
-                            <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
-                        <td v-for="(item, i) in typeof items === 'string' ? items.split(',') : items" :key="`${src.header[i]}-${item}`"
-                          scope="row" p="x-2 y-4" text="center" :class="[i === 0 && firstColumnClass]"
-                          hover="bg-indigo-400 text-indigo-700">
-                          {{ item }}
-                        </td>
-                      <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
-                      </lazy-f-tr>
-                      </template> -->
+              <p v-if="columns[i].length <= 1">{{ header }}</p>
+              <FSelect v-else mx-0 w-full break-words text="sm left gray-400 dark:gray-100" :name="header" :options="{
+                labe: header,
+                values: columns[i],
+                selected: 0
+              }" :custom-fn="fn(i)" justify="between">
+                <Chevron aria-disabled="colIndex === i" :is-up="!!chevronIsUp(colIndex, i)" :active="colIndex === i"
+                  rounded-1 dark:bg-indigo-50 text="sm left gray-100 dark:gray-800" @click="() => columnFilter(header)" />
+              </FSelect>
+            </th>
+            <th v-if="canBeEdited" scope="col" class="py-3 px-6">
+              <span class="sr-only">Edit</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
+            <td v-for="(item, i) in typeof items === 'string' ? items.split(',') : items" :key="`${src.header[i]}-${item}`"
+              scope="row" p="x-2 y-4" text="center" :class="[i === 0 && firstColumnClass]"
+              hover="bg-indigo-400 text-indigo-700">
+              <!-- <template v-if="Array.isArray(items)">
+                                <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
+                            <td v-for="(item, i) in typeof items === 'string' ? items.split(',') : items" :key="`${src.header[i]}-${item}`"
+                              scope="row" p="x-2 y-4" text="center" :class="[i === 0 && firstColumnClass]"
+                              hover="bg-indigo-400 text-indigo-700">
+                              {{ item }}
+                            </td>
+                          <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
+                          </lazy-f-tr>
+                          </template> -->
             <span>{{ item }}</span>
           </td>
           <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>

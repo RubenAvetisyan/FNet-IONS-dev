@@ -3,7 +3,7 @@ import intersection from 'lodash.intersection'
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import { readSqlFile } from '~~/utils/readSQLFile'
 
-const passiveCustomersQuerySrc = '../../admin/assets/SQL/ABilling/get_passive_customers.sql'
+const passiveCustomersQuerySrc = '../../admin/assets/SQL/ABilling/as_lan_accounts_last.sql'
 const erpCustomersQuerySrc = '../../admin/assets/SQL/ERP/ERP_Customers.sql'
 
 const map: Map<string, any> = new Map()
@@ -20,8 +20,8 @@ async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: {
   contractNumbers = contractNumbers.join(',')
 
   let queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc)
-  await executeQuery('SET @contractNumbers := null', 'erp');
-  queryStringErpCustomers = queryStringErpCustomers.replace('@contractNumbers := null', `@contractNumbers := ( ${contractNumbers} )`)
+  // await executeQuery('SET @contractNumbers := null', 'erp');
+  queryStringErpCustomers = queryStringErpCustomers.replace('@contractNumbers', contractNumbers)
   return executeQuery<ErpCustomers>(queryStringErpCustomers, 'erp')
 }
 

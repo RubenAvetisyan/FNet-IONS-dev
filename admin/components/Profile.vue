@@ -18,6 +18,10 @@ defineProps({
 const { isminified } = storeToRefs(useDrawerStore())
 const { user, getSessionId } = useAdminAuthStore()
 
+onMounted(() => {
+  console.log('useSession(): ', useSession());
+})
+
 const avatar = computed(() => {
   if (!user?.fullName)
     return ''
@@ -82,5 +86,5 @@ const testLink = `https://t.me/fnetIoSystemBot?start=${encodeURIComponent(token.
         <slot name="footer" />
       </div>
     </div>
-</div>
+  </div>
 </template>
