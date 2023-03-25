@@ -1,4 +1,4 @@
-enum MySQLTypes {
+export enum MySQLTypes {
   Int10 = "int(10)",
   Varchar150 = "varchar(150)",
   Int11 = "int(11)",
