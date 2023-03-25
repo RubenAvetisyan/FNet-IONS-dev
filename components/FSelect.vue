@@ -26,31 +26,37 @@ const defaultOption = {
   label: 'default-label-' + Date.now(),
   selected: false
 }
+
+function generateTransactionCode() {
+  return Math.floor(Math.random() * 100000000)
+}
+
 const getKey = (option = defaultOption) => removeSpace(`${option.value}-${option.label}`)
 const value = ref()
 const selectValue = computed(() => value.value)
 
 const fn = (e) => {
   const target = e.target
-  console.log('target: ', target);
+
   const newValue = target.value
-  console.log('newValue: ', JSON.stringify(newValue));
+
   value.value = newValue
   props.customFn(newValue)
 }
 
-const options = computed(() => {
-  console.log('props.options: ', props.options);
-  const label = props.options.label
-  const selected = props.options.selected
-  return props.options.values.map((value, i) => {
-    return {
-      label,
-      value,
-      key: getKey({ value, label, selected: selected === i })
-    }
-  })
-})
+let counter = 0
+
+// const options = computed(() => {
+//   const label = props.options.label
+//   const selected = props.options.selected
+//   return props.options.values.map((value, i) => {
+//     return {
+//       label,
+//       value,
+//       key: getKey({ value, label: label || counter++, selected: selected === i })
+//     }
+//   })
+// })
 
 const id = computed(() => {
   const name = props.name
@@ -70,7 +76,7 @@ const id = computed(() => {
       leading-tight focus:outline-none focus:shadow-outline rounded font-medium text=" xs gray-700 dark:white"
       @change="fn">
       <option value="" class="bg-light-300 dark:bg-dark-700" />
-      <option v-for="option in options" :key="option.key" :value="option" class="bg-light-300 dark:bg-dark-700">
+          <option v-for="option in options" :value="option" class="bg-light-300 dark:bg-dark-700">
         {{ option.value }}
       </option>
     </select>

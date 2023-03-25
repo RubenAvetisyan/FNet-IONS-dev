@@ -9,7 +9,7 @@ import intersection from 'lodash.intersection'
 import { format } from 'date-fns'
 const props = defineProps({
   name: {
-    type: String,
+    type: [Object, String],
     default: ''
   },
   src: {
@@ -102,7 +102,7 @@ const fn = i => (v) => {
 
 const filters = computed(() => columnValue.value.filter(s => s))
 const body = computed(() => {
-  console.log('filters: ', filters)
+
   return getPaginatedItems(props.src.body, page.value, props.rows, isMin.value, filters.value)
 })
 
@@ -127,8 +127,8 @@ const filename = computed(() => {
 })
 
 function getData() {
-  console.log('body.value.filteredArray: ', body.value.filteredArray[0]);
-  console.log('props.src.header: ', props.src.header);
+
+
   return body.value.filteredArray.map((item) => {
     const result = {}
     props.src.header.forEach(header => {
@@ -140,7 +140,7 @@ function getData() {
 
 const setXls = async () => {
   const data = getData()
-  console.log('data: ', data);
+
 
   return await useFetch('/api/saveInoExcel', {
     method: 'POST',
@@ -197,29 +197,28 @@ const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark
         </thead>
         <tbody>
           <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
-            <td v-for="(item, i) in typeof items === 'string' ? items.split(',') : items" :key="`${src.header[i]}-${item}`"
-              scope="row" p="x-2 y-4" text="center" :class="[i === 0 && firstColumnClass]"
-              hover="bg-indigo-400 text-indigo-700">
-              <!-- <template v-if="Array.isArray(items)">
-                                <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
-                            <td v-for="(item, i) in typeof items === 'string' ? items.split(',') : items" :key="`${src.header[i]}-${item}`"
-                              scope="row" p="x-2 y-4" text="center" :class="[i === 0 && firstColumnClass]"
-                              hover="bg-indigo-400 text-indigo-700">
-                              {{ item }}
-                            </td>
-                          <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
-                          </lazy-f-tr>
-                          </template> -->
-            <span>{{ item }}</span>
-          </td>
-          <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
-        </lazy-f-tr>
-        <lazy-f-tr v-for="n of Array.from({ length: (body.pageSize - body.data.length) }, (v, i) => i)"
-          :key="`added-${n}`" h-13>
-          <td scope="row"
-            class="h-13 border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
-          </td>
-        </lazy-f-tr>
+            <td v-for="(item, i) in (typeof items === 'string' ? items.split(',') : items)"
+              :key="`${src.header[i]}-${item}`" scope="row" p="x-2 y-2" text="center"
+              :class="[i === 0 && firstColumnClass, { ['cursor-pointer']: !!(item?.fn) }]"
+              hover="bg-indigo-400 text-indigo-700" hover:group:select-text @click="item?.fn">
+              <!-- <NuxtLink v-if="(item?.link && typeof item !== 'string')" to="item.link">{{ item.text }}</NuxtLink> -->
+              <span>{{ (item?.text || item) }}</span>
+            </td>
+            <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
+          </lazy-f-tr>
+          <lazy-f-tr v-if="$slots.info">
+            <td scope="row" colspan="3">
+              <div> px-1
+                <slot name="info"></slot>
+              </div>
+            </td>
+          </lazy-f-tr>
+          <!-- <lazy-f-tr v-for="n of Array.from({ length: (body.pageSize - body.data.length) }, (v, i) => i)"
+            :key="`added-${n}`" h-13>
+            <td scope="row" h-13 border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium
+              text-gray-900 whitespace-nowrap dark:text-white text-center>
+            </td>
+          </lazy-f-tr> -->
       </tbody>
     </table>
     <nav :key="`${body.length}-pagitation`" sticky bottom-0 flex w-full justify-between items-center pt-1 bg-gray-200
