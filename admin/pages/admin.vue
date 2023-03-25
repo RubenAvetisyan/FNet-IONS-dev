@@ -9,6 +9,6 @@ definePageMeta({
   <div w-full scroll-auto scrollbar>
     <NuxtPage />
     <!-- <Footer /> -->
-    <StickyFooter bottom-0 />
+      <StickyFooter bg-brand-primary bottom-0 />
   </div>
 </template>
