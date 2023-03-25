@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import db from '~/admin/assets/SQL/ABilling/db.json'
+import db from '~~/utils/DB/db'
 </script>
 
 <template>

@@ -1,4 +1,4 @@
-import db from '~/admin/assets/SQL/ABilling/db.json'
+import db from '~~/utils/DB/db'
 
 export default defineEventHandler(async () => {
     return db
