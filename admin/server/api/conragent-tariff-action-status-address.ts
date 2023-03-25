@@ -113,7 +113,7 @@ export default defineEventHandler(async event => {
     }
 
     const body = await getResponse(erpCustomers)
-    return { ...erpCustomers, body }
+    return { ...erpCustomers, body, ...{ header: [... new Set([...erpCustomers.header, ...Object.keys(body[0])])] } }
   } catch (error) {
     console.error('error: ', error);
     return error
