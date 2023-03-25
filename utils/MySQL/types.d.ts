@@ -1,6 +1,6 @@
 // Определение типов
 
-declare global {
+export MySQLTypes = {
   type Int10Unsigned = number & { __int10Unsigned: true };
   type Varchar30 = string & { __varchar30: true };
   type Smallint5 = number & { __smallint5: true };
