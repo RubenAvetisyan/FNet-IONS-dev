@@ -1,62 +1,211 @@
-# FNet Payment System - MySQL Connection Class
+# FNet Payment System: THIS IS NOT USABLE DESCRIPTION AND IS ONLY FOR TEST PURPOSE
 
-This repository contains the `Connection` class, which is used to establish and manage connections to a MySQL database in the FNet Payment System.
+FNet Payment System is a TypeScript-based payment system that allows users to make payments and keep track of their transaction history. It uses MySQL as its database engine and provides a simple API for interacting with the system.
 
-## Installation
+## Getting Started
 
-To use the `Connection` class, you must first install the `mysql2` package using npm:
+### Prerequisites
 
-```bash
-npm install mysql2
-Usage
-To use the Connection class, you must first create an instance of it, passing in the required configuration options:
+- [Node.js](https://nodejs.org/en/)
+- [MySQL](https://www.mysql.com/)
 
-typescript
-Copy code
-import { Connection } from './connection-class';
+### Installation
 
-const connection = new Connection({
-  host: 'localhost',
-  user: 'root',
-  password: 'password',
-  database: 'fnet_payment_system',
-});
-Once you have a Connection instance, you can use it to execute queries on the database:
+1. Clone the repository: git clone https://github.com/RubenAvetisyan/FNet-Payment-System.git
 
-typescript
-Copy code
-await connection.query('SELECT * FROM users');
-You can also use the beginTransaction, commit, and rollback methods to manage transactions:
+2. Install dependencies: npm install
 
-typescript
-Copy code
-await connection.beginTransaction();
-try {
-  // Execute queries here
-  await connection.commit();
-} catch (err) {
-  await connection.rollback();
+3. Create a MySQL database and a user with full privileges on that database.
+
+4. Edit the `config.ts` file with your database details.
+
+### Usage
+
+To start the server, run the following command: npm start
+
+The server will start on port `3000` by default. You can change this by setting the `PORT` environment variable.
+
+The API documentation can be found at `http://localhost:3000/docs`.
+
+## Database Schema
+
+The database schema consists of two tables:
+
+### transactions
+```
+This table stores information about each transaction, including the amount, date, and user ID.
+CREATE TABLE transactions (
+id INT NOT NULL AUTO_INCREMENT,
+amount DECIMAL(10,2) NOT NULL,
+date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+user_id INT NOT NULL,
+PRIMARY KEY (id),
+FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+### users
+
+This table stores information about each user, including their name and email address.
+```
+CREATE TABLE users (
+id INT NOT NULL AUTO_INCREMENT,
+name VARCHAR(255) NOT NULL,
+email VARCHAR(255) NOT NULL,
+balance DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+PRIMARY KEY (id),
+UNIQUE KEY (email)
+);
+```
+
+## API
+
+### POST /api/users
+
+Create a new user.
+
+#### Request
+```
+POST /api/users
+Content-Type: application/json
+
+{
+"name": "John Doe",
+"email": "johndoe@example.com"
 }
-API
-new Connection(options)
-Creates a new Connection instance.
+```
 
-Options
-host: The MySQL server hostname.
-port: The MySQL server port (default: 3306).
-user: The MySQL user to authenticate as.
-password: The password of that MySQL user.
-database: Name of the database to use for this connection.
-query(sql, values)
-Executes a SQL query on the database.
+#### Response
+```
+HTTP/1.1 201 Created
+Content-Type: application/json
 
-sql: The SQL query to execute.
-values: An optional array of values to replace placeholders in the SQL query.
-beginTransaction()
-Starts a transaction on the database.
+{
+"id": 1,
+"name": "John Doe",
+"email": "johndoe@example.com",
+"balance": "0.00"
+}
+```
 
-commit()
-Commits the current transaction on the database.
+### GET /api/users/:id
 
-rollback()
-Rolls back the current transaction on the database.
+Get user details.
+
+#### Request
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+"id": 1,
+"name": "John Doe",
+"email": "johndoe@example.com",
+"balance": "0.00"
+}
+```
+### POST /api/transactions
+
+Create a new transaction.
+
+#### Request
+```
+POST /api/transactions
+Content-Type: application/json
+
+{
+"amount": 10.00,
+"user_id": 1
+}
+```
+#### Response
+```
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+"id": 1,
+"amount": "10.00",
+"date": "2023-03-27T16:04:42.000Z",
+"user_id": 1
+}
+```
+### GET /api/transactions
+
+Get transaction history.
+
+#### Request
+```
+GET /api/transactions
+```
+#### Response
+```
+HTTP/1 1.1 200 OK
+Content-Type: application/json
+
+[
+{
+"id": 1,
+"amount": "10.00",
+"date": "2023-03-27T16:04:42.000Z",
+"user_id": 1
+},
+{
+"id": 2,
+"amount": "5.00",
+"date": "2023-03-27T16:05:12.000Z",
+"user_id": 1
+}
+]
+```
+### PATCH /api/users/:id/balance
+```
+Update user balance.
+```
+#### Request
+```
+PATCH /api/users/1/balance
+Content-Type: application/json
+
+{
+"balance": 10.00
+}
+
+shell
+Copy code
+```
+#### Response
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+"id": 1,
+"name": "John Doe",
+"email": "johndoe@example.com",
+"balance": "10.00"
+}
+
+shell
+Copy code
+```
+### DELETE /api/transactions/:id
+```
+Delete a transaction.
+```
+#### Request
+```
+DELETE /api/transactions/1
+
+shell
+Copy code
+```
+#### Response
+```
+HTTP/1.1 204 No Content
+
+csharp
+Copy code
+```
+## License
+
+This project is licensed under the MIT License.
