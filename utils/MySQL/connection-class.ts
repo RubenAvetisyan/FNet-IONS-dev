@@ -1,20 +1,35 @@
-import { createPool, FieldInfo, Pool, PoolConfig } from 'mysql'
+import { createPool, FieldInfo, Pool, PoolConfig, ConnectionConfig } from 'mysql'
 import { config } from '@/config/index'
 import { RuntimeConfig } from '@nuxt/schema';
 
-const dbConfig = config.get<RuntimeConfig['dbConfig']>('dbConfig');
+const dbConfig = config.get<RuntimeConfig['dbConfigs']>('dbConfig');
 
-interface QueryOptions {
+export interface QueryOptions {
   timezone?: string
+}
+
+export enum DbName {
+  LAN_BILLING = 'lanbilling',
+  A_BILLING = 'abilling',
+  ERP = 'erp',
 }
 
 class MySQLConnection {
   private pool: Pool
   public config: PoolConfig
 
-  constructor(private readonly dbName: string, public connectionLimit = 10) {
-    this.config = dbConfig[dbName]
+  constructor(private readonly dbName: DbName, public connectionLimit = 10) {
+    this.config = {
+      ...dbConfig[dbName],
+      port: 3306,
+      multipleStatements: true
+    }
+    console.log('this.config: ', this.config);
     this.pool = this.createPool()
+    // получение текущего количества подключений
+    const currentConnections = this.pool.config.connectionLimit;
+    console.log('currentConnections: ', currentConnections);
+
     this.getConnectionThreadId().then(res => console.log('connected as id ' + res))
   }
 
@@ -25,7 +40,13 @@ class MySQLConnection {
   public async getConnectionThreadId() {
     return new Promise((resolve, reject) => {
       this.pool.getConnection((err, connection) => {
-        if (err) reject(err)
+        if (err) {
+          this.pool.end((err) => {
+            console.error('this.pool.end err: ', err);
+            // handle error or do something else
+          })
+          reject({ err, message: this.dbName + ': getConnection: ' + err.sqlMessage! || '' })
+        }
         resolve(connection.threadId)
       })
     })
@@ -51,6 +72,8 @@ class MySQLConnection {
           reject(error)
         else
           resolve({ header: !fields ? [] : fields.map(({ name }) => name), body: results as T[] || [], FieldPackets: fields })
+
+        this.pool.end()
       })
     })
   }
