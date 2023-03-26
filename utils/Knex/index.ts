@@ -1,4 +1,5 @@
 import { db } from './knex';
+import schema from '@/utils/DB/db'
 import { Table, Metadata } from './db-metadata';
 
 interface QueryResult {
@@ -16,7 +17,7 @@ interface QueryResult {
 }
 
 async function main(): Promise<void> {
-  const metadata: Metadata = await import('@/utils/DB/db');
+  const metadata: Metadata = schema;
   const contractTable: Table | undefined = metadata['contract']?.[0];
   const contractParam2Table: Table | undefined = metadata['contract_parameter_type_2']?.[0];
   const addressHouseTable: Table | undefined = metadata['address_house']?.[0];

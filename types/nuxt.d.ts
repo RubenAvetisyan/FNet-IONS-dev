@@ -24,7 +24,14 @@ declare module 'lodash.intersection' {
     export = intersection;
 }
 
+declare module 'mysql-schema';
+
 declare global {
+    enum DbName {
+        LAN_BILLING = 'lanbilling',
+        A_BILLING = 'abilling',
+        ERP = 'erp',
+    }
 
     type ExecuteQuery<T> =
         | {

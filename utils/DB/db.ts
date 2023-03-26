@@ -8733,10 +8733,25 @@ export const db = {
     }
 }
 
-const tableName = Object.keys(db)
+export type TableKey = keyof typeof db
+
+const tableName = Object.keys(db) as TableKey[]
 
 const propertyNames = tableName as (keyof typeof db)[];
 
+
 export type TableName = Record<typeof propertyNames[number], string | number>;
+
+type FieldNames = {
+    [table in TableKey]: keyof typeof db[table]['fields']
+}
+
+const fieldNames: FieldNames = {} as FieldNames;
+
+for (const table of tableName) {
+    fieldNames[table] = Object.keys(db[table].fields) as keyof typeof db[TableKey]['fields'];
+}
+
+export type FieldName = typeof fieldNames;
 
 export default db

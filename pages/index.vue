@@ -3,6 +3,18 @@ definePageMeta({ auth: false })
 
 const { data } = await useLazyFetch('/api/lanbilling')
 console.log('data: ', unref(data))
+
+
+
+const refs = ref([])
+
+const tablesrefs = computed(() => refs.value)
+
+
+onMounted(async () => {
+  const { data: aBillingSchema } = await useFetch('/api/get-abilling-db-schema')
+  nextTick(() => console.log('aBillingSchema.value: ', aBillingSchema.value))
+})
 </script>
 
 <template>
@@ -24,5 +36,6 @@ console.log('data: ', unref(data))
     <div text="xl dark dark:light-700" select="none">
       համակարգ մուտք գործելու համար անհրաժետ է նույնականացվել
     </div>
+          <pre>{{ tablesrefs }}</pre>
   </div>
 </template>

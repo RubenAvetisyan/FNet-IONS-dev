@@ -1,15 +1,18 @@
+import { MySQLTypes } from '@/utils/MySQL/field-type';
+import { TableName, FieldName, TableKey } from '@/utils/DB/db';
+
 export interface Table {
   fields: {
-    [key: string]: {
+    [fieldName in FieldName[TableKey]]: {
       PK: boolean;
       IX: boolean;
-      type: FieldType;
+      type: MySQLTypes;
       nullable: string;
       defaultValue: string;
       description: string;
     };
   };
-  refferenceTables: {
+  referenceTables: {
     thisField: string;
     tableName: string;
     field: string;
@@ -17,5 +20,5 @@ export interface Table {
 }
 
 export type Metadata = {
-  [key: string]: Table[];
-} // where the key is the name of DATABASE TABLE
+  [tableName in TableKey]: Table;
+};

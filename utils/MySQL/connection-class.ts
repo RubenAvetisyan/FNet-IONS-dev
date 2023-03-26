@@ -1,12 +1,6 @@
 import { createPool, FieldInfo, Pool, PoolConfig } from 'mysql'
 import { config } from '@/config/index'
 
-enum DbName {
-  LAN_BILLING = 'lanbilling',
-  A_BILLING = 'abilling',
-  ERP = 'erp',
-}
-
 type DbConfig = Record<DbName, PoolConfig>;
 
 const dbConfig: DbConfig = config.get('dbConfig');
