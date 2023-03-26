@@ -1,34 +1,33 @@
 import Knex from 'knex';
-import * as dbConfig from '@/config';
-import MySQLConnection from '@/utils/MySQL/connection-class';
+import { config } from '@/config/index'
+import MySQLConnection, { DbName } from '@/utils/MySQL/connection-class';
 import { RuntimeConfig } from '@nuxt/schema';
 
-const config = dbConfig.config.get<RuntimeConfig['dbConfig']>('dbConfig')
+const dbConfig = config.get<RuntimeConfig['dbConfigs']>('dbConfig');
 
 const knexConfig = {
   client: 'mysql',
   connection: {
-    host: config.host,
-    port: config.port,
-    user: config.user,
-    password: config.password,
-    database: config.database,
+    host: dbConfig.abilling.host,
+    port: dbConfig.abilling.port,
+    user: dbConfig.abilling.user,
+    password: dbConfig.abilling.password,
+    database: dbConfig.abilling.database,
     charset: 'utf8mb4',
   },
   pool: {
     min: 2,
-    max: 10,
+    max: 100,
     createTimeoutMillis: 3000,
     acquireTimeoutMillis: 30000,
     idleTimeoutMillis: 30000,
     reapIntervalMillis: 1000,
     createRetryIntervalMillis: 100,
     propagateCreateError: false, // <- default is true, set to false
-  },
-  debug: config.debug,
+  }
 };
 
-const connection = new MySQLConnection(config.database);
+const connection = new MySQLConnection(DbName.A_BILLING);
 
 const knex = Knex(knexConfig);
 
@@ -37,20 +36,20 @@ knex
     const sql = data.sql.replace(/ +(?= )/g, '').trim();
 
     if (sql === 'START TRANSACTION') {
-      await connection.beginTransaction();
+      connection.beginTransaction();
     } else if (sql === 'COMMIT') {
-      await connection.commit();
+      connection.commit();
     } else if (sql === 'ROLLBACK') {
-      await connection.rollback();
+      connection.rollback();
     }
   })
   .on('query-error', async (err) => {
     console.error('knex -> query-error', err);
-    await connection.rollback();
+    connection.rollback();
   })
   .on('error', async (err) => {
     console.error('knex -> error', err);
-    await connection.rollback();
+    connection.rollback();
   });
 
 export default knex;
