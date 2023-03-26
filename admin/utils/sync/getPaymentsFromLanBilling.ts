@@ -1,4 +1,4 @@
-import { QueryOptions } from '~~/utils/MySQL/connection-class'
+import { QueryOptions, DbName } from '@/utils/MySQL/connection-class'
 import { H3Error, createError } from 'h3'
 import { makeQuery } from '../query'
 import { abilling, erp, lanbilling } from '~~/admin/utils/'
@@ -10,7 +10,7 @@ const db = {
   erp,
 }
 
-export const executeQuery = async <T>(queryString: string, paymentSystem: string, options?: QueryOptions): Promise<
+export const executeQuery = async <T>(queryString: string, databaseName: DbName, options?: QueryOptions): Promise<
   | {
     header: string[];
     body: T[];
@@ -19,9 +19,9 @@ export const executeQuery = async <T>(queryString: string, paymentSystem: string
   | H3Error
 > => {
   try {
-    const dbInstance = db[paymentSystem as 'lanbilling'] // await getBillingDb(paymentSystem)
+    const dbInstance = db[databaseName] // await getBillingDb(paymentSystem)
     if (!dbInstance || dbInstance instanceof H3Error)
-      return createError(`the ${paymentSystem} DB conncetion is faild`)
+      return createError(`the ${databaseName} DB conncetion is faild`)
 
     const result = makeQuery<T>(queryString, dbInstance.connection, options)
     return result
