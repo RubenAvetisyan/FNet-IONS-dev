@@ -4,6 +4,7 @@ import { log } from './utils/log'
 import { prisma } from './server/api/db'
 import { description } from './package.json'
 import { addComponent } from '@nuxt/kit'
+import { PoolConfig } from 'mysql'
 
 process.on('SIGINT', async (signal) => {
   if (signal === 'SIGINT') {
@@ -15,20 +16,21 @@ process.on('SIGINT', async (signal) => {
 const host = process.env.HOST
 const port = process.env.PORT
 
-type DB_CONFIG = {
+type DbConfig = {
   host: string;
-  port: number | string;
+  port: string;
   user: string;
   password: string;
   database: string;
   insecureAuth: boolean;
-} | undefined
+};
 
-const setDbConfig = (db: string, dbName?: string, insecureAuth: boolean = true): DB_CONFIG => {
+const setDbConfig = (db: string, dbName?: string, insecureAuth: boolean = true): DbConfig => {
   const DB = db.toUpperCase()
+  const port = process.env[`NUXT_DB_${DB}_PORT`] || '3306'
   return {
     host: process.env[`NUXT_DB_${DB}_HOST`] || '',
-    port: process.env[`NUXT_DB_${DB}_PORT`] || 3306,
+    port: port,
     user: process.env[`NUXT_DB_${DB}_LOGIN`] || '',
     password: process.env[`NUXT_DB_${DB}_PASSWORD`] || '',
     database: process.env[`NUXT_DB_${DB || dbName}_NAME`] || '',
@@ -36,7 +38,8 @@ const setDbConfig = (db: string, dbName?: string, insecureAuth: boolean = true):
   }
 }
 
-const lanbilling = setDbConfig('LanBilling', 'billing')
+const lanbilling: DbConfig = setDbConfig('LanBilling', 'billing')
+const abilling: DbConfig = setDbConfig('ABilling', 'billing', false);
 
 export default defineNuxtConfig({
   extends: [
@@ -111,7 +114,7 @@ export default defineNuxtConfig({
     authSecret: description,
     dbConfigs: {
       lanbilling,
-      abilling: setDbConfig('ABilling', 'billing'),
+      abilling,
       erp: setDbConfig('ERP')
     },
     telegram: {
