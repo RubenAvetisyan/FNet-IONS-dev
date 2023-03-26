@@ -1,211 +1,56 @@
-# FNet Payment System: THIS IS NOT USABLE DESCRIPTION AND IS ONLY FOR TEST PURPOSE
+####  This code is a TypeScript file that defines a class for managing MySQL database connections in a Node.js application. This class, named `Connection`, is part of a larger project called "FNet-Payment-System." The `Connection` class is located in the "utils/MySQL" directory, which suggests it is a utility class for the MySQL database connections.
 
-FNet Payment System is a TypeScript-based payment system that allows users to make payments and keep track of their transaction history. It uses MySQL as its database engine and provides a simple API for interacting with the system.
+####  Here's a breakdown of the code:
 
-## Getting Started
+1. Import statements: The code imports required packages and modules for establishing and managing a connection to a MySQL database. These include:
+    
+    
+    - `mysql`: The MySQL client for Node.js.
+    - `promisify`: A utility function from the 'util' module to convert a callback-based function into a Promise-based function.
+    - `mysqlConfig`: A configuration object for connecting to the MySQL server.
+2. Connection class: The `Connection` class is defined with the following methods:
+    
+    
+    - `constructor`: Initializes an instance of the class by creating a MySQL connection pool using the imported `mysqlConfig`. A connection pool is a collection of connections to a database that can be reused, which helps to manage resources and improve performance.
+    - `getConnection`: This async method retrieves a connection from the connection pool. It returns a Promise that resolves with a connection or rejects with an error.
+    - `query`: This async method is a wrapper for executing SQL queries. It first gets a connection from the pool using the `getConnection` method, then promisifies the `query` function of the connection, so it can be used with async/await. Finally, it executes the SQL query and returns a Promise that resolves with the query results or rejects with an error. After executing the query, the connection is released back to the pool.
 
-### Prerequisites
+- `beginTransaction`: This async method starts a new transaction on a connection. It first gets a connection from the pool using the `getConnection` method, then promisifies the `beginTransaction` function of the connection, so it can be used with async/await. Finally, it starts the transaction and returns a Promise that resolves with the connection or rejects with an error.
+- `commit`: This async method commits a transaction on a connection. It takes a connection as an argument, promisifies the `commit` function of the connection, and then commits the transaction. Finally, it returns a Promise that resolves with the result or rejects with an error. After committing the transaction, the connection is released back to the pool.
+- `rollback`: This async method rolls back a transaction on a connection. It takes a connection as an argument, promisifies the `rollback` function of the connection, and then rolls back the transaction. Finally, it returns a Promise that resolves with the result or rejects with an error. After rolling back the transaction, the connection is released back to the pool.
 
-- [Node.js](https://nodejs.org/en/)
-- [MySQL](https://www.mysql.com/)
+3. Export statement: The `Connection` class is exported as a default export, which allows other modules to import and create instances of the class as needed.
 
-### Installation
+Overall, this `Connection` class is a utility for managing MySQL connections in the FNet-Payment-System project. It provides an interface for executing queries, managing transactions, and working
 
-1. Clone the repository: git clone https://github.com/RubenAvetisyan/FNet-Payment-System.git
+with connection pools, which simplifies the process of interacting with the MySQL database. By using this class, developers can focus on implementing the application's logic without worrying about the low-level details of managing database connections and transactions.
 
-2. Install dependencies: npm install
+When using this class in other parts of the FNet-Payment-System project, developers can import it and create a new instance of the `Connection` class. Then, they can use the provided methods to interact with the database, such as executing queries, starting transactions, committing or rolling back transactions, as needed.
 
-3. Create a MySQL database and a user with full privileges on that database.
+### For example:
 
-4. Edit the `config.ts` file with your database details.
-
-### Usage
-
-To start the server, run the following command: npm start
-
-The server will start on port `3000` by default. You can change this by setting the `PORT` environment variable.
-
-The API documentation can be found at `http://localhost:3000/docs`.
-
-## Database Schema
-
-The database schema consists of two tables:
-
-### transactions
-```
-This table stores information about each transaction, including the amount, date, and user ID.
-CREATE TABLE transactions (
-id INT NOT NULL AUTO_INCREMENT,
-amount DECIMAL(10,2) NOT NULL,
-date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-user_id INT NOT NULL,
-PRIMARY KEY (id),
-FOREIGN KEY (user_id) REFERENCES users(id)
-);
-```
-### users
-
-This table stores information about each user, including their name and email address.
-```
-CREATE TABLE users (
-id INT NOT NULL AUTO_INCREMENT,
-name VARCHAR(255) NOT NULL,
-email VARCHAR(255) NOT NULL,
-balance DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-PRIMARY KEY (id),
-UNIQUE KEY (email)
-);
 ```
 
-## API
+import Connection from './utils/MySQL/connection-class';
 
-### POST /api/users
+// Create an instance of the Connection class
+const db = new Connection();
 
-Create a new user.
+// Execute a query
+const results = await db.query('SELECT * FROM users');
 
-#### Request
-```
-POST /api/users
-Content-Type: application/json
-
-{
-"name": "John Doe",
-"email": "johndoe@example.com"
-}
-```
-
-#### Response
-```
-HTTP/1.1 201 Created
-Content-Type: application/json
-
-{
-"id": 1,
-"name": "John Doe",
-"email": "johndoe@example.com",
-"balance": "0.00"
-}
-```
-
-### GET /api/users/:id
-
-Get user details.
-
-#### Request
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-{
-"id": 1,
-"name": "John Doe",
-"email": "johndoe@example.com",
-"balance": "0.00"
-}
-```
-### POST /api/transactions
-
-Create a new transaction.
-
-#### Request
-```
-POST /api/transactions
-Content-Type: application/json
-
-{
-"amount": 10.00,
-"user_id": 1
-}
-```
-#### Response
-```
-HTTP/1.1 201 Created
-Content-Type: application/json
-
-{
-"id": 1,
-"amount": "10.00",
-"date": "2023-03-27T16:04:42.000Z",
-"user_id": 1
-}
-```
-### GET /api/transactions
-
-Get transaction history.
-
-#### Request
-```
-GET /api/transactions
-```
-#### Response
-```
-HTTP/1 1.1 200 OK
-Content-Type: application/json
-
-[
-{
-"id": 1,
-"amount": "10.00",
-"date": "2023-03-27T16:04:42.000Z",
-"user_id": 1
-},
-{
-"id": 2,
-"amount": "5.00",
-"date": "2023-03-27T16:05:12.000Z",
-"user_id": 1
-}
-]
-```
-### PATCH /api/users/:id/balance
-```
-Update user balance.
-```
-#### Request
-```
-PATCH /api/users/1/balance
-Content-Type: application/json
-
-{
-"balance": 10.00
+// Start a transaction, perform operations, and commit the transaction
+const connection = await db.beginTransaction();
+try {
+  await db.query('UPDATE accounts SET balance = balance - 100 WHERE id = 1', connection);
+  await db.query('UPDATE accounts SET balance = balance + 100 WHERE id = 2', connection);
+  await db.commit(connection);
+} catch (error) {
+  await db.rollback(connection);
+  console.error('Error during transaction, rolled back:', error);
 }
 
-shell
-Copy code
 ```
-#### Response
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
 
-{
-"id": 1,
-"name": "John Doe",
-"email": "johndoe@example.com",
-"balance": "10.00"
-}
+This example demonstrates how to use the `Connection` class to perform common database operations such as executing queries and managing transactions in a simplified and efficient manner.
 
-shell
-Copy code
-```
-### DELETE /api/transactions/:id
-```
-Delete a transaction.
-```
-#### Request
-```
-DELETE /api/transactions/1
-
-shell
-Copy code
-```
-#### Response
-```
-HTTP/1.1 204 No Content
-
-csharp
-Copy code
-```
-## License
-
-This project is licensed under the MIT License.
