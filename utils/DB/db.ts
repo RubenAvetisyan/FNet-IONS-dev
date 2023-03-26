@@ -1,4 +1,5 @@
 import { MySQLTypes } from '@/utils/MySQL/field-type'
+import { EnumWrapper } from 'ts-enum-util';
 
 export const db = {
     "address_area": {
@@ -8753,5 +8754,7 @@ for (const table of tableName) {
 }
 
 export type FieldName = typeof fieldNames;
+
+export type GetFieldName<T extends TableKey> = Extract<FieldName, T>
 
 export default db
