@@ -1,5 +1,3 @@
-import { schemaRefs } from '@/utils/MySQL/use-mysql-schema'
-
 export default defineEventHandler(async () => {
     // const schema = await mySQLSchema.getSchema()
     // const refs = []
@@ -20,5 +18,5 @@ export default defineEventHandler(async () => {
     //         }
     //     }
     // }
-    return schemaRefs
+    return 'schemaRefs'
 })
