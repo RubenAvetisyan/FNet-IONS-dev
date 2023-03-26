@@ -1,9 +1,9 @@
 import { MySQLTypes } from '@/utils/MySQL/field-type';
 import { TableName, FieldName, TableKey } from '@/utils/DB/db';
 
-export interface Table {
+export interface Table<T extends TableKey> {
   fields: {
-    [fieldName in FieldName[TableKey]]: {
+    [fieldName in FieldName[T]]: {
       PK: boolean;
       IX: boolean;
       type: MySQLTypes;
@@ -20,5 +20,5 @@ export interface Table {
 }
 
 export type Metadata = {
-  [tableName in TableKey]: Table;
+  [tableName in TableKey]: Table<TableKey>;
 };
