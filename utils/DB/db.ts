@@ -1,10 +1,4 @@
-type Int10 = number & { __int10: true };
-type Varchar150 = string & { __varchar150: true };
-
-
-enum FieldTypes {
-    Int10 = "int(10)"
-}
+import { MySQLTypes } from '@/utils/MySQL/field-type'
 
 export const db = {
     "address_area": {
@@ -12,7 +6,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код района"
@@ -20,7 +14,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "название района"
@@ -28,13 +22,13 @@ export const db = {
             "cityid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "-1",
                 "description": "код города"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cityid",
                 "tableName": "address_city",
@@ -47,7 +41,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код"
@@ -55,7 +49,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "название города"
@@ -63,7 +57,7 @@ export const db = {
             "pos": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "1",
                 "description": "номер по порядку при выводе"
@@ -71,13 +65,13 @@ export const db = {
             "country_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "1",
                 "description": "код страны"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "country_id",
                 "tableName": "address_country",
@@ -90,7 +84,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "идентификатор"
@@ -98,20 +92,20 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "address_house": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -119,7 +113,7 @@ export const db = {
             "streetid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код улицы"
@@ -127,7 +121,7 @@ export const db = {
             "house": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "номер дома"
@@ -135,7 +129,7 @@ export const db = {
             "frac": {
                 "PK": false,
                 "IX": true,
-                "type": "varchar(30)",
+                "type": MySQLTypes.Varchar30,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дробь"
@@ -143,7 +137,7 @@ export const db = {
             "amount": {
                 "PK": false,
                 "IX": false,
-                "type": "smallint(5)",
+                "type": MySQLTypes.SmallInt5,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "кол-во квартир"
@@ -151,7 +145,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -159,7 +153,7 @@ export const db = {
             "areaid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код района"
@@ -167,7 +161,7 @@ export const db = {
             "quarterid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код квартала"
@@ -175,7 +169,7 @@ export const db = {
             "box_index": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(10)",
+                "type": MySQLTypes.Varchar10,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "почтовый индекс"
@@ -183,7 +177,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата подключения"
@@ -191,7 +185,7 @@ export const db = {
             "pod_diapazon": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "диапазоны подъездов"
@@ -199,13 +193,13 @@ export const db = {
             "pod": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "streetid",
                 "tableName": "address_street",
@@ -228,7 +222,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код"
@@ -236,7 +230,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "название квартала"
@@ -244,7 +238,7 @@ export const db = {
             "gid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "обслуживающая группа crm"
@@ -252,13 +246,13 @@ export const db = {
             "cityid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "-1",
                 "description": "код города"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cityid",
                 "tableName": "address_city",
@@ -271,7 +265,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код"
@@ -279,7 +273,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "название улицы"
@@ -287,7 +281,7 @@ export const db = {
             "p_index": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(6)",
+                "type": MySQLTypes.Varchar6,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "индекс улицы"
@@ -295,13 +289,13 @@ export const db = {
             "cityid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "-1",
                 "description": "код города"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cityid",
                 "tableName": "address_city",
@@ -314,7 +308,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -322,7 +316,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название группы"
@@ -330,20 +324,20 @@ export const db = {
             "bgs_action_ids": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": "список id действий"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "bgs_group": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код"
@@ -351,7 +345,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
@@ -359,7 +353,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "примечание"
@@ -367,7 +361,7 @@ export const db = {
             "cgr": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "маска разрешенных групп договоров"
@@ -375,7 +369,7 @@ export const db = {
             "pids": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(512)",
+                "type": MySQLTypes.Varchar512,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "коды параметров договора и права доступа к ним"
@@ -383,7 +377,7 @@ export const db = {
             "opids": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "коды параметров объектов договора и права доступа к ним"
@@ -391,7 +385,7 @@ export const db = {
             "cgr_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "1",
                 "description": "режим совпадения групп, 0 - или, 1 - и"
@@ -399,20 +393,20 @@ export const db = {
             "menu_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "-1",
                 "description": "id меню для этой группы"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "bgs_group_action": {
         "fields": {
             "gid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код группы"
@@ -420,7 +414,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(10)",
+                "type": MySQLTypes.Varchar10,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "0 - ядро, другое число - код модуля, p{число} - плагин с id равным {число}"
@@ -428,13 +422,13 @@ export const db = {
             "aid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код действия"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "gid",
                 "tableName": "bgs_group",
@@ -447,7 +441,7 @@ export const db = {
             "gid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -455,7 +449,7 @@ export const db = {
             "menu_id": {
                 "PK": true,
                 "IX": false,
-                "type": "varchar(50)",
+                "type": MySQLTypes.Varchar50,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -463,20 +457,20 @@ export const db = {
             "hidden": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(2)",
+                "type": MySQLTypes.TinyInt2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "bgs_module_action": {
         "fields": {
             "module": {
                 "PK": true,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название модуля"
@@ -484,20 +478,20 @@ export const db = {
             "data": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "xml с действиями"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "bgs_query_log_yyyyMM": {
         "fields": {
             "dtime": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата и время запроса"
@@ -505,7 +499,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код пользователя биллинга"
@@ -513,7 +507,7 @@ export const db = {
             "ip": {
                 "PK": false,
                 "IX": false,
-                "type": "char(40)",
+                "type": MySQLTypes.Char40,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "ip адрес с которого был запрос"
@@ -521,7 +515,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -529,7 +523,7 @@ export const db = {
             "mid_aid": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "склеенная строка <код экземпляра модуля>_<код действия>, для поиска"
@@ -537,7 +531,7 @@ export const db = {
             "query": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "информация по запросу"
@@ -545,13 +539,13 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "uid",
                 "tableName": "tableId",
@@ -564,7 +558,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код пользователя"
@@ -572,7 +566,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(10)",
+                "type": MySQLTypes.Varchar10,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "0-ядро, другое число-код модуля, p{число}-плагин с кодом {число}"
@@ -580,7 +574,7 @@ export const db = {
             "aid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код действия"
@@ -588,13 +582,13 @@ export const db = {
             "bgs_action_group_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "id группы действий"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "uid",
                 "tableName": "user",
@@ -607,7 +601,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код пользователя"
@@ -615,13 +609,13 @@ export const db = {
             "gid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код группы"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "uid",
                 "tableName": "bgs_group",
@@ -639,7 +633,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -647,7 +641,7 @@ export const db = {
             "gr": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "битовая маска групп"
@@ -655,7 +649,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название договора"
@@ -663,7 +657,7 @@ export const db = {
             "pswd": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(32)",
+                "type": MySQLTypes.Varchar32,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "пароль доступа к статистике"
@@ -671,7 +665,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала действия"
@@ -679,7 +673,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания действия"
@@ -687,7 +681,7 @@ export const db = {
             "mode": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "режим баланса 0 - кредит, 1 - дебет"
@@ -695,7 +689,7 @@ export const db = {
             "closesumma": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "лимит"
@@ -703,7 +697,7 @@ export const db = {
             "pgid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "группа параметров"
@@ -711,7 +705,7 @@ export const db = {
             "pfid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "фирма"
@@ -719,7 +713,7 @@ export const db = {
             "fc": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(1)",
+                "type": MySQLTypes.TinyInt1,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "0 - физ. лицо, 1 - юр. лицо"
@@ -727,7 +721,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "примечание"
@@ -735,7 +729,7 @@ export const db = {
             "del": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(1)",
+                "type": MySQLTypes.TinyInt1,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "1 - договор скрыт"
@@ -743,7 +737,7 @@ export const db = {
             "scid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код супердоговора, 0 - независимый, -1 - супердоговор"
@@ -751,7 +745,7 @@ export const db = {
             "sub_list": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": "список кодов зависимых субдоговоров через запятую"
@@ -759,7 +753,7 @@ export const db = {
             "status": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "статус договора: 0 - подключен, 1 - на отключении, 2 - отключен, 3 - закрыт, 4 - приостановлен, 5 - на подключении"
@@ -767,7 +761,7 @@ export const db = {
             "status_date": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата смены статуса договора"
@@ -775,7 +769,7 @@ export const db = {
             "last_tariff_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата изменения тарифа"
@@ -783,7 +777,7 @@ export const db = {
             "title_pattern_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id шаблона комментария"
@@ -791,7 +785,7 @@ export const db = {
             "sub_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "0 - субдоговор с зависимым балансом, 1 - с независимым."
@@ -799,7 +793,7 @@ export const db = {
             "crm_customer_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -807,13 +801,13 @@ export const db = {
             "domainId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id домена"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "gr",
                 "tableName": "contract_group",
@@ -846,7 +840,7 @@ export const db = {
             "yy": {
                 "PK": true,
                 "IX": true,
-                "type": "smallint(5) unsigned",
+                "type": MySQLTypes.SmallInt5Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "год"
@@ -854,7 +848,7 @@ export const db = {
             "mm": {
                 "PK": true,
                 "IX": true,
-                "type": "tinyint(3) unsigned",
+                "type": MySQLTypes.TinyInt3Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "месяц с 1"
@@ -862,7 +856,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -870,7 +864,7 @@ export const db = {
             "sid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код услуги"
@@ -878,13 +872,13 @@ export const db = {
             "summa": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(15,5)",
+                "type": MySQLTypes.Decimal15_5,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "сумма наработки"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -902,7 +896,7 @@ export const db = {
             "contract_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -910,7 +904,7 @@ export const db = {
             "service_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -918,7 +912,7 @@ export const db = {
             "entity_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -926,7 +920,7 @@ export const db = {
             "date_from": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -934,7 +928,7 @@ export const db = {
             "date_to": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -942,7 +936,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -950,7 +944,7 @@ export const db = {
             "cost": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(15,2)",
+                "type": MySQLTypes.Decimal15_2,
                 "nullable": "true",
                 "defaultValue": "0.00",
                 "description": ""
@@ -958,7 +952,7 @@ export const db = {
             "amount": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "true",
                 "defaultValue": "0.00",
                 "description": ""
@@ -966,20 +960,20 @@ export const db = {
             "sum": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(15,2)",
+                "type": MySQLTypes.Decimal15_2,
                 "nullable": "true",
                 "defaultValue": "0.00",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_autopayment": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id записи"
@@ -987,7 +981,7 @@ export const db = {
             "contract_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id договора"
@@ -995,7 +989,7 @@ export const db = {
             "module_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id модуля"
@@ -1003,7 +997,7 @@ export const db = {
             "date_from": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата включения"
@@ -1011,7 +1005,7 @@ export const db = {
             "date_to": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата отключения"
@@ -1019,7 +1013,7 @@ export const db = {
             "user_from": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "-2",
                 "description": "id пользователя включившего возможность автоплатежа для модуля на договоре"
@@ -1027,13 +1021,13 @@ export const db = {
             "user_to": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "-2",
                 "description": "id пользователя выключившего возможность автоплатежа для модуля на договоре"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "contract_id",
                 "tableName": "contract",
@@ -1051,7 +1045,7 @@ export const db = {
             "yy": {
                 "PK": true,
                 "IX": true,
-                "type": "smallint(5) unsigned",
+                "type": MySQLTypes.SmallInt5Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "год"
@@ -1059,7 +1053,7 @@ export const db = {
             "mm": {
                 "PK": true,
                 "IX": true,
-                "type": "tinyint(3) unsigned",
+                "type": MySQLTypes.TinyInt3Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "месяц (начиная с 1)"
@@ -1067,7 +1061,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -1075,7 +1069,7 @@ export const db = {
             "summa1": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "входящий остаток на начало месяца"
@@ -1083,7 +1077,7 @@ export const db = {
             "summa2": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "приход за месяц"
@@ -1091,7 +1085,7 @@ export const db = {
             "summa3": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "наработка за месяц"
@@ -1099,13 +1093,13 @@ export const db = {
             "summa4": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "расходы за месяц"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -1118,7 +1112,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -1126,7 +1120,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "false",
                 "defaultValue": "0000-00-00",
                 "description": "дата расхода"
@@ -1134,7 +1128,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -1142,7 +1136,7 @@ export const db = {
             "pt": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код типа расхода"
@@ -1150,7 +1144,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код пользователя"
@@ -1158,7 +1152,7 @@ export const db = {
             "summa": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "сумма"
@@ -1166,7 +1160,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "char(200)",
+                "type": MySQLTypes.Char200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -1174,7 +1168,7 @@ export const db = {
             "lm": {
                 "PK": false,
                 "IX": false,
-                "type": "timestamp",
+                "type": MySQLTypes.Timestamp,
                 "nullable": "false",
                 "defaultValue": "current_timestamp()",
                 "description": "время изменения записи"
@@ -1182,13 +1176,13 @@ export const db = {
             "payback": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(1)",
+                "type": MySQLTypes.TinyInt1,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "данное поле различает возврат и расход. возврат - 1, расход - 0"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -1206,7 +1200,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код типа расхода"
@@ -1214,7 +1208,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "char(50)",
+                "type": MySQLTypes.Char50,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
@@ -1222,7 +1216,7 @@ export const db = {
             "flag": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(2)",
+                "type": MySQLTypes.TinyInt2,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "0 - редактируемый, 1 - нередактируемый"
@@ -1230,7 +1224,7 @@ export const db = {
             "type": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(2)",
+                "type": MySQLTypes.TinyInt2,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "0 - элемент группы, 1 - группа"
@@ -1238,7 +1232,7 @@ export const db = {
             "up": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11) unsigned",
+                "type": MySQLTypes.Int11Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "группа-предок в дереве"
@@ -1246,13 +1240,13 @@ export const db = {
             "payback": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(1)",
+                "type": MySQLTypes.TinyInt1,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "данное поле различает возврат и расход. возврат - 1, расход - 0"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "up",
                 "tableName": "contract_charge_types",
@@ -1265,7 +1259,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -1273,7 +1267,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -1281,7 +1275,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код пользователя"
@@ -1289,7 +1283,7 @@ export const db = {
             "subject": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "тема"
@@ -1297,7 +1291,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "текст"
@@ -1305,7 +1299,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата"
@@ -1313,13 +1307,13 @@ export const db = {
             "visibled": {
                 "PK": false,
                 "IX": false,
-                "type": "bit(1)",
+                "type": MySQLTypes.Bit1,
                 "nullable": "false",
                 "defaultValue": "b'0'",
                 "description": "флаг - доступно ли примечание пользователю"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -1332,7 +1326,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -1340,7 +1334,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(25)",
+                "type": MySQLTypes.Varchar25,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название шаблона"
@@ -1348,20 +1342,20 @@ export const db = {
             "pat": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "строка-шаблон"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_delete_money": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -1369,7 +1363,7 @@ export const db = {
             "name": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название правила"
@@ -1377,7 +1371,7 @@ export const db = {
             "money": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "баланс, менее которого отрабатывает правило"
@@ -1385,7 +1379,7 @@ export const db = {
             "time": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "сколько месяцев не было движения по счету"
@@ -1393,7 +1387,7 @@ export const db = {
             "gr": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "маска групп договоров"
@@ -1401,7 +1395,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала действия правила"
@@ -1409,7 +1403,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания действия правила"
@@ -1417,7 +1411,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -1425,20 +1419,20 @@ export const db = {
             "params": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_delete_time": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код"
@@ -1446,7 +1440,7 @@ export const db = {
             "name": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название правила"
@@ -1454,7 +1448,7 @@ export const db = {
             "time": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "сколько месяцев прошло с момента закрытия договора"
@@ -1462,7 +1456,7 @@ export const db = {
             "gr": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код групп договоров"
@@ -1470,7 +1464,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала действия"
@@ -1478,7 +1472,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания действия"
@@ -1486,7 +1480,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -1494,20 +1488,20 @@ export const db = {
             "params": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_group": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "tinyint(3) unsigned",
+                "type": MySQLTypes.TinyInt3Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код группы"
@@ -1515,7 +1509,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
@@ -1523,7 +1517,7 @@ export const db = {
             "enable": {
                 "PK": false,
                 "IX": true,
-                "type": "tinyint(3) unsigned",
+                "type": MySQLTypes.TinyInt3Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "активна = 1 (отображается в редакторе в договоре)"
@@ -1531,7 +1525,7 @@ export const db = {
             "editable": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(3)",
+                "type": MySQLTypes.TinyInt3,
                 "nullable": "false",
                 "defaultValue": "1",
                 "description": "группа редактируема в договоре"
@@ -1539,20 +1533,20 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий группы"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_history_open_log": {
         "fields": {
             "user_id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id пользователя"
@@ -1560,7 +1554,7 @@ export const db = {
             "contract_id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id договора"
@@ -1568,13 +1562,13 @@ export const db = {
             "last_open": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата и время последнего открытия договора в клиенте биллига данным пользователем"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "user_id",
                 "tableName": "user",
@@ -1592,7 +1586,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id метки"
@@ -1600,7 +1594,7 @@ export const db = {
             "parent_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id родительской метки"
@@ -1608,7 +1602,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название метки"
@@ -1616,7 +1610,7 @@ export const db = {
             "type": {
                 "PK": false,
                 "IX": false,
-                "type": "smallint(6)",
+                "type": MySQLTypes.SmallInt6,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "тип метки(копия группы или самостоятельная метка)"
@@ -1624,7 +1618,7 @@ export const db = {
             "sort_position": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "позиция для сортировки"
@@ -1632,7 +1626,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "true",
                 "defaultValue": "''",
                 "description": "комментарий к метке"
@@ -1640,13 +1634,13 @@ export const db = {
             "forbidden": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "parent_id",
                 "tableName": "contract_label",
@@ -1659,7 +1653,7 @@ export const db = {
             "contract_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id договора"
@@ -1667,13 +1661,13 @@ export const db = {
             "label_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id метки"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "contract_id",
                 "tableName": "contract",
@@ -1691,7 +1685,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id"
@@ -1699,7 +1693,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -1707,7 +1701,7 @@ export const db = {
             "clp_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "код задания на возвращение лимита"
@@ -1715,7 +1709,7 @@ export const db = {
             "summ": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "сумма понижения"
@@ -1723,7 +1717,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата понижения"
@@ -1731,7 +1725,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата восстановления"
@@ -1739,7 +1733,7 @@ export const db = {
             "pids": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "\"платежи восстановления\""
@@ -1747,7 +1741,7 @@ export const db = {
             "rest": {
                 "PK": false,
                 "IX": false,
-                "type": "float(10,2)",
+                "type": MySQLTypes.Float10_2,
                 "nullable": "false",
                 "defaultValue": "0.00",
                 "description": "остаток"
@@ -1755,13 +1749,13 @@ export const db = {
             "status": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "статус, 0 - \"лимит не погашен\", 1 - \"лимит частично погашен\", 2 - \"лимит погашен\", 3 - \"лимит просрочен.\""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -1779,7 +1773,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -1787,7 +1781,7 @@ export const db = {
             "mode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "режим: 0-разблокировано, 1-возможность понижения лимита заблокирована, 2-превышено максимально количество просроченных понижений (заблокировано)"
@@ -1795,13 +1789,13 @@ export const db = {
             "cnt": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "кол-во просроченных понижений после последнего разблокирования"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -1814,7 +1808,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -1822,7 +1816,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код пользователя"
@@ -1830,7 +1824,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -1838,7 +1832,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": true,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата возвращения"
@@ -1846,7 +1840,7 @@ export const db = {
             "value": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "устанавливаемое значение"
@@ -1854,13 +1848,13 @@ export const db = {
             "status": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(6)",
+                "type": MySQLTypes.Varchar6,
                 "nullable": "false",
                 "defaultValue": "on",
                 "description": "статус"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -1873,7 +1867,7 @@ export const db = {
             "lu": {
                 "PK": false,
                 "IX": false,
-                "type": "timestamp",
+                "type": MySQLTypes.Timestamp,
                 "nullable": "false",
                 "defaultValue": "current_timestamp()",
                 "description": "время последнего обновления записи"
@@ -1881,7 +1875,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id договора"
@@ -1889,7 +1883,7 @@ export const db = {
             "login": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "логин пользователя"
@@ -1897,7 +1891,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время попытки пользователя зайти в личный кабинет"
@@ -1905,7 +1899,7 @@ export const db = {
             "ip": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(40)",
+                "type": MySQLTypes.Varchar40,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "ip адрес пользователя"
@@ -1913,7 +1907,7 @@ export const db = {
             "error_code": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код ошибки"
@@ -1921,13 +1915,13 @@ export const db = {
             "request_data": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "данные с которыми пользователь пытался зайти в личный кабинет"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "tableId",
@@ -1940,7 +1934,7 @@ export const db = {
             "lu": {
                 "PK": false,
                 "IX": false,
-                "type": "timestamp /* mariadb-5.3 */",
+                "type": MySQLTypes.DateTime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "current_timestamp()",
                 "description": "время последнего обновления записи"
@@ -1948,7 +1942,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id договора"
@@ -1956,7 +1950,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время последней попытки входа пользователя в личный кабинет"
@@ -1964,7 +1958,7 @@ export const db = {
             "n": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "счетчик попыток входа пользователя в личный кабинет"
@@ -1972,13 +1966,13 @@ export const db = {
             "ip": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(15)",
+                "type": MySQLTypes.Varchar15,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "ip адрес пользователя"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "tableId",
@@ -1991,7 +1985,7 @@ export const db = {
             "lu": {
                 "PK": false,
                 "IX": false,
-                "type": "timestamp",
+                "type": MySQLTypes.Timestamp,
                 "nullable": "false",
                 "defaultValue": "current_timestamp()",
                 "description": "время последнего обновления записи"
@@ -1999,7 +1993,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id договора"
@@ -2007,7 +2001,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время входа пользователя в личный кабинет"
@@ -2015,7 +2009,7 @@ export const db = {
             "ip": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(40)",
+                "type": MySQLTypes.Varchar40,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "ip клиента"
@@ -2023,7 +2017,7 @@ export const db = {
             "session_id": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(32)",
+                "type": MySQLTypes.Varchar32,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id сессии"
@@ -2031,13 +2025,13 @@ export const db = {
             "user": {
                 "PK": false,
                 "IX": false,
-                "type": "enum('p','c','a')",
+                "type": MySQLTypes.EnumPCA,
                 "nullable": "false",
                 "defaultValue": "c",
                 "description": "тип пользователя: p - одноразовый вход в личный кабинет c - клиент a - администратор"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "tableId",
@@ -2050,7 +2044,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -2058,13 +2052,13 @@ export const db = {
             "mid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код модуля"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -2082,7 +2076,7 @@ export const db = {
             "gid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код группы параметров"
@@ -2090,13 +2084,13 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "gid",
                 "tableName": "contract_parameter_group_name",
@@ -2114,7 +2108,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11) unsigned",
+                "type": MySQLTypes.Int11Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -2122,20 +2116,20 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "char(150)",
+                "type": MySQLTypes.Char150,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_parameter_type_1": {
         "fields": {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2143,7 +2137,7 @@ export const db = {
             "pid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код парамера"
@@ -2151,13 +2145,13 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "значение"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -2175,7 +2169,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2183,7 +2177,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2191,7 +2185,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "значение"
@@ -2199,7 +2193,7 @@ export const db = {
             "dt_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата и время изменения"
@@ -2207,20 +2201,20 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "кто изменил"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_parameter_type_2": {
         "fields": {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2228,7 +2222,7 @@ export const db = {
             "pid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2236,7 +2230,7 @@ export const db = {
             "hid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "код дома"
@@ -2244,7 +2238,7 @@ export const db = {
             "flat": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(10)",
+                "type": MySQLTypes.Varchar10,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "квартира"
@@ -2252,7 +2246,7 @@ export const db = {
             "room": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(5)",
+                "type": MySQLTypes.Varchar5,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комната"
@@ -2260,7 +2254,7 @@ export const db = {
             "pod": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "подъезд"
@@ -2268,7 +2262,7 @@ export const db = {
             "floor": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "этаж"
@@ -2276,7 +2270,7 @@ export const db = {
             "address": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "тестовая строка с адресом"
@@ -2284,7 +2278,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -2292,13 +2286,13 @@ export const db = {
             "format_key": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(50)",
+                "type": MySQLTypes.Varchar50,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "ключ формата адреса"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -2321,7 +2315,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -2329,7 +2323,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код параметра"
@@ -2337,7 +2331,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "значение"
@@ -2345,7 +2339,7 @@ export const db = {
             "dt_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата изменения"
@@ -2353,13 +2347,13 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "кто изменил"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "user_id",
                 "tableName": "user",
@@ -2372,7 +2366,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -2380,7 +2374,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2388,7 +2382,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2396,7 +2390,7 @@ export const db = {
             "email": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(400)",
+                "type": MySQLTypes.Varchar400,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "email"
@@ -2404,7 +2398,7 @@ export const db = {
             "name": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "поле не используется"
@@ -2412,13 +2406,13 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "поле не используется"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -2436,7 +2430,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -2444,7 +2438,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код параметра"
@@ -2452,7 +2446,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "значение"
@@ -2460,7 +2454,7 @@ export const db = {
             "dt_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата изменения"
@@ -2468,13 +2462,13 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "кто изменил"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "user_id",
                 "tableName": "user",
@@ -2487,7 +2481,7 @@ export const db = {
             "mailid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код рассылки"
@@ -2495,13 +2489,13 @@ export const db = {
             "eid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код e-mail адреса договора"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "mailid",
                 "tableName": "mail_list",
@@ -2519,7 +2513,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2527,7 +2521,7 @@ export const db = {
             "pid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2535,7 +2529,7 @@ export const db = {
             "val1": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра типа адрес"
@@ -2543,13 +2537,13 @@ export const db = {
             "val2": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код обслуживающего лица"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -2572,7 +2566,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11) unsigned",
+                "type": MySQLTypes.Int11Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код"
@@ -2580,20 +2574,20 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "название обслуживающего лица"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_parameter_type_4_log": {
         "fields": {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -2601,7 +2595,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код параметра"
@@ -2609,7 +2603,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "значение"
@@ -2617,7 +2611,7 @@ export const db = {
             "dt_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата изменения"
@@ -2625,13 +2619,13 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "кто изменил"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "user_id",
                 "tableName": "user",
@@ -2644,7 +2638,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2652,7 +2646,7 @@ export const db = {
             "pid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2660,13 +2654,13 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "int(2)",
+                "type": MySQLTypes.Int2,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "значение 1 - флаг установлен, 0 - снят"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -2684,7 +2678,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2692,7 +2686,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2700,7 +2694,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "int(2)",
+                "type": MySQLTypes.Int2,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "значение"
@@ -2708,7 +2702,7 @@ export const db = {
             "dt_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата изменения"
@@ -2716,13 +2710,13 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "кто изменил"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "user_id",
                 "tableName": "user",
@@ -2735,7 +2729,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2743,7 +2737,7 @@ export const db = {
             "pid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2751,13 +2745,13 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "значение"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -2775,7 +2769,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2783,7 +2777,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2791,7 +2785,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "значение"
@@ -2799,7 +2793,7 @@ export const db = {
             "dt_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата изменения"
@@ -2807,13 +2801,13 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "кто изменил"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "user_id",
                 "tableName": "user",
@@ -2826,7 +2820,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2834,7 +2828,7 @@ export const db = {
             "pid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2842,7 +2836,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код значения"
@@ -2850,13 +2844,13 @@ export const db = {
             "custom_value": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "пользовательское значение"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -2879,7 +2873,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2887,7 +2881,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2895,7 +2889,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "код значения спискового параметра"
@@ -2903,7 +2897,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "значение спискового параметра"
@@ -2911,7 +2905,7 @@ export const db = {
             "dt_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата изменения"
@@ -2919,13 +2913,13 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "кто изменил"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "val",
                 "tableName": "contract_parameter_type_7_values",
@@ -2943,7 +2937,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код значения"
@@ -2951,7 +2945,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2959,20 +2953,20 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "строка значения"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_parameter_type_8": {
         "fields": {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -2980,7 +2974,7 @@ export const db = {
             "pid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -2988,13 +2982,13 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора - значение"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -3017,7 +3011,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -3025,7 +3019,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код параметра"
@@ -3033,7 +3027,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "значение"
@@ -3041,7 +3035,7 @@ export const db = {
             "dt_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата изменения"
@@ -3049,13 +3043,13 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "кто изменил"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "user_id",
                 "tableName": "user",
@@ -3068,7 +3062,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -3076,7 +3070,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код значения"
@@ -3084,20 +3078,20 @@ export const db = {
             "pid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "строка значения"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_parameter_type_multilist_item": {
         "fields": {
             "cid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -3105,7 +3099,7 @@ export const db = {
             "pid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код параметра"
@@ -3113,7 +3107,7 @@ export const db = {
             "custom_value": {
                 "PK": true,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "пользовательское значение"
@@ -3121,20 +3115,20 @@ export const db = {
             "val": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код значения"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_parameter_type_multilist_log": {
         "fields": {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -3142,7 +3136,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код параметра"
@@ -3150,7 +3144,7 @@ export const db = {
             "dt_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата изменения"
@@ -3158,7 +3152,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "значение мультиспискового параметра"
@@ -3166,20 +3160,20 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "кто изменил"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_parameter_type_multilist_values": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код значения"
@@ -3187,7 +3181,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код параметра"
@@ -3195,20 +3189,20 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "строка значения"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_parameter_type_phone": {
         "fields": {
             "pid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -3216,7 +3210,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -3224,20 +3218,20 @@ export const db = {
             "value": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_parameter_type_phone_item": {
         "fields": {
             "pid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код параметра"
@@ -3245,7 +3239,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -3253,7 +3247,7 @@ export const db = {
             "n": {
                 "PK": true,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "порядковый номер телефона в списке"
@@ -3261,7 +3255,7 @@ export const db = {
             "phone": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(14)",
+                "type": MySQLTypes.Varchar14,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "телефонный номер, только цифры без форматирования"
@@ -3269,7 +3263,7 @@ export const db = {
             "format": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(2)",
+                "type": MySQLTypes.Varchar2,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "формат номера, например: 14 - одна цифра код страны, 4 цифры код города; 32 - три цифры код страны, 2 цифры код города"
@@ -3277,13 +3271,13 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "комментарий к номеру"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "pid",
                 "tableName": "contract_parameters_pref",
@@ -3301,7 +3295,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -3309,7 +3303,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -3317,7 +3311,7 @@ export const db = {
             "val": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -3325,7 +3319,7 @@ export const db = {
             "data": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -3333,7 +3327,7 @@ export const db = {
             "dt_change": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -3341,20 +3335,20 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_parameters_pref": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код параметра"
@@ -3362,7 +3356,7 @@ export const db = {
             "pt": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "тип параметра (см комментарий таблицы)"
@@ -3370,7 +3364,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название параметра"
@@ -3378,7 +3372,7 @@ export const db = {
             "sort": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "порядок в договоре"
@@ -3386,7 +3380,7 @@ export const db = {
             "script": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "bgs скрипт валидации текстового параметра"
@@ -3394,7 +3388,7 @@ export const db = {
             "lm": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата последнего редактирования записи"
@@ -3402,7 +3396,7 @@ export const db = {
             "flags": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(3)",
+                "type": MySQLTypes.TinyInt3,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "первый бит - ведется ли история праметра (1 - да, 0 - нет); второй бит - права доступа на чтение параметра в лк; третий бит - права доступа на запись параметра в лк"
@@ -3410,20 +3404,20 @@ export const db = {
             "history": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(1)",
+                "type": MySQLTypes.TinyInt1,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_pattern": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -3431,7 +3425,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
@@ -3439,7 +3433,7 @@ export const db = {
             "closesumma": {
                 "PK": false,
                 "IX": false,
-                "type": "float",
+                "type": MySQLTypes.Float,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "лимит"
@@ -3447,7 +3441,7 @@ export const db = {
             "tpid": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код тарифного плана"
@@ -3455,7 +3449,7 @@ export const db = {
             "mode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "0 - кредит, 1 - дебет"
@@ -3463,7 +3457,7 @@ export const db = {
             "pgid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "группа параметров"
@@ -3471,7 +3465,7 @@ export const db = {
             "pfid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "фирма"
@@ -3479,7 +3473,7 @@ export const db = {
             "fc": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(2)",
+                "type": MySQLTypes.TinyInt2,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "0 - физ. лицо, 1 - юр. лицо"
@@ -3487,7 +3481,7 @@ export const db = {
             "dtl": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "срок жизни в днях"
@@ -3495,7 +3489,7 @@ export const db = {
             "tgid": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "группа тарифов"
@@ -3503,7 +3497,7 @@ export const db = {
             "scrid": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "коды скриптов поведения через запятую"
@@ -3511,7 +3505,7 @@ export const db = {
             "name_pattern": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "шаблон имени"
@@ -3519,7 +3513,7 @@ export const db = {
             "data": {
                 "PK": false,
                 "IX": false,
-                "type": "blob",
+                "type": MySQLTypes.Blob,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "даннные по модулям в шаблоне договора"
@@ -3527,7 +3521,7 @@ export const db = {
             "patid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id шаблона имени"
@@ -3535,7 +3529,7 @@ export const db = {
             "status": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "статус договора при создании"
@@ -3543,7 +3537,7 @@ export const db = {
             "domainId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id домена"
@@ -3551,13 +3545,13 @@ export const db = {
             "contract_groups": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "pgid",
                 "tableName": "contract_parameter_group_name",
@@ -3585,7 +3579,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код шаблона договора"
@@ -3593,13 +3587,13 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код экземпляра модуля"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "pid",
                 "tableName": "tableId",
@@ -3617,7 +3611,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код именованного параметра"
@@ -3625,7 +3619,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(45)",
+                "type": MySQLTypes.Varchar45,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название, ключ - по которому идет замена в шаблоне имени"
@@ -3633,7 +3627,7 @@ export const db = {
             "ln": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "последний выданный номер"
@@ -3641,7 +3635,7 @@ export const db = {
             "count_number": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "-1",
                 "description": "разряд генерируемого числа, если = -1, то разряд равен сгенированому числу"
@@ -3649,20 +3643,20 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(90)",
+                "type": MySQLTypes.Varchar90,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "описание параметра"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_pattern_services": {
         "fields": {
             "pid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код шаблона"
@@ -3670,13 +3664,13 @@ export const db = {
             "sid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код услуги"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "pid",
                 "tableName": "contract_pattern",
@@ -3694,7 +3688,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -3702,7 +3696,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "false",
                 "defaultValue": "0000-00-00",
                 "description": "дата платежа"
@@ -3710,7 +3704,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -3718,7 +3712,7 @@ export const db = {
             "pt": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "тип платежа"
@@ -3726,7 +3720,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "пользователь"
@@ -3734,7 +3728,7 @@ export const db = {
             "summa": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "сумма"
@@ -3742,7 +3736,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий к платежу"
@@ -3750,13 +3744,13 @@ export const db = {
             "lm": {
                 "PK": false,
                 "IX": false,
-                "type": "timestamp",
+                "type": MySQLTypes.Timestamp,
                 "nullable": "false",
                 "defaultValue": "current_timestamp()",
                 "description": "время изменения записи"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -3774,7 +3768,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код типа платежа"
@@ -3782,7 +3776,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(50)",
+                "type": MySQLTypes.Varchar50,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
@@ -3790,7 +3784,7 @@ export const db = {
             "up": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "группа-предок в дереве"
@@ -3798,7 +3792,7 @@ export const db = {
             "type": {
                 "PK": false,
                 "IX": true,
-                "type": "tinyint(2)",
+                "type": MySQLTypes.TinyInt2,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "0 - элемент группы, 1 - группа"
@@ -3806,13 +3800,13 @@ export const db = {
             "flag": {
                 "PK": false,
                 "IX": true,
-                "type": "tinyint(2)",
+                "type": MySQLTypes.TinyInt2,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "0 - редактируемый, 1 - нередактируемый"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "up",
                 "tableName": "contract_payment_types",
@@ -3825,7 +3819,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "идентификатор"
@@ -3833,7 +3827,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -3841,7 +3835,7 @@ export const db = {
             "typeId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "идентификатор типа резерва"
@@ -3849,7 +3843,7 @@ export const db = {
             "sum": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "сумма"
@@ -3857,7 +3851,7 @@ export const db = {
             "dateCreate": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата создания резерва"
@@ -3865,7 +3859,7 @@ export const db = {
             "dateTo": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата по которую планируется держать резерв"
@@ -3873,7 +3867,7 @@ export const db = {
             "dateClose": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата фактического завершения резерва"
@@ -3881,20 +3875,20 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "комментарий"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_reserve_total": {
         "fields": {
             "cid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -3902,20 +3896,20 @@ export const db = {
             "sum": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "сумма всех резервов на договоре"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_reserve_types": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "идентификатор"
@@ -3923,7 +3917,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(45)",
+                "type": MySQLTypes.Varchar45,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
@@ -3931,20 +3925,20 @@ export const db = {
             "used": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(1)",
+                "type": MySQLTypes.TinyInt1,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "1- используется"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "contract_script": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -3952,7 +3946,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -3960,7 +3954,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала"
@@ -3968,7 +3962,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания"
@@ -3976,7 +3970,7 @@ export const db = {
             "script_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код скрипта"
@@ -3984,13 +3978,13 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -4008,7 +4002,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -4016,7 +4010,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -4024,7 +4018,7 @@ export const db = {
             "sid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код услуги"
@@ -4032,7 +4026,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": true,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала"
@@ -4040,7 +4034,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": true,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания"
@@ -4048,7 +4042,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -4056,7 +4050,7 @@ export const db = {
             "lm": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "false",
                 "defaultValue": "0000-00-00",
                 "description": "дата последней правки"
@@ -4064,7 +4058,7 @@ export const db = {
             "eid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "не используется с 4.6"
@@ -4072,13 +4066,13 @@ export const db = {
             "emid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "не используется с 4.6"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -4096,7 +4090,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -4104,7 +4098,7 @@ export const db = {
             "status": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "значения статуса"
@@ -4112,7 +4106,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id пользователя, сменившего статус(0 - сервер)"
@@ -4120,7 +4114,7 @@ export const db = {
             "date": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата изменения"
@@ -4128,7 +4122,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "коментарий изменения статуса"
@@ -4136,7 +4130,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора, к которому относился статус"
@@ -4144,7 +4138,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата начала статуса"
@@ -4152,13 +4146,13 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания статуса"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "uid",
                 "tableName": "user",
@@ -4176,7 +4170,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -4184,7 +4178,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -4192,7 +4186,7 @@ export const db = {
             "tpid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код тарифного плана"
@@ -4200,7 +4194,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала"
@@ -4208,7 +4202,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания"
@@ -4216,7 +4210,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -4224,7 +4218,7 @@ export const db = {
             "lm": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": ""
@@ -4232,7 +4226,7 @@ export const db = {
             "pos": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "позиция тарифа"
@@ -4240,7 +4234,7 @@ export const db = {
             "emid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код экземпляра модуля, к сущности которого привязан тариф. 0 - ядро, т.е. тариф привязан непосредственно к договору."
@@ -4248,7 +4242,7 @@ export const db = {
             "eid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код сущности в экземпляре модуля с кодом emid. для разных модулей сущности разные. телефония - поинты, dialup - логины и т.п."
@@ -4256,7 +4250,7 @@ export const db = {
             "replaced_from": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "код записи, с которой перешли на эту запись при смена тарифа через web. (не заполняется в случае обработки скриптом)."
@@ -4264,13 +4258,13 @@ export const db = {
             "tariff_group_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "-1",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -4298,7 +4292,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -4306,7 +4300,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -4314,7 +4308,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала"
@@ -4322,7 +4316,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания"
@@ -4330,7 +4324,7 @@ export const db = {
             "gid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "группа тарифов"
@@ -4338,13 +4332,13 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "char(200)",
+                "type": MySQLTypes.Char200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -4362,7 +4356,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код активированной тарифной опции"
@@ -4370,7 +4364,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "пользователь, активировавший опцию, 0 - клиент, -1 - сервер"
@@ -4378,7 +4372,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора, на который активирована опция"
@@ -4386,7 +4380,7 @@ export const db = {
             "option_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код опции"
@@ -4394,7 +4388,7 @@ export const db = {
             "time_from": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время начала действия"
@@ -4402,7 +4396,7 @@ export const db = {
             "time_to": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "время окончания действия"
@@ -4410,7 +4404,7 @@ export const db = {
             "charge_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код расхода, если есть"
@@ -4418,7 +4412,7 @@ export const db = {
             "summa": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "сумма расхода, если есть"
@@ -4426,7 +4420,7 @@ export const db = {
             "activated_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "режим активации, которым была активирована опция"
@@ -4434,7 +4428,7 @@ export const db = {
             "activated_time": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время активации опции"
@@ -4442,13 +4436,13 @@ export const db = {
             "deactivated_time": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "время деактивации опции"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -4471,7 +4465,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -4479,7 +4473,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -4487,7 +4481,7 @@ export const db = {
             "tree_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код дерева"
@@ -4495,7 +4489,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название персонального тарифа"
@@ -4503,7 +4497,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала периода"
@@ -4511,7 +4505,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания периода"
@@ -4519,7 +4513,7 @@ export const db = {
             "pos": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "позиция персонального тарифа"
@@ -4527,7 +4521,7 @@ export const db = {
             "emid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код экземпляра модуля, к сущности которого привязан тариф. 0 - ядро, т.е. тариф привязан непосредственно к договору."
@@ -4535,7 +4529,7 @@ export const db = {
             "eid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код сущности в экземпляре модуля с кодом emid. для разных модулей сущности разные. телефония - поинты, dialup - логины и т.п."
@@ -4543,7 +4537,7 @@ export const db = {
             "title_web": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "название тарифа в лк"
@@ -4551,13 +4545,13 @@ export const db = {
             "config": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "конфигурационные параметры тарифа"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -4580,7 +4574,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -4588,7 +4582,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "false",
                 "defaultValue": "0000-00-00",
                 "description": "дата"
@@ -4596,7 +4590,7 @@ export const db = {
             "hh": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "час"
@@ -4604,7 +4598,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код модуля"
@@ -4612,7 +4606,7 @@ export const db = {
             "source_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код источника"
@@ -4620,7 +4614,7 @@ export const db = {
             "msg_title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "заголовок"
@@ -4628,13 +4622,13 @@ export const db = {
             "msg_data": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "информация об ошибках"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "mid",
                 "tableName": "module",
@@ -4652,7 +4646,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id домена"
@@ -4660,7 +4654,7 @@ export const db = {
             "parentId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id родительского домена"
@@ -4668,7 +4662,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название домена"
@@ -4676,13 +4670,13 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "коментарий"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "parentId",
                 "tableName": "domain",
@@ -4695,7 +4689,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код фирмы"
@@ -4703,20 +4697,20 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "название"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "global_script": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код скрипта"
@@ -4724,7 +4718,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "название скрипта"
@@ -4732,7 +4726,7 @@ export const db = {
             "script": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "тело скрипта"
@@ -4740,7 +4734,7 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "пользователь - автор изменений"
@@ -4748,13 +4742,13 @@ export const db = {
             "change_time": {
                 "PK": false,
                 "IX": false,
-                "type": "timestamp /* mariadb-5.3 */",
+                "type": MySQLTypes.DateTime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "current_timestamp()",
                 "description": "время последнего изменения"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "user_id",
                 "tableName": "user",
@@ -4767,7 +4761,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id"
@@ -4775,7 +4769,7 @@ export const db = {
             "name": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "имя модуля"
@@ -4783,7 +4777,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "название"
@@ -4791,7 +4785,7 @@ export const db = {
             "version": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(20)",
+                "type": MySQLTypes.Varchar20,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "версия"
@@ -4799,7 +4793,7 @@ export const db = {
             "pack_server": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "пакет сервера"
@@ -4807,7 +4801,7 @@ export const db = {
             "pack_client": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "пакет клиента"
@@ -4815,7 +4809,7 @@ export const db = {
             "type": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(20)",
+                "type": MySQLTypes.Varchar20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "тип модуля"
@@ -4823,7 +4817,7 @@ export const db = {
             "client_zip": {
                 "PK": false,
                 "IX": false,
-                "type": "longblob",
+                "type": MySQLTypes.LongBlob,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "клиентская библиотека (забирается клиентом при подключении)"
@@ -4831,7 +4825,7 @@ export const db = {
             "init": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "скрипт инициализации"
@@ -4839,7 +4833,7 @@ export const db = {
             "enabled": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(1)",
+                "type": MySQLTypes.TinyInt1,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "1 - плагин активен"
@@ -4847,20 +4841,20 @@ export const db = {
             "uninstall": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "скрипт деинсталляции"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "inv_product": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id активированного продукта"
@@ -4868,7 +4862,7 @@ export const db = {
             "contractId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id договора"
@@ -4876,7 +4870,7 @@ export const db = {
             "accountId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id аккаунта (модуля)"
@@ -4884,7 +4878,7 @@ export const db = {
             "productSpecId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id (описания) продукта"
@@ -4892,7 +4886,7 @@ export const db = {
             "timeFrom": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время начала действия"
@@ -4900,7 +4894,7 @@ export const db = {
             "timeTo": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "время окончания действия"
@@ -4908,7 +4902,7 @@ export const db = {
             "activationModeId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "выбранный режим активации"
@@ -4916,7 +4910,7 @@ export const db = {
             "activationTime": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время активации"
@@ -4924,7 +4918,7 @@ export const db = {
             "activationPrice": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,5)",
+                "type": MySQLTypes.Decimal10_5,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -4932,7 +4926,7 @@ export const db = {
             "deactivationTime": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "время деактивации"
@@ -4940,7 +4934,7 @@ export const db = {
             "userId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id пользователя"
@@ -4948,7 +4942,7 @@ export const db = {
             "deviceProductId": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "внешний id активированного продукта"
@@ -4956,7 +4950,7 @@ export const db = {
             "deviceState": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "внешнее состояние продукта (1-вкл,0-отк)"
@@ -4964,7 +4958,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -4972,13 +4966,13 @@ export const db = {
             "description": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "описание"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "contractId",
                 "tableName": "contract",
@@ -5001,7 +4995,7 @@ export const db = {
             "id": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id периода"
@@ -5009,7 +5003,7 @@ export const db = {
             "contractId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id договора"
@@ -5017,7 +5011,7 @@ export const db = {
             "accountId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id аккаунта (модуля)"
@@ -5025,7 +5019,7 @@ export const db = {
             "productSpecId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id описания продукта"
@@ -5033,7 +5027,7 @@ export const db = {
             "productId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id (активированного) продукта"
@@ -5041,7 +5035,7 @@ export const db = {
             "activationTime": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время активации"
@@ -5049,7 +5043,7 @@ export const db = {
             "timeFrom": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время начала действия периода"
@@ -5057,7 +5051,7 @@ export const db = {
             "timeTo": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "время окончания действия (может продлеваться)"
@@ -5065,7 +5059,7 @@ export const db = {
             "prolongationTime": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время последнего продления"
@@ -5073,7 +5067,7 @@ export const db = {
             "flags": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "системные флаги"
@@ -5081,13 +5075,13 @@ export const db = {
             "version": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "версия записи"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "contractId",
                 "tableName": "contract",
@@ -5110,7 +5104,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5118,7 +5112,7 @@ export const db = {
             "entityId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "привязка к сущности (атрибутам)"
@@ -5126,7 +5120,7 @@ export const db = {
             "moduleId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5134,7 +5128,7 @@ export const db = {
             "parentId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id родительского продукта"
@@ -5142,7 +5136,7 @@ export const db = {
             "periodic": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "1",
                 "description": "периодичный продукт (1, по умолчанию) или временный (0)"
@@ -5150,7 +5144,7 @@ export const db = {
             "notRealtime": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "в реальном времени (0, по умолчанию) или нет (1), т.е. по планировщику"
@@ -5158,7 +5152,7 @@ export const db = {
             "priority": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "приоритет продукта при продлении: больше - важнее (при условии что продляются в одно и то же время одновременно)"
@@ -5166,7 +5160,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название продукта"
@@ -5174,7 +5168,7 @@ export const db = {
             "identifier": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "внешний идентификатор продукта (например, id пакета в mw)"
@@ -5182,7 +5176,7 @@ export const db = {
             "tariffIds": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(1024)",
+                "type": MySQLTypes.Varchar1024,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "id разрешенных тарифов"
@@ -5190,7 +5184,7 @@ export const db = {
             "contractGroups": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(1024)",
+                "type": MySQLTypes.Varchar1024,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "id разрешенных групп договоров"
@@ -5198,7 +5192,7 @@ export const db = {
             "depends": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(1024)",
+                "type": MySQLTypes.Varchar1024,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "id продуктов, от которых зависит данный"
@@ -5206,7 +5200,7 @@ export const db = {
             "incompatible": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(1024)",
+                "type": MySQLTypes.Varchar1024,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "id продуктов, с которыми данный не совместим"
@@ -5214,7 +5208,7 @@ export const db = {
             "activationModeIds": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -5222,7 +5216,7 @@ export const db = {
             "dateFrom": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала действия"
@@ -5230,7 +5224,7 @@ export const db = {
             "dateTo": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания действия"
@@ -5238,7 +5232,7 @@ export const db = {
             "status": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5246,7 +5240,7 @@ export const db = {
             "hideForCustomer": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5254,7 +5248,7 @@ export const db = {
             "hideForContractGroups": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -5262,7 +5256,7 @@ export const db = {
             "hideForContractGroupsMode": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -5270,7 +5264,7 @@ export const db = {
             "activationByCustomer": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5278,7 +5272,7 @@ export const db = {
             "deactivationByCustomer": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5286,7 +5280,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -5294,7 +5288,7 @@ export const db = {
             "description": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "описание"
@@ -5302,7 +5296,7 @@ export const db = {
             "data": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": ""
@@ -5310,7 +5304,7 @@ export const db = {
             "contractLabels": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": ""
@@ -5318,20 +5312,20 @@ export const db = {
             "hideForContractLabels": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "inv_product_spec_activation_mode": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5339,7 +5333,7 @@ export const db = {
             "productSpecId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id (описания) продукта"
@@ -5347,7 +5341,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "название режима активации"
@@ -5355,7 +5349,7 @@ export const db = {
             "dateFrom": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала действия"
@@ -5363,7 +5357,7 @@ export const db = {
             "dateTo": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания действия"
@@ -5371,7 +5365,7 @@ export const db = {
             "periodMode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5379,7 +5373,7 @@ export const db = {
             "periodAmount": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5387,7 +5381,7 @@ export const db = {
             "deactivationMode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5395,7 +5389,7 @@ export const db = {
             "reactivationMode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5403,7 +5397,7 @@ export const db = {
             "chargeTypeId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5411,13 +5405,13 @@ export const db = {
             "chargeAmount": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,0)",
+                "type": MySQLTypes.Decimal10_0,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "productSpecId",
                 "tableName": "inv_product_spec",
@@ -5430,7 +5424,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата изменения параметра"
@@ -5438,7 +5432,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id- пользователя, который изменил параметр"
@@ -5446,7 +5440,7 @@ export const db = {
             "value": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "значение параметра. 0 - физ лицо, 1 - юр лицо"
@@ -5454,20 +5448,20 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id-договора, в котором изменился параметр"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "log_contract_limit": {
         "fields": {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "время"
@@ -5475,7 +5469,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код пользователя"
@@ -5483,7 +5477,7 @@ export const db = {
             "nvalue": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "новое значение"
@@ -5491,7 +5485,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -5499,7 +5493,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "примечание"
@@ -5507,13 +5501,13 @@ export const db = {
             "days": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(4)",
+                "type": MySQLTypes.Varchar4,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "на сколько дней понижение"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -5526,7 +5520,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": ""
@@ -5534,7 +5528,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -5542,7 +5536,7 @@ export const db = {
             "mode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -5550,13 +5544,13 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "uid",
                 "tableName": "tableId",
@@ -5569,7 +5563,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "время"
@@ -5577,7 +5571,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код пользователя"
@@ -5585,7 +5579,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -5593,13 +5587,13 @@ export const db = {
             "value": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код нового режима (0-кредит, 1-дебет)"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -5612,7 +5606,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "время"
@@ -5620,7 +5614,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код пользователя"
@@ -5628,13 +5622,13 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -5647,7 +5641,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5655,7 +5649,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5663,7 +5657,7 @@ export const db = {
             "time": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время"
@@ -5671,7 +5665,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название обработавшей функции"
@@ -5679,13 +5673,13 @@ export const db = {
             "data": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "вывод функции"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -5698,7 +5692,7 @@ export const db = {
             "time": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата и время"
@@ -5706,7 +5700,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название скрипта"
@@ -5714,20 +5708,20 @@ export const db = {
             "data": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "лог"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "log_login_pswd": {
         "fields": {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": ""
@@ -5735,7 +5729,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -5743,7 +5737,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -5751,20 +5745,20 @@ export const db = {
             "lid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "mail_list": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11) unsigned",
+                "type": MySQLTypes.Int11Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -5772,7 +5766,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(50)",
+                "type": MySQLTypes.Varchar50,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "название рассылки"
@@ -5780,7 +5774,7 @@ export const db = {
             "flag": {
                 "PK": false,
                 "IX": false,
-                "type": "int(1) unsigned",
+                "type": MySQLTypes.Int1Unsigned,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "0 - редактируемый, 1 - нередактируемый (для совместимости с редактором, не используется в работе)"
@@ -5788,7 +5782,7 @@ export const db = {
             "type": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(1) unsigned",
+                "type": MySQLTypes.TinyInt1Unsigned,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "0 - элемент группы, 1 - группа"
@@ -5796,13 +5790,13 @@ export const db = {
             "up": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11) unsigned",
+                "type": MySQLTypes.Int11Unsigned,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "код узла предка (для оформления в справочнике)"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "up",
                 "tableName": "mail_list",
@@ -5815,7 +5809,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11) unsigned",
+                "type": MySQLTypes.Int11Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -5823,7 +5817,7 @@ export const db = {
             "subject": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "тема сообщения"
@@ -5831,20 +5825,20 @@ export const db = {
             "text": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "текст сообщения"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "mail_temp": {
         "fields": {
             "id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -5852,7 +5846,7 @@ export const db = {
             "eid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -5860,13 +5854,13 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "id",
                 "tableName": "mail_list_message",
@@ -5884,7 +5878,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id сообщения"
@@ -5892,7 +5886,7 @@ export const db = {
             "date_from": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "с какой даты показывать сообщение"
@@ -5900,7 +5894,7 @@ export const db = {
             "date_to": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "по какую дату показывать сообщение"
@@ -5908,7 +5902,7 @@ export const db = {
             "text": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "текст сообщения"
@@ -5916,7 +5910,7 @@ export const db = {
             "gr": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "группы пользователей биллинга, которым показывать сообщение"
@@ -5924,7 +5918,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "заголовок сообщения"
@@ -5932,20 +5926,20 @@ export const db = {
             "users": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "пользователи биллинга, которым показывать сообщение"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "module": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код модуля"
@@ -5953,7 +5947,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название модуля"
@@ -5961,13 +5955,13 @@ export const db = {
             "name": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(16)",
+                "type": MySQLTypes.Varchar16,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "имя модуля"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "name",
                 "tableName": "installed_modules",
@@ -5980,7 +5974,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код конфигурации"
@@ -5988,7 +5982,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(3) unsigned",
+                "type": MySQLTypes.Int3Unsigned,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "код модуля"
@@ -5996,7 +5990,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата"
@@ -6004,7 +5998,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "название"
@@ -6012,7 +6006,7 @@ export const db = {
             "active": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(3) unsigned",
+                "type": MySQLTypes.TinyInt3Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "признак активности - 1"
@@ -6020,7 +6014,7 @@ export const db = {
             "uid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11) unsigned",
+                "type": MySQLTypes.Int11Unsigned,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "код пользователя"
@@ -6028,20 +6022,20 @@ export const db = {
             "config": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "текст конфигурации"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "module_tariff_tree": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код модульного дерева"
@@ -6049,7 +6043,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код модуля"
@@ -6057,7 +6051,7 @@ export const db = {
             "tree_id": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код дерева"
@@ -6065,7 +6059,7 @@ export const db = {
             "parent_tree": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код дерева - предка"
@@ -6073,13 +6067,13 @@ export const db = {
             "lm": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "mid",
                 "tableName": "module",
@@ -6102,7 +6096,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код узла"
@@ -6110,7 +6104,7 @@ export const db = {
             "parent_node": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код узла-предка"
@@ -6118,7 +6112,7 @@ export const db = {
             "mtree_id": {
                 "PK": false,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код модульного дерева"
@@ -6126,7 +6120,7 @@ export const db = {
             "type": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(20)",
+                "type": MySQLTypes.Varchar20,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "строка с типом узла"
@@ -6134,7 +6128,7 @@ export const db = {
             "data": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "данные"
@@ -6142,13 +6136,13 @@ export const db = {
             "pos": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "позиция узла в родительском (нумерация начинается с 0)"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "mtree_id",
                 "tableName": "module_tariff_tree",
@@ -6161,7 +6155,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "уникальный идентификатор записи"
@@ -6169,7 +6163,7 @@ export const db = {
             "date": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата реестра"
@@ -6177,7 +6171,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название реестра"
@@ -6185,7 +6179,7 @@ export const db = {
             "pt": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "тип платежа реестра"
@@ -6193,7 +6187,7 @@ export const db = {
             "load_time": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "время загрузки"
@@ -6201,7 +6195,7 @@ export const db = {
             "count": {
                 "PK": false,
                 "IX": false,
-                "type": "int(3)",
+                "type": MySQLTypes.Int3,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "количество корректных платежей"
@@ -6209,7 +6203,7 @@ export const db = {
             "summa": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "0.00",
                 "description": "сумма корректных платежей"
@@ -6217,7 +6211,7 @@ export const db = {
             "processed": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(2)",
+                "type": MySQLTypes.TinyInt2,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "1 - реестр проведен"
@@ -6225,7 +6219,7 @@ export const db = {
             "process_time": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "время проведения"
@@ -6233,7 +6227,7 @@ export const db = {
             "load_log": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "лог загрузки"
@@ -6241,7 +6235,7 @@ export const db = {
             "ptitle": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(50)",
+                "type": MySQLTypes.Varchar50,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "имя шаблона , по которму был загружен реестр"
@@ -6249,7 +6243,7 @@ export const db = {
             "regtype": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "тип реестра(1 - расходы, 0 - платежи)"
@@ -6257,20 +6251,20 @@ export const db = {
             "errorCount": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "payment_register_item_yyyyMM": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "уникальный идентификатор записи"
@@ -6278,7 +6272,7 @@ export const db = {
             "rid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "ссылка на реестр"
@@ -6286,7 +6280,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -6294,7 +6288,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата платежа"
@@ -6302,7 +6296,7 @@ export const db = {
             "pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "код записи в таблице платежей"
@@ -6310,7 +6304,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "комментарий платежа"
@@ -6318,7 +6312,7 @@ export const db = {
             "unique_id": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(60)",
+                "type": MySQLTypes.Varchar60,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "уникальный идентификатор платежа в пределах месяца"
@@ -6326,7 +6320,7 @@ export const db = {
             "ptid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "тип платежа для данной записи"
@@ -6334,13 +6328,13 @@ export const db = {
             "summa": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "true",
                 "defaultValue": "0.00",
                 "description": "сумма"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "rid",
                 "tableName": "payment_register",
@@ -6368,7 +6362,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "идентификатор"
@@ -6376,7 +6370,7 @@ export const db = {
             "marker": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "маркер, определяющий переобсчет"
@@ -6384,7 +6378,7 @@ export const db = {
             "calc_date": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "месяц, за который производился переобсчет"
@@ -6392,7 +6386,7 @@ export const db = {
             "subject": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "заголовок лога"
@@ -6400,7 +6394,7 @@ export const db = {
             "text": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "описание ошибок"
@@ -6408,20 +6402,20 @@ export const db = {
             "reg_time": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата регистрации ошибки (проведения переобсчета)"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "permission_kit": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -6429,7 +6423,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(300)",
+                "type": MySQLTypes.Varchar300,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название набора"
@@ -6437,7 +6431,7 @@ export const db = {
             "contract_labels": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": "список разрешённых меток договора"
@@ -6445,7 +6439,7 @@ export const db = {
             "domens": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": "список разрешённых доменов"
@@ -6453,7 +6447,7 @@ export const db = {
             "bgs_action_ids": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": "список разрешённых id действий"
@@ -6461,7 +6455,7 @@ export const db = {
             "bgs_group_action_ids": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": "список разрешённых id групп действий"
@@ -6469,7 +6463,7 @@ export const db = {
             "pids": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(512)",
+                "type": MySQLTypes.Varchar512,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "список параметров договора"
@@ -6477,7 +6471,7 @@ export const db = {
             "contract_objects": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "список объектов договора"
@@ -6485,20 +6479,20 @@ export const db = {
             "description": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": "описание набора"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "plugin_config": {
         "fields": {
             "pid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код плагина"
@@ -6506,13 +6500,13 @@ export const db = {
             "config": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "конфигурация плагина"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "pid",
                 "tableName": "installed_modules",
@@ -6525,7 +6519,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -6533,7 +6527,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(300)",
+                "type": MySQLTypes.Varchar300,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название роли"
@@ -6541,7 +6535,7 @@ export const db = {
             "menu_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "id меню для данной роли"
@@ -6549,7 +6543,7 @@ export const db = {
             "childs": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": "список id дочерних ролей через запятую"
@@ -6557,20 +6551,20 @@ export const db = {
             "permission_kit_ids": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "список id наборов ограничений"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "scheduled_class": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код"
@@ -6578,7 +6572,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "название задачи"
@@ -6586,20 +6580,20 @@ export const db = {
             "class": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(240)",
+                "type": MySQLTypes.Varchar240,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "имя java класса"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "scheduled_periodic_run": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код периодической задачи"
@@ -6607,7 +6601,7 @@ export const db = {
             "description": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "описание выполняемой задачи"
@@ -6615,20 +6609,20 @@ export const db = {
             "amount": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": "количество одновременно выполняемых задач"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "scheduled_task_log": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -6636,7 +6630,7 @@ export const db = {
             "task_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код задачи планировщика"
@@ -6644,7 +6638,7 @@ export const db = {
             "task_title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(128)",
+                "type": MySQLTypes.Varchar128,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "название задачи"
@@ -6652,7 +6646,7 @@ export const db = {
             "start": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата/время начала выполнения задачи в виде unix_time"
@@ -6660,13 +6654,13 @@ export const db = {
             "finish": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "дата/время окончания выполнения задачи в виде unix_time"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "task_id",
                 "tableName": "scheduled_tasks",
@@ -6679,7 +6673,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -6687,7 +6681,7 @@ export const db = {
             "data": {
                 "PK": false,
                 "IX": false,
-                "type": "longblob",
+                "type": MySQLTypes.LongBlob,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "сериализованный объект, содержащий класс - задание"
@@ -6695,7 +6689,7 @@ export const db = {
             "description": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -6703,7 +6697,7 @@ export const db = {
             "executed": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(2)",
+                "type": MySQLTypes.TinyInt2,
                 "nullable": "true",
                 "defaultValue": "0",
                 "description": ""
@@ -6711,20 +6705,20 @@ export const db = {
             "start_time": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "scheduled_tasks": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -6732,7 +6726,7 @@ export const db = {
             "mm": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "битовая маска месяцев, с младшего бита"
@@ -6740,7 +6734,7 @@ export const db = {
             "dm": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "битовая маска дней месяца"
@@ -6748,7 +6742,7 @@ export const db = {
             "dw": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "битовая маска дней недели"
@@ -6756,7 +6750,7 @@ export const db = {
             "hh": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "битовая маска часов"
@@ -6764,7 +6758,7 @@ export const db = {
             "min": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "битовая маска минут"
@@ -6772,7 +6766,7 @@ export const db = {
             "prior": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "приоритет задания"
@@ -6780,7 +6774,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "с какой даты выполнять задачу"
@@ -6788,7 +6782,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "по какую дату выполнять задачу"
@@ -6796,7 +6790,7 @@ export const db = {
             "status": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "текущий статус задачи, 1 - активна"
@@ -6804,7 +6798,7 @@ export const db = {
             "class_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код класса"
@@ -6812,7 +6806,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -6820,7 +6814,7 @@ export const db = {
             "params": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "конфигурация задачи"
@@ -6828,7 +6822,7 @@ export const db = {
             "class": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -6836,13 +6830,13 @@ export const db = {
             "module_id": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "class_id",
                 "tableName": "scheduled_class",
@@ -6855,7 +6849,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код"
@@ -6863,20 +6857,20 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "script_backup": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код резервной копии"
@@ -6884,7 +6878,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "комментарий к резервной копии скрипта"
@@ -6892,7 +6886,7 @@ export const db = {
             "script_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id скрипта"
@@ -6900,7 +6894,7 @@ export const db = {
             "script": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "текст скрипта"
@@ -6908,7 +6902,7 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id пользователя"
@@ -6916,7 +6910,7 @@ export const db = {
             "change_time": {
                 "PK": false,
                 "IX": false,
-                "type": "timestamp",
+                "type": MySQLTypes.Timestamp,
                 "nullable": "false",
                 "defaultValue": "current_timestamp()",
                 "description": "время создания резервной копии"
@@ -6924,7 +6918,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "коментарий"
@@ -6932,13 +6926,13 @@ export const db = {
             "type": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "тип резервной копии : 0 - копия глобального скрипта,1-код функции, 2- код библиотеки"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "user_id",
                 "tableName": "user",
@@ -6951,7 +6945,7 @@ export const db = {
             "name": {
                 "PK": true,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "имя класса с пакетом"
@@ -6959,7 +6953,7 @@ export const db = {
             "last_mod": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "время последнего изменения"
@@ -6967,20 +6961,20 @@ export const db = {
             "data": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumblob",
+                "type": MySQLTypes.MediumBlob,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "тело .class файла"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "script_classes_ifaces": {
         "fields": {
             "name": {
                 "PK": true,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "наименование класса"
@@ -6988,20 +6982,20 @@ export const db = {
             "iface": {
                 "PK": true,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "наименование интерфейса"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "script_custom_template": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -7009,7 +7003,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "название шаблона"
@@ -7017,7 +7011,7 @@ export const db = {
             "create_date": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата создания"
@@ -7025,7 +7019,7 @@ export const db = {
             "date_last_mod": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата последнего изменения"
@@ -7033,7 +7027,7 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id пользователя вносившего изменения"
@@ -7041,7 +7035,7 @@ export const db = {
             "template_data": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "данные самого шаблона(код, текст)"
@@ -7049,7 +7043,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(256)",
+                "type": MySQLTypes.Varchar256,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -7057,20 +7051,20 @@ export const db = {
             "extension": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(10)",
+                "type": MySQLTypes.Varchar10,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "расширение"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "script_event_queue": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -7078,20 +7072,20 @@ export const db = {
             "event": {
                 "PK": false,
                 "IX": false,
-                "type": "longblob",
+                "type": MySQLTypes.LongBlob,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "сериализованный java класс с событием"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "script_event_type": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -7099,7 +7093,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "0 - ядро, другое число - код модуля, p{число} - плагин с кодом {число}"
@@ -7107,7 +7101,7 @@ export const db = {
             "event_id": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код типа события для старых событий либо название класса-события для новых"
@@ -7115,7 +7109,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название типа события"
@@ -7123,20 +7117,20 @@ export const db = {
             "event_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "1",
                 "description": "тип события (1-привязано к договору, 0 - глобальное)"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "script_function": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код функции"
@@ -7144,7 +7138,7 @@ export const db = {
             "script_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код скрипта"
@@ -7152,7 +7146,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название функции"
@@ -7160,7 +7154,7 @@ export const db = {
             "code": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "текст программы"
@@ -7168,7 +7162,7 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "пользователь - автор изменений"
@@ -7176,13 +7170,13 @@ export const db = {
             "change_time": {
                 "PK": false,
                 "IX": false,
-                "type": "timestamp",
+                "type": MySQLTypes.Timestamp,
                 "nullable": "false",
                 "defaultValue": "current_timestamp()",
                 "description": "время последнего изменения"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "script_id",
                 "tableName": "script",
@@ -7200,7 +7194,7 @@ export const db = {
             "fid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код функции"
@@ -7208,7 +7202,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "0 - ядро, другое число - код модуля, p{число} - плагин с кодом {число}"
@@ -7216,13 +7210,13 @@ export const db = {
             "event_id": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код типа события"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "fid",
                 "tableName": "script_function",
@@ -7240,7 +7234,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -7248,7 +7242,7 @@ export const db = {
             "name": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "имя библиотеки"
@@ -7256,7 +7250,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "описание библиотеки"
@@ -7264,7 +7258,7 @@ export const db = {
             "script": {
                 "PK": false,
                 "IX": false,
-                "type": "mediumtext",
+                "type": MySQLTypes.MediumText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код библиотеки"
@@ -7272,7 +7266,7 @@ export const db = {
             "user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "пользователь - автор изменений"
@@ -7280,13 +7274,13 @@ export const db = {
             "change_time": {
                 "PK": false,
                 "IX": false,
-                "type": "timestamp",
+                "type": MySQLTypes.Timestamp,
                 "nullable": "false",
                 "defaultValue": "current_timestamp()",
                 "description": "время последнего изменения"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "user_id",
                 "tableName": "user",
@@ -7299,7 +7293,7 @@ export const db = {
             "mid": {
                 "PK": true,
                 "IX": false,
-                "type": "varchar(8)",
+                "type": MySQLTypes.Varchar8,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "ид модуля/плагина"
@@ -7307,20 +7301,20 @@ export const db = {
             "value": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "значение идентификатора"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "service": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код услуги"
@@ -7328,7 +7322,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название услуги"
@@ -7336,7 +7330,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код модуля"
@@ -7344,7 +7338,7 @@ export const db = {
             "lm": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата и время последнего изменения"
@@ -7352,7 +7346,7 @@ export const db = {
             "isusing": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(1)",
+                "type": MySQLTypes.TinyInt1,
                 "nullable": "true",
                 "defaultValue": "1",
                 "description": "признак используемости услуги"
@@ -7360,7 +7354,7 @@ export const db = {
             "parentId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -7368,7 +7362,7 @@ export const db = {
             "dateFrom": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -7376,7 +7370,7 @@ export const db = {
             "dateTo": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -7384,7 +7378,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -7392,7 +7386,7 @@ export const db = {
             "description": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -7400,7 +7394,7 @@ export const db = {
             "unit": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -7408,7 +7402,7 @@ export const db = {
             "config": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": ""
@@ -7416,7 +7410,7 @@ export const db = {
             "active_date_from": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -7424,13 +7418,13 @@ export const db = {
             "active_date_to": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "mid",
                 "tableName": "module",
@@ -7443,7 +7437,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -7451,20 +7445,20 @@ export const db = {
             "value": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "source": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -7472,7 +7466,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код модуля"
@@ -7480,7 +7474,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(20)",
+                "type": MySQLTypes.Varchar20,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
@@ -7488,7 +7482,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": true,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -7496,7 +7490,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": true,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -7504,7 +7498,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -7512,7 +7506,7 @@ export const db = {
             "source_type": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "тип 1 - ftp, 2 - локальная или сетевая папка, 3 - netflow"
@@ -7520,7 +7514,7 @@ export const db = {
             "host_or_dir": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "хост или путь к папке в зависимости от типа"
@@ -7528,7 +7522,7 @@ export const db = {
             "user": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(15)",
+                "type": MySQLTypes.Varchar15,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "пользователь ftp"
@@ -7536,7 +7530,7 @@ export const db = {
             "pswd": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(15)",
+                "type": MySQLTypes.Varchar15,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "пароль ftp"
@@ -7544,7 +7538,7 @@ export const db = {
             "config": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -7552,20 +7546,20 @@ export const db = {
             "lm": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime /* mariadb-5.3 */",
+                "type": MySQLTypes.Datetime_MariaDB53,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "source_data_yyyyMM": {
         "fields": {
             "source_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код источника"
@@ -7573,7 +7567,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата и час лога"
@@ -7581,7 +7575,7 @@ export const db = {
             "size": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "размер файла лога"
@@ -7589,7 +7583,7 @@ export const db = {
             "modtime": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "время модификации файла лога"
@@ -7597,13 +7591,13 @@ export const db = {
             "process": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "пометка о обработке"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "source_id",
                 "tableName": "source",
@@ -7616,7 +7610,7 @@ export const db = {
             "mid": {
                 "PK": true,
                 "IX": false,
-                "type": "varchar(10)",
+                "type": MySQLTypes.Varchar10,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код модуля, 0 - ядро, <целое_число> - для плагинов или модулей в целом (таблица installed_module), m<целое_число> - для конкретных реализаций модуля (из таблицы module)"
@@ -7624,13 +7618,13 @@ export const db = {
             "versions": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "md5 хэши выполненных запросов"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "mid",
                 "tableName": "installed_modules",
@@ -7643,7 +7637,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код"
@@ -7651,7 +7645,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
@@ -7659,7 +7653,7 @@ export const db = {
             "tm": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(3)",
+                "type": MySQLTypes.TinyInt3,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "с каких моментов можно переходить (1-любой день, 2-неделя, 3-начало месяца, 4-любой день, начиная со следующего)"
@@ -7667,7 +7661,7 @@ export const db = {
             "df": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "на сколько раз вперед от первой подходящей даты можно выставить задания"
@@ -7675,7 +7669,7 @@ export const db = {
             "pos": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "позиция планов данной группы в договоре"
@@ -7683,7 +7677,7 @@ export const db = {
             "beh": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -7691,20 +7685,20 @@ export const db = {
             "domain_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "tariff_group_tariff": {
         "fields": {
             "tgid": {
                 "PK": false,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код группы тарифов"
@@ -7712,7 +7706,7 @@ export const db = {
             "tpid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код тарифного плана"
@@ -7720,7 +7714,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "начало периода видимости тарифа в группе тарифов"
@@ -7728,7 +7722,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "конец периода видимости тарифа в группе тарифов"
@@ -7736,13 +7730,13 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(500)",
+                "type": MySQLTypes.Varchar500,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "tgid",
                 "tableName": "tariff_group",
@@ -7760,7 +7754,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код метки"
@@ -7768,7 +7762,7 @@ export const db = {
             "parent_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код родительской метки"
@@ -7776,13 +7770,13 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название метки"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "parent_id",
                 "tableName": "tariff_label",
@@ -7795,7 +7789,7 @@ export const db = {
             "tariff_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код тарифа"
@@ -7803,13 +7797,13 @@ export const db = {
             "label_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код тарифной метки"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "tariff_id",
                 "tableName": "tariff_plan",
@@ -7827,7 +7821,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код тарифной опции"
@@ -7835,7 +7829,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(250)",
+                "type": MySQLTypes.Varchar250,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
@@ -7843,7 +7837,7 @@ export const db = {
             "tariff_ids": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "коды тарифов, для которых возможна активация"
@@ -7851,7 +7845,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "комментарий"
@@ -7859,7 +7853,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала возможности активации"
@@ -7867,7 +7861,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания возможности активации"
@@ -7875,7 +7869,7 @@ export const db = {
             "depends": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "коды опций, которые должны быть активированы для активации данной"
@@ -7883,7 +7877,7 @@ export const db = {
             "incompatible": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "коды опции, при наличии активированных которых, активация данной невозможна"
@@ -7891,7 +7885,7 @@ export const db = {
             "deactivation_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "режим деактивации"
@@ -7899,7 +7893,7 @@ export const db = {
             "contract_groups": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "группы договоров, для которых возможна активация опции"
@@ -7907,7 +7901,7 @@ export const db = {
             "description": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -7915,7 +7909,7 @@ export const db = {
             "hideForWeb": {
                 "PK": false,
                 "IX": false,
-                "type": "smallint(6)",
+                "type": MySQLTypes.SmallInt6,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -7923,7 +7917,7 @@ export const db = {
             "hideForWebContractGroups": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -7931,7 +7925,7 @@ export const db = {
             "hideForWebContractGroupsMode": {
                 "PK": false,
                 "IX": false,
-                "type": "smallint(6)",
+                "type": MySQLTypes.SmallInt6,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -7939,7 +7933,7 @@ export const db = {
             "contract_labels": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": ""
@@ -7947,20 +7941,20 @@ export const db = {
             "hide_for_web_contract_labels": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "''",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "tariff_option_activate_mode": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код режима активации"
@@ -7968,7 +7962,7 @@ export const db = {
             "option_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код тарифной опции"
@@ -7976,7 +7970,7 @@ export const db = {
             "charge_type_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код типа расхода"
@@ -7984,7 +7978,7 @@ export const db = {
             "charge_summa": {
                 "PK": false,
                 "IX": false,
-                "type": "decimal(10,2)",
+                "type": MySQLTypes.Decimal10_2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "сумма расхода"
@@ -7992,7 +7986,7 @@ export const db = {
             "period_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "режим периода активации"
@@ -8000,7 +7994,7 @@ export const db = {
             "period_col": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "количество периода активации (часов/дней/недель/месяцев)"
@@ -8008,7 +8002,7 @@ export const db = {
             "date1": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата начала возможности активации"
@@ -8016,7 +8010,7 @@ export const db = {
             "date2": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "дата окончания возможности активации"
@@ -8024,7 +8018,7 @@ export const db = {
             "deactivation_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "режим деактивации"
@@ -8032,7 +8026,7 @@ export const db = {
             "reactivation_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "режим реактивации"
@@ -8040,7 +8034,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -8048,7 +8042,7 @@ export const db = {
             "delete_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -8056,13 +8050,13 @@ export const db = {
             "delete_charge_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "1",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "option_id",
                 "tableName": "tariff_option",
@@ -8080,7 +8074,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код тарифного плана"
@@ -8088,7 +8082,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(200)",
+                "type": MySQLTypes.Varchar200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название тарифного плана"
@@ -8096,7 +8090,7 @@ export const db = {
             "title_web": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "название тарифного плана в лк"
@@ -8104,7 +8098,7 @@ export const db = {
             "actual": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "флаг используется\\не используется"
@@ -8112,7 +8106,7 @@ export const db = {
             "gr": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "битовая маска групп для фильтра по договору"
@@ -8120,7 +8114,7 @@ export const db = {
             "pattern": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "шаблон имени договора для фильтра по договору"
@@ -8128,7 +8122,7 @@ export const db = {
             "face": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "для лиц: 0 - любых, 1 - физических, 2 - юридических"
@@ -8136,7 +8130,7 @@ export const db = {
             "tree_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код тарифного дерева"
@@ -8144,7 +8138,7 @@ export const db = {
             "config": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "конфигурационные параметры тарифа"
@@ -8152,7 +8146,7 @@ export const db = {
             "lm": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": ""
@@ -8160,7 +8154,7 @@ export const db = {
             "comment": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(500)",
+                "type": MySQLTypes.Varchar500,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
@@ -8168,13 +8162,13 @@ export const db = {
             "contract_label_ids": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "tree_id",
                 "tableName": "tariff_tree",
@@ -8187,7 +8181,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10)",
+                "type": MySQLTypes.Int10,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код дерева"
@@ -8195,20 +8189,20 @@ export const db = {
             "parent_tree": {
                 "PK": false,
                 "IX": true,
-                "type": "int(3)",
+                "type": MySQLTypes.Int3,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "устаревшая колонка (код дерева-предка)"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "tariff_tree_config": {
         "fields": {
             "module": {
                 "PK": true,
                 "IX": true,
-                "type": "varchar(20)",
+                "type": MySQLTypes.Varchar20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "название модуля"
@@ -8216,20 +8210,20 @@ export const db = {
             "data": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "xml конфигурация тарифного дерева"
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "task_load": {
         "fields": {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код записи"
@@ -8237,7 +8231,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата и час лога"
@@ -8245,7 +8239,7 @@ export const db = {
             "param": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код источника"
@@ -8253,7 +8247,7 @@ export const db = {
             "count": {
                 "PK": false,
                 "IX": false,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "количество попыток загрузки"
@@ -8261,7 +8255,7 @@ export const db = {
             "le": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "время последней попытки"
@@ -8269,13 +8263,13 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "char(200)",
+                "type": MySQLTypes.Char200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "param",
                 "tableName": "source",
@@ -8288,7 +8282,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(10) unsigned",
+                "type": MySQLTypes.Int10Unsigned,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -8296,7 +8290,7 @@ export const db = {
             "title": {
                 "PK": false,
                 "IX": false,
-                "type": "char(200)",
+                "type": MySQLTypes.Char200,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "название"
@@ -8304,7 +8298,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код модуля"
@@ -8312,7 +8306,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата и час лога"
@@ -8320,7 +8314,7 @@ export const db = {
             "param": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код источника"
@@ -8328,13 +8322,13 @@ export const db = {
             "start_process_time": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "время начала обработки"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "param",
                 "tableName": "source",
@@ -8347,7 +8341,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код"
@@ -8355,7 +8349,7 @@ export const db = {
             "login": {
                 "PK": false,
                 "IX": false,
-                "type": "char(15)",
+                "type": MySQLTypes.Char15,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "логин"
@@ -8363,7 +8357,7 @@ export const db = {
             "name": {
                 "PK": false,
                 "IX": false,
-                "type": "char(50)",
+                "type": MySQLTypes.Char50,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "имя"
@@ -8371,7 +8365,7 @@ export const db = {
             "email": {
                 "PK": false,
                 "IX": false,
-                "type": "char(50)",
+                "type": MySQLTypes.Char50,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "адрес электронной почты"
@@ -8379,7 +8373,7 @@ export const db = {
             "descr": {
                 "PK": false,
                 "IX": false,
-                "type": "char(255)",
+                "type": MySQLTypes.Char255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "описание"
@@ -8387,7 +8381,7 @@ export const db = {
             "pswd": {
                 "PK": false,
                 "IX": false,
-                "type": "char(32)",
+                "type": MySQLTypes.Char32,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "пароль"
@@ -8395,7 +8389,7 @@ export const db = {
             "dt": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата заведения"
@@ -8403,7 +8397,7 @@ export const db = {
             "cgr": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "маска разрешенных групп договоров"
@@ -8411,7 +8405,7 @@ export const db = {
             "cgr_mode": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "1",
                 "description": "режим совпадения групп договоров. 0 - или, 1 - и."
@@ -8419,7 +8413,7 @@ export const db = {
             "status": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(4)",
+                "type": MySQLTypes.TinyInt4,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "статус (0-активен, 1-заблокирован)"
@@ -8427,7 +8421,7 @@ export const db = {
             "pids": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(512)",
+                "type": MySQLTypes.Varchar512,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "коды параметров договора и права доступа к ним"
@@ -8435,7 +8429,7 @@ export const db = {
             "opids": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "коды параметров объектов договора и права доступа к ним"
@@ -8443,7 +8437,7 @@ export const db = {
             "contract_pid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "привязка к договору: код типа параметра \"ссылка на договор\""
@@ -8451,7 +8445,7 @@ export const db = {
             "contract_cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "привязка к договору: код договора"
@@ -8459,7 +8453,7 @@ export const db = {
             "gr": {
                 "PK": false,
                 "IX": false,
-                "type": "bigint(20)",
+                "type": MySQLTypes.BigInt20,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -8467,7 +8461,7 @@ export const db = {
             "config": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -8475,7 +8469,7 @@ export const db = {
             "crm_user_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -8483,7 +8477,7 @@ export const db = {
             "ch_pswd": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(2)",
+                "type": MySQLTypes.TinyInt2,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
@@ -8491,7 +8485,7 @@ export const db = {
             "domainIds": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(255)",
+                "type": MySQLTypes.Varchar255,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "id доменов"
@@ -8499,7 +8493,7 @@ export const db = {
             "personal_action": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "количество персональных разрешений пользователя"
@@ -8507,7 +8501,7 @@ export const db = {
             "menu_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "-1",
                 "description": ""
@@ -8515,13 +8509,13 @@ export const db = {
             "role_id": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": ""
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "role_id",
                 "tableName": "role",
@@ -8534,7 +8528,7 @@ export const db = {
             "uid": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -8542,7 +8536,7 @@ export const db = {
             "menu_id": {
                 "PK": true,
                 "IX": false,
-                "type": "varchar(50)",
+                "type": MySQLTypes.Varchar50,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -8550,20 +8544,20 @@ export const db = {
             "hidden": {
                 "PK": false,
                 "IX": false,
-                "type": "tinyint(2)",
+                "type": MySQLTypes.TinyInt2,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
             }
         },
-        "referenceTables": []
+        referenceTables: []
     },
     "user_tables": {
         "fields": {
             "userId": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "true",
                 "defaultValue": "null",
                 "description": "пользователь"
@@ -8571,7 +8565,7 @@ export const db = {
             "table_module": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "true",
                 "defaultValue": "null",
                 "description": "название модуля"
@@ -8579,7 +8573,7 @@ export const db = {
             "table_id": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(100)",
+                "type": MySQLTypes.Varchar100,
                 "nullable": "true",
                 "defaultValue": "null",
                 "description": "название таблицы"
@@ -8587,7 +8581,7 @@ export const db = {
             "widths": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "ширина столбцов через запятую. пример 0,10,100"
@@ -8595,7 +8589,7 @@ export const db = {
             "positions": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "порядок столбцов"
@@ -8603,13 +8597,13 @@ export const db = {
             "hiddens": {
                 "PK": false,
                 "IX": false,
-                "type": "longtext",
+                "type": MySQLTypes.LongText,
                 "nullable": "true",
                 "defaultValue": "",
                 "description": "скрыть(1)/показать(0) столбец, через запятую. пример 0,0,1,0."
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "userId",
                 "tableName": "user",
@@ -8627,7 +8621,7 @@ export const db = {
             "id": {
                 "PK": true,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": ""
@@ -8635,7 +8629,7 @@ export const db = {
             "dtime": {
                 "PK": false,
                 "IX": false,
-                "type": "datetime",
+                "type": MySQLTypes.DateTime,
                 "nullable": "false",
                 "defaultValue": "0000-00-00 00:00:00",
                 "description": "дата и время запроса"
@@ -8643,7 +8637,7 @@ export const db = {
             "cid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код договора"
@@ -8651,7 +8645,7 @@ export const db = {
             "ip": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(20)",
+                "type": MySQLTypes.Varchar20,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "ip адрес с которого пришел запрос"
@@ -8659,7 +8653,7 @@ export const db = {
             "mid": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "код экземпляра модуля, функции которого вызывались, 0 - ядро"
@@ -8667,7 +8661,7 @@ export const db = {
             "query": {
                 "PK": false,
                 "IX": false,
-                "type": "text",
+                "type": MySQLTypes.Text,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "сам запрос"
@@ -8675,7 +8669,7 @@ export const db = {
             "c_title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "строковое название договора"
@@ -8683,13 +8677,13 @@ export const db = {
             "m_title": {
                 "PK": false,
                 "IX": false,
-                "type": "varchar(150)",
+                "type": MySQLTypes.Varchar150,
                 "nullable": "false",
                 "defaultValue": "",
                 "description": "строковое название экземпляра модуля"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "tableId",
@@ -8707,7 +8701,7 @@ export const db = {
             "cid": {
                 "PK": true,
                 "IX": true,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "код договора"
@@ -8715,7 +8709,7 @@ export const db = {
             "date": {
                 "PK": false,
                 "IX": false,
-                "type": "date",
+                "type": MySQLTypes.Date,
                 "nullable": "false",
                 "defaultValue": "0000-00-00",
                 "description": "дата"
@@ -8723,13 +8717,13 @@ export const db = {
             "count": {
                 "PK": false,
                 "IX": false,
-                "type": "int(11)",
+                "type": MySQLTypes.Int11,
                 "nullable": "false",
                 "defaultValue": "0",
                 "description": "кол-во"
             }
         },
-        "referenceTables": [
+        referenceTables: [
             {
                 "thisField": "cid",
                 "tableName": "contract",
@@ -8738,3 +8732,11 @@ export const db = {
         ]
     }
 }
+
+const tableName = Object.keys(db)
+
+const propertyNames = tableName as (keyof typeof db)[];
+
+export type TableName = Record<typeof propertyNames[number], string | number>;
+
+export default db
