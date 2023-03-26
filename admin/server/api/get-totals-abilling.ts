@@ -1,6 +1,7 @@
 import { H3Error } from 'h3';
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling';
 import { readSqlFile } from '~~/utils/readSQLFile'
+import { DbName } from '@/utils/MySQL/connection-class'
 import { p as myPromise, p } from '@antfu/utils';
 
 enum SqlFilePaths {
@@ -20,7 +21,9 @@ export default defineEventHandler(async (event) => {
     console.log('paymentsSQLFiles: ', paymentsSQLFiles);
 
     type Data = { contractBumber: string, clientName: string }[]
-    const result: any = await myPromise(sqlFiles.map(sqlFile => executeQuery<Data>(sqlFile, 'abilling'))).filter(item => !(item instanceof H3Error))
+    const result: any = await myPromise(sqlFiles.map(sqlFile => {
+      return executeQuery<Data>(sqlFile, DbName.A_BILLING)
+    })).filter(item => !(item instanceof H3Error))
 
     let contractNumbersArray: string[][] = await myPromise(result.map((res: any) => {
       return res.body.map(({ contractNumber }: any) => contractNumber)
@@ -28,7 +31,7 @@ export default defineEventHandler(async (event) => {
 
     const paymentsResult: any[] = await myPromise(contractNumbersArray.map(async contractNumbers => {
       const queryString = paymentsSQLFiles.replace('@contractNumber', contractNumbers.join(','))
-      return await executeQuery(queryString, 'abilling')
+      return await executeQuery(queryString, DbName.A_BILLING)
     }), { concurrency: 3 })
 
     console.log('paymentsResult: ', paymentsResult[0].header);
