@@ -1,5 +1,5 @@
 SELECT 
-    customer_link.object_title AS contract,
+    customer_link.object_title AS contractNumber,
     LEFT(CONCAT(customer.date_created, ''), 10) AS aggrimentDate,
     customer.title AS customerName,
     GROUP_CONCAT(DISTINCT phone.number  SEPARATOR ',') AS phone,
@@ -61,6 +61,5 @@ LEFT JOIN param_list ON param_list.id = addressHouse.id
 WHERE 
     customer.title NOT REGEXP '(Речкалов|ест|est|юл|TEst|Yan|եստ|բաժանորդ|TEST|նուն|ազգանուն)'
     AND customer_link.object_title <> 9000019
-    AND LEFT(customer_link.object_title, 1) > 3
     AND customer_link.object_title IN (@contractNumbers)
 GROUP BY customer_link.object_title
