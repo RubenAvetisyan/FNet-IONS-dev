@@ -1,3 +1,4 @@
+import { connection } from '@/admin/utils/ABilling/abilling-connection';
 import { H3Error } from 'h3';
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling';
 import { readSqlFile } from '~~/utils/readSQLFile'

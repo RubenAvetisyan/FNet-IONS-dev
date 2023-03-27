@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { Context } from '@nuxt/types'
-import { createPersistedState } from '@pinia/plugin'
+import { createPersistedState } from 'pinia-plugin-persistedstate'
 
 interface ComponentWithProps {
   name: string
@@ -18,7 +18,9 @@ export const useComponentStore = defineStore({
   state: () => ({
     components: [] as ComponentWithProps[],
   }),
-  plugins: [createPersistedState()],
+  plugins: [createPersistedState({
+    auto: true,
+  })],
   actions: {
     setComponents(components: ComponentWithProps[]) {
       this.components = components

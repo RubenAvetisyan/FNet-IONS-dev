@@ -48,7 +48,7 @@ const defaultLinks = [
   },
   {
     text: 'Հաճախորդներ',
-    path: '/user/statements/tvtariffs',
+    path: '/user/statements/totalClients',
   },
 ]
 
