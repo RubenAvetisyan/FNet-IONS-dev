@@ -39,26 +39,25 @@ FROM
 WHERE
     contract.status NOT IN (3 , 6)
         AND PARAM1.val NOT REGEXP '(Речкалов|ест|Նոր Արեշ 11, д. 91|est|юл|TEst|Yan|թեստ|Թեստ|բաժանորդ|TEST|Անուն|Ազգանուն)') AS MAIN
-INNER JOIN (
-								SELECT 
-										c.scid,
-										CAST(ah.house AS UNSIGNED) AS house,
-										ah.frac,
-										ah.comment,
-										aa.title AS area,
-										aq.title AS quarter,
-										ast.title AS street,
-										ac.title AS city,
-                    cpt2.flat,
-                    cpt2.room,
-                    cpt2.pod,
-                    cpt2.floor
-								FROM
-										billing.contract c
-										INNER JOIN billing.contract_parameter_type_2 cpt2 ON c.id = cpt2.cid
-										INNER JOIN billing.address_house ah ON cpt2.hid = ah.id
-										INNER JOIN billing.address_quarter aq ON ah.quarterId = aq.id
-										INNER JOIN billing.address_street ast ON ah.streetId = ast.id
-										INNER JOIN billing.address_area aa ON ah.areaId = aa.id
-										INNER JOIN billing.address_city ac ON aq.cityId = ac.id
-						) AS PARAMS ON PARAMS.scid = coalesce(MAIN.id, MAIN.scid)
+INNER JOIN (SELECT 
+						c.scid,
+						CAST(ah.house AS UNSIGNED) AS house,
+						ah.frac,
+						ah.comment,
+						aa.title AS area,
+						aq.title AS quarter,
+						ast.title AS street,
+						ac.title AS city,
+						cpt2.flat,
+						cpt2.room,
+						cpt2.pod,
+						cpt2.floor
+				FROM
+						billing.contract c
+						INNER JOIN billing.contract_parameter_type_2 cpt2 ON c.id = cpt2.cid
+						INNER JOIN billing.address_house ah ON cpt2.hid = ah.id
+						INNER JOIN billing.address_quarter aq ON ah.quarterId = aq.id
+						INNER JOIN billing.address_street ast ON ah.streetId = ast.id
+						INNER JOIN billing.address_area aa ON ah.areaId = aa.id
+						INNER JOIN billing.address_city ac ON aq.cityId = ac.id
+		) AS PARAMS ON PARAMS.scid = coalesce(MAIN.id, MAIN.scid)

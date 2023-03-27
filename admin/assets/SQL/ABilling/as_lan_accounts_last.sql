@@ -108,7 +108,7 @@ FROM
 						cp2.cid IS NULL
 		) AS CP ON CP.cid = COALESCE(contract.scid, contract.id)
 WHERE
-    LEFT(contract.title, 1) > 3
+    LEFT(contract.title, 1) <> 3
 		-- AND contract.title like '%9001505%'
 		AND contract.comment NOT REGEXP '(Речкалов|ест|Նոր Արեշ 11, д. 91|est|юл|TEst|Yan|թեստ|Թեստ|բաժանորդ|TEST|Անուն|Ազգանուն)'
 group by contract.title, contract.`status`
