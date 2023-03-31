@@ -3,6 +3,8 @@ SELECT
     LEFT(CONCAT(customer.date_created, ''), 10) AS aggrimentDate,
     customer.title AS customerName,
     GROUP_CONCAT(DISTINCT phone.number  SEPARATOR ',') AS phone,
+    paramAddress.n,
+    addressSubjectArea.title as `marz`,
     addressCity.title as `city`,
     addressQuarter.title as `quarter`,
 		addressStreet.title as `street`,
@@ -26,7 +28,7 @@ LEFT JOIN (
 ) AS phone ON phone.id = customer.id
 LEFT JOIN (
 	SELECT 
-		id,
+		param_address.id,
     param_address.comment,
     param_address.custom,
     param_address.flat,
@@ -58,8 +60,16 @@ LEFT JOIN (
   group by id
 ) as addressCity ON addressQuarter.city_id = addressCity.id
 LEFT JOIN param_list ON param_list.id = addressHouse.id
+LEFT JOIN (
+	SELECT address_city.id as address_city_id, param_list.param_id, param_list.value, max(param_list.last_update), address_subject_area.title FROM erp.param_list
+	LEFT JOIN address_subject_area ON address_subject_area.id = param_list.value
+	INNER JOIN address_city ON address_city.id = param_list.id
+	WHERE param_list.param_id = 35
+	group by param_list.id
+) AS addressSubjectArea ON addressSubjectArea.address_city_id = addressCity.id
 WHERE 
     customer.title NOT REGEXP '(Речкалов|ест|est|юл|TEst|Yan|եստ|բաժանորդ|TEST|նուն|ազգանուն)'
     AND customer_link.object_title <> 9000019
-    AND customer_link.object_title IN (@contractNumbers)
+    AND LEFT(customer_link.object_title, 1) <> 3
+    AND LEFT(customer_link.object_title, 7) in (@contractNumbers)
 GROUP BY customer_link.object_title

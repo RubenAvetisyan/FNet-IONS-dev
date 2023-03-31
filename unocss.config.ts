@@ -22,6 +22,7 @@ export default defineConfig({
     'mdi-account-plus',
   ],
   shortcuts: [
+    ['f-btn', 'px-4 py-1 rounded inline-block text-sm min-w-fit rounded cursor-pointer disabled:cursor-default disabled:bg-indigo-200 disabled:opacity-50 boredr b-1 bg-light text-indigo-700 hover:bg-indigo-700 hover:text-light b-indigo-700'],
     ['btn', 'px-4 py-1 rounded inline-block bg-teal-600 text-white cursor-pointer hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50'],
     ['icon-btn', 'inline-block cursor-pointer select-none opacity-75 transition duration-200 ease-in-out hover:opacity-100 hover:text-teal-600'],
     ['btn-blue', `

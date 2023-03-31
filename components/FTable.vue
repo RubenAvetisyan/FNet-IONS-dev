@@ -27,7 +27,8 @@ const props = defineProps({
   filters: {
     type: Array,
     default: ['']
-  }
+  },
+  footer: true
 })
 
 const today = format(Date.now(), 'dd/MM/yyyy')
@@ -37,9 +38,20 @@ const columnValue = ref([...props.filters])
 const colIndex = ref(0)
 const isMin = ref(false)
 
-const setColums = (headers, body) => headers.forEach((header, i) => {
-  columns.value.push(sordby(intersection(body.map(item => item[header] || item[i]))))
-})
+const setColums = (headers, body) => {
+  if (!Array.isArray(headers)) {
+    console.log('headers: ', headers);
+    Object.keys(h).map((key, i) => {
+      columns.value.push(sordby(intersection(body.map(item => item[key] || item[i]))))
+    })
+  } else {
+    headers.forEach((header, i) => {
+      columns.value.push(sordby(intersection(body.map(item => item[header] || item[i]))))
+    })
+  }
+
+
+}
 
 onMounted(() => {
   columns.value = []
@@ -65,7 +77,7 @@ const filteredArray = (array, cols) => _filter(array, (item) => {
 
 function getPaginatedItems(items, page, pageSize = 0, fromMinimum, filters) {
   const cols = filters.filter(s => s)
-  let pagedItems = filteredArray(items, cols)
+  let pagedItems = filteredArray(items.text || items, cols)
 
   columns.value = []
   setColums(props.src.header, pagedItems)
@@ -157,72 +169,76 @@ const setXls = async () => {
 }
 
 const chevronIsUp = (colIndex, i) => isMin.value & colIndex === i
+const isObject = (v) => typeof v === 'object' && !Array.isArray(v)
 
 const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center'
 </script>
 
 <template>
-  <div :key="body.length" w="sm md:full" h="full" resize="y" overflow="x-auto" shadow="md" rounded="sm:lg"
-    scrollbar="~ track-color-gray-100 dark:track-color-gray-800 thumb-color-indigo-500 dark:thumb-color-indigo-800">
-    <table w="full" text="sm left gray-500 dark:gray-400">
-      <caption py-2 px-4 font-semibold text="lg left gray-900 dark:white" bg="white dark:gray-800" justify="between">
-        <slot v-if="$slots.caption" name="caption">
+      <div :key="body.length" w="sm md:full" h="full" resize="y" overflow="x-hidden" shadow="md" rounded="sm:lg"
+        scrollbar="~ track-color-gray-100 dark:track-color-gray-800 thumb-color-indigo-500 dark:thumb-color-indigo-800">
+        <table w="full" text="sm left gray-500 dark:gray-400">
+          <caption py-2 px-4 font-semibold text="lg left gray-900 dark:white" bg="white dark:gray-800" justify="between">
+            <slot v-if="$slots.caption" name="caption">
 
-        </slot>
-        <p>{{ name && `${name} տեղեկագիր՝ առ ${today}` }}</p>
-        <div w="full max-prose" mt-1>
-          <span text="sm gray-500 dark:gray-400 code" font-normal>Արտահանումը՝ *.xlsx ֆորմատով</span>
-          <FBtn rounded float-right @click="setXls">
-            Save
-          </FBtn>
-        </div>
-      </caption>
-      <thead sticky top-0 text="xs indigo-700 dark:gray-300 center" bg="gray-200 dark:indigo-700">
-        <tr>
-          <th v-for="(header, i) in src.header" :key="header" scope="col" p="x-3 y-3">
-              <p v-if="columns[i].length <= 1">{{ header }}</p>
-              <FSelect v-else mx-0 w-full break-words text="sm left gray-400 dark:gray-100" :name="header" :options="{
-                labe: header,
-                values: columns[i],
-                selected: 0
-              }" :custom-fn="fn(i)" justify="between">
-                <Chevron aria-disabled="colIndex === i" :is-up="!!chevronIsUp(colIndex, i)" :active="colIndex === i"
-                  rounded-1 dark:bg-indigo-50 text="sm left gray-100 dark:gray-800" @click="() => columnFilter(header)" />
-              </FSelect>
-            </th>
-            <th v-if="canBeEdited" scope="col" class="py-3 px-6">
-              <span class="sr-only">Edit</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
-            <td v-for="(item, i) in (typeof items === 'string' ? items.split(',') : items)"
-              :key="`${src.header[i]}-${item}`" scope="row" p="x-2 y-2" text="center"
-              :class="[i === 0 && firstColumnClass, { ['cursor-pointer']: !!(item?.fn) }]"
-              hover="bg-indigo-400 text-indigo-700" hover:group:select-text @click="item?.fn">
-              <!-- <NuxtLink v-if="(item?.link && typeof item !== 'string')" to="item.link">{{ item.text }}</NuxtLink> -->
-              <span>{{ (item?.text || item) }}</span>
-            </td>
-            <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
-          </lazy-f-tr>
-          <lazy-f-tr v-if="$slots.info">
-            <td scope="row" colspan="3">
-              <div> px-1
-                <slot name="info"></slot>
+            </slot>
+            <p>{{ name && `${name} տեղեկագիր՝ առ ${today}` }}</p>
+            <div w="full max-prose" mt-1>
+              <span text="sm gray-500 dark:gray-400 code" font-normal>Արտահանումը՝ *.xlsx ֆորմատով</span>
+              <div f-btn float-right @click="setXls">
+                Save
               </div>
-            </td>
-          </lazy-f-tr>
-          <!-- <lazy-f-tr v-for="n of Array.from({ length: (body.pageSize - body.data.length) }, (v, i) => i)"
-            :key="`added-${n}`" h-13>
-            <td scope="row" h-13 border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium
-              text-gray-900 whitespace-nowrap dark:text-white text-center>
-            </td>
-          </lazy-f-tr> -->
-      </tbody>
-    </table>
-    <nav :key="`${body.length}-pagitation`" sticky bottom-0 flex w-full justify-between items-center pt-1 bg-gray-200
-      dark:bg-gray-700 aria-label="Table navigation">
+            </div>
+          </caption>
+          <thead sticky top-0 text="xs indigo-700 dark:gray-300 center" bg="gray-200 dark:indigo-700">
+            <tr>
+              <th v-for="(header, i) in src.header" :key="header" scope="col" p="x-3 y-3"
+                :class="{ ['cursor-pointer']: !!(header?.fn) }" @click="event => header?.fn ? header?.fn(event, header) : null">
+                <FBtn v-if="isObject(header) && !header?.fn" v-bind="header.data" @click="header.click() || null">{{
+                  header.text }}</FBtn>
+                <p v-else-if="columns[i]?.length <= 1">{{ header.text || header }}</p>
+                <FSelect v-else mx-0 w-full break-words text="sm left gray-400 dark:gray-100" :name="header" :options="{
+                  labe: header,
+                  values: columns[i],
+                  selected: 0
+                }" :custom-fn="fn(i)" justify="between">
+                  <Chevron aria-disabled="colIndex === i" :is-up="!!chevronIsUp(colIndex, i)" :active="colIndex === i"
+                    rounded-1 dark:bg-indigo-50 text="sm left gray-100 dark:gray-800" @click="() => columnFilter(header)" />
+                </FSelect>
+              </th>
+              <th v-if="canBeEdited" scope="col" class="py-3 px-6">
+                <span class="sr-only">Edit</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
+              <td v-for="(item, i) in (typeof items === 'string' ? items.split(',') : items)"
+                :key="`${src.header[i]}-${item}`" scope="row" p="x-2 y-2" text="center"
+                :class="[i === 0 && firstColumnClass, { ['cursor-pointer']: !!(item?.fn) }]" select-none
+                hover="bg-indigo-400 text-indigo-700" hover:group:select-text @click="event => item?.fn(event, item)">
+                <!-- <NuxtLink v-if="(item?.link && typeof item !== 'string')" to="item.link">{{ item.text }}</NuxtLink> -->
+                <span>{{ (item?.text || item) }}</span>
+              </td>
+              <td v-if="canBeEdited" class="py-4 px-6 text-right"></td>
+            </lazy-f-tr>
+            <lazy-f-tr v-if="$slots.info">
+              <td scope="row" colspan="3">
+                <div> px-1
+                  <slot name="info"></slot>
+                </div>
+              </td>
+            </lazy-f-tr>
+            <!-- <lazy-f-tr v-for="n of Array.from({ length: (body.pageSize - body.data.length) }, (v, i) => i)"
+      :key="`added-${n}`" h-13>
+      <td scope="row" h-13 border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium
+      text-gray-900 whitespace-nowrap dark:text-white text-center>
+      </td>
+      </lazy-f-tr> -->
+          </tbody>
+        </table>
+        <nav v-if="footer" :key="`${body.length}-pagitation`" sticky bottom-0 flex w-full justify-between items-center pt-1
+          bg-gray-200 dark:bg-gray-700 aria-label="Table navigation">
       <span ml-4 font-semibold text-gray-900 dark:text-white>{{ body.total }} տողից՝
         <span text-sm font-normal text-gray-500 dark:text-gray-400>Ցուցադրված է
           <span font-semibold text-gray-900 dark:text-white>

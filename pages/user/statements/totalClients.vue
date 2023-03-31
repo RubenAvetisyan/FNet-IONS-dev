@@ -1,242 +1,182 @@
-<script setup lang="ts">
-import { H3Error } from 'h3';
+<script setup>
+import { format } from 'date-fns';
 
-definePageMeta({
-  requiresAuth: true,
-  layout: 'admin',
+const dateFromValue = ref(Date.now())
+const dateToValue = ref(Date.now())
+
+const dateFrom = computed({
+  get() {
+    return format(dateFromValue.value, 'yyyy-MM-dd')
+  },
+  set(val) {
+    console.log('val: ', val);
+    dateFromValue.value = val
+  }
+})
+const dateTo = computed({
+  get() {
+    return format(dateToValue.value, 'yyyy-MM-dd')
+  },
+  set(val) {
+    console.log('val: ', val);
+    dateToValue.value = val
+  }
 })
 
-interface CreateComponentsParams {
-  componentName: string;
-  id: string;
-  label?: string;
-  selected?: boolean;
-  [key: string]: any;
-  children?: CreateComponentsParams[]
-}
+const { $isLoading, $startLoading, $finishLoading } = useNuxtApp()
 
-interface CreateComponentsReturn {
-  data: any;
-  component: any;
-  children: any;
-}
+const radMap = ref({
+  country: false,
+  region: false,
+  city: false,
+  street: false
+})
 
-const createComponents = async (component: CreateComponentsParams, baseDir: string): Promise<CreateComponentsReturn> => {
-  const { componentName, children = [] } = component
-  const componentPath = baseDir ? `${baseDir}/${componentName}.vue` : `./components/${componentName}.vue`
-  const myComponent = await import(componentPath)
+const prevTable = ref('')
+const currentTable = ref('country')
 
-  return {
-    data: component,
-    component: defineAsyncComponent(async () => await import(/* @vite-ignore */componentPath)),
-    children: children.map(child => createComponents(child, baseDir))
+const query = ref({
+  country: 'Հայաստան'
+})
+
+$startLoading()
+const { data, refresh, error } = await useFetch('/api/get-totals-abilling', {
+  query: {
+    data: currentTable.value,
+    // dateFrom: dateFromValue.value,
+    // dateTo: dateToValue.value,
   }
-}
+})
+$finishLoading()
 
-interface Tab {
-  tab: {
-    component: CreateComponentsReturn
-    components: {
-      component: CreateComponentsReturn
-    }[]
-  }
-}
-
-type Tabs = Tab[]
-
-const result = shallowRef<Tabs>([])
-
-const { $isLoading, $finishLoading, $startLoading } = useNuxtApp()
-
-const getTotals = async () => {
-  if ($isLoading.value) return
-
-  $startLoading()
-
-  const fetchSub = async (endpoint: string) => await useFetch(endpoint)
-
-  const { data, pending, error, refresh } = await useFetch('/api/get-totals-abilling'
-    //   {
-    //   query: {
-    //     status
-    //   }
+const defaultVal = {
+  header: ['name', 'ակտիվ', 'պասիվ', 'ընդամենը'],
+  body: [
+    // {
+    //   name: 'some data',
+    //   active: 0,
+    //   passive: 0,
+    //   total: 0
     // }
-  )
-
-
-  if (data.value instanceof H3Error) return
-
-  const values: { header: string[], body: { [key: string]: string }[] }[] = Array.isArray(data.value) ? data.value : []
-  console.log('values: ', values[1].body[7]);
-
-  const [all, active, passive, paymentsAll, paymentsActive, paymentsPassive] = values.map(({ body }) => body.length)
-  const paymentsAllSum = values[3].body.reduce((previous, current) => {
-    return previous + parseInt(current.summa)
-  }, 0)
-  const paymentsActiveSum = values[4].body.reduce((previous, current) => {
-    return previous + parseInt(current.summa)
-  }, 0)
-  const paymentsPassiveSum = values[5].body.reduce((previous, current) => {
-    return previous + parseInt(current.summa)
-  }, 0)
-  console.log('paymentsAll: ', paymentsAllSum);
-  console.log('paymentsActive: ', paymentsActiveSum);
-  console.log('paymentsPassive: ', paymentsPassiveSum);
-
-  const customerCounts = async () => {
-    const showCustomersSub = ref(false)
-    const subSrc = ref(values.slice(0, 3))
-    const arrNum = ref(0)
-    const src = computed(() => {
-      return subSrc.value.length ? subSrc.value[arrNum.value] : {
-        header: [],
-        body: []
-      }
-    })
-    const fn = (number: number) => () => {
-      if (number === arrNum.value) {
-        showCustomersSub.value = !showCustomersSub.value
-      }
-      arrNum.value = number
-    }
-    return {
-      tab: {
-        component: await createComponents({
-          componentName: 'TabContent',
-          id: 'totalcustomers',
-          label: 'Բաժանորդների քանակ',
-          selected: true
-        }, '../../../components'),
-        components: [{
-          component: await createComponents({
-            componentName: 'FTable',
-            id: 'total-customers-table',
-            name: '',
-            src: {
-              header: ['Ակտիվ', 'Պասիվ', 'Ընդամենը'],
-              body: [[{ fn: fn(1), text: active }, { fn: fn(2), text: passive }, { fn: fn(0), text: all }]]
-            },
-            dynamicSlot: {
-              class: 'bg-transparent',
-              name: 'info',
-              show: showCustomersSub,
-              src
-            }
-          }, '../../../components')
-        }]
-      }
-    }
-  }
-
-  const payments = async () => {
-    const showPaymentsSub = ref(false)
-    const subSrc = ref(values.slice(4, 6))
-    const arrNum = ref(0)
-    const src = computed(() => {
-      return subSrc.value.length ? subSrc.value[arrNum.value] : {
-        header: [],
-        body: []
-      }
-    })
-    const fn = (number: number) => () => {
-      console.log('number === arrNum.value: ', number === arrNum.value);
-      if (number === arrNum.value) {
-        showPaymentsSub.value = !showPaymentsSub.value
-      }
-      arrNum.value = number
-    }
-    return {
-      tab: {
-        component: await createComponents({
-          componentName: 'TabContent',
-          id: 'totalcustomerpayments',
-          label: 'Վճարված գումարներ'
-        }, '../../../components'),
-        components: [
-          {
-            component: await createComponents({
-              componentName: 'FTable',
-              id: 'total-customers-payments-table',
-              name: 'Վճարումների',
-              src: {
-                header: ['Ակտիվ', 'Պասիվ', 'Ընդամենը'],
-                body: [[
-                  { fn: fn(4), text: `${paymentsActive} - ${paymentsActiveSum}` },
-                  { fn: fn(5), text: `${paymentsPassive} - ${paymentsPassiveSum}` },
-                  { fn: fn(3), text: `${paymentsAll} - ${paymentsAllSum}` }
-                ]]
-              },
-              dynamicSlot: {
-                class: 'bg-transparent',
-                name: 'info',
-                show: showPaymentsSub,
-                src
-              }
-            }, '../../../components')
-          }
-        ]
-      }
-    }
-  }
-
-  result.value = await Promise.all([customerCounts(), payments()])
-  console.log('result: ', result.value);
-  console.log('data.value: ', data.value);
-
-  $finishLoading()
-
-  return { refresh, pending, error }
+  ]
 }
 
-const refreshData = ref()
+const brudcoumbs = ref(new Set([{
+  text: 'Հայաստան',
+}]))
 
-onMounted(() => {
-  if (refreshData.value) {
-    refreshData.value()
-  } else {
-    nextTick(() => getTotals())
-  }
+// const table = ref(transform(data.value.country, currentTable.value))
+const countrayTable = ref(transform(data.value.country, currentTable))
+const regionsTable = ref(transform(data.value.regions, currentTable))
+const citiesTable = ref(defaultVal)
+const quarterTable = ref(defaultVal)
+const streetTable = ref(defaultVal)
+
+const tables = ref({
+  country: countrayTable,
+  region: regionsTable,
+  city: citiesTable,
+  quarter: quarterTable,
+  street: streetTable
 })
+
+const dynamicTable = computed(() => {
+  if (currentTable.value === 'region') return regionsTable.value
+  if (currentTable.value === 'city') return citiesTable.value
+  if (currentTable.value === 'quarter') return quarterTable.value
+  if (currentTable.value === 'street') return streetTable.value
+  return countrayTable.value
+})
+
+function transform(data, curTab) {
+  const fn = async (e, header) => {
+    console.log('header: ', header);
+    prevTable.value = curTab.value + ''
+    console.log('prevTable.value: ', prevTable.value);
+    curTab.value = header.nextTabKey || 'country'
+    brudcoumbs.value.add({
+      text: header.text,
+      fn: () => curTab.value = header.tabKey
+    })
+    console.log('curTab.value: ', curTab.value);
+    radMap.value[curTab.value] = true
+    if (!header.nextTabKey) query.value = {}
+    query.value[header.tabKey] = header.text
+
+    if (header.text !== 'Հայաստան') {
+      $startLoading()
+      const { data: elseData } = await useFetch('/api/get-totals-abilling', {
+        query: {
+          ...query.value,
+          tabKey: header.nextTabKey,
+          text: header.text
+        },
+        pick: ['header', 'body']
+      })
+
+      console.log('elseData.value: ', elseData.value);
+      elseData.value.body.forEach(item => {
+        const bodyFirstKey = elseData.value.header[0]
+        item[bodyFirstKey] = { ...item[bodyFirstKey], fn }
+      })
+
+      $finishLoading()
+
+      if (currentTable.value === 'region') regionsTable.value = elseData.value
+      if (currentTable.value === 'city') citiesTable.value = elseData.value
+      if (currentTable.value === 'quarter') quarterTable.value = elseData.value
+      if (currentTable.value === 'street') streetTable.value = elseData.value
+
+    }
+
+  }
+
+  if (typeof data.header[0] !== 'string')
+    data.header[0] = { ...data.header[0], fn }
+
+  if (typeof data.header[0] === 'string')
+    data.body.forEach(body => {
+      const bodyFirstKey = data.header[0]
+      body[bodyFirstKey] = { ...body[bodyFirstKey], fn }
+    })
+  return {
+    header: [
+      data.header[0],
+      data.header[1],
+      data.header[2],
+      data.header[3],
+    ],
+    body: data.body,
+  }
+}
+
 </script>
 
-          
+
 <template>
-  <div v-if="result.length" py-4 px-0>
-    <AdminMyApp />
-    <Tab id="totals" px-0 mx-0>
-      <template #default>
-        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-          Խնդրում ենք նույնականացվել համակարգում
-        </h3>
-      </template>
+                                  <div py-4 px-0>
+                                    <div relative flex w-full>
+                                      <div btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8 text-center px-2 flex items-center
+                                        text-light dark:text-dark @click="() => currentTable = 'country'">
+                                        ՀԱՅԱՍՏԱՆ
+                                      </div>
+                                      <div btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8 text-center px-2 flex items-center
+                                        text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ</div>
+                                      <nuxt-link to="/user/statements/totalClientPaymens" btn rounded-0 hover:bg-indigo-300 bg-indigo-500
+                                        dark:bg-indigo-300 h-8 text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
+                                        գումարային</nuxt-link>
 
-      <template #head>
-        <TabHead v-for="({ tab }, i) in result" :key="tab.component.data.id">
-          {{ tab.component.data.label }}
-        </TabHead>
-      </template>
+                                    </div>
+                                    <div flex>
 
-      <template #list>
-        <TabLi v-for="({ tab }) in result" :key="tab.component?.data.id" :id="tab.component.data.id"
-          :selected="tab.component.data?.selected">
-          {{ tab.component.data.label }}
-        </TabLi>
-      </template>
-
-      <template #content>
-        <Suspense>
-          <component v-for="({ tab }) in result" :key="tab.component.data.id" :is="tab.component.component"
-            v-bind="tab.component.data" px-0 mx-0>
-            <template v-if="tab.components.length">
-              <component v-for="({ component }) in tab.components" :key="component.data.id" :is="component.component"
-                v-bind="component.data" mx-2>
-                <FTable v-show="component.data.dynamicSlot.show.value" :src="component.data.dynamicSlot.src.value"
-                  shadow-none text-blue />
-              </component>
-            </template>
-          </component>
-        </Suspense>
-      </template>
-    </Tab>
+                                      <FTable :key="JSON.stringify(dynamicTable.header)" :footer="true" :src="dynamicTable" transition>
+                                        <template #caption>
+                                          <div flex>
+                                            <DatePicker ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
+                                            <DatePicker ml-10 name="date-to" label="վերջ" v-model="dateTo" />
+                                          </div>
+                                        </template>
+                                      </FTable>
+                                    </div>
   </div>
 </template>

@@ -26,7 +26,17 @@ declare module 'lodash.intersection' {
 
 declare module 'mysql-schema';
 
-declare global {   
+declare global {
+
+    type ERPContractNumbers = {
+        contractNumber: string | number;
+        customerName: string;
+        region: string;
+        city: string;
+        quarter: string;
+        street: string;
+        house: string;
+    }
 
     type ExecuteQuery<T> =
         | {

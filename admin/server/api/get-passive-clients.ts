@@ -8,6 +8,7 @@ import { readSqlFile } from '~~/utils/readSQLFile'
 
 const passiveCustomersQuerySrc = '../../admin/assets/SQL/ABilling/PASSIVE_CLIENTS.sql'
 const customersTariffsQuerySrc = '../../admin/assets/SQL/ABilling/Tariffs.sql'
+const customersFinalPaymentsQuerySrc = '../../admin/assets/SQL/ABilling/FINAL_PAYMENTS.sql'
 const erpCustomersQuerySrc = '../../admin/assets/SQL/ERP/ERP_Customers.sql'
 
 const map: Map<string, any> = new Map()
@@ -55,7 +56,11 @@ export default defineEventHandler(async () => {
   map.clear()
   const connectionId = await connection.getConnectionThreadId()
   console.log('connectionId: ', connectionId);
-  const [queryStringPassiveCustomers, queryStringCustomersTariffsQuerySrc]: string[] = await p([passiveCustomersQuerySrc, customersTariffsQuerySrc]).map(async val => {
+  const [queryStringPassiveCustomers, queryStringCustomersTariffsQuerySrc, queryStringCustomersFinalPaymentsQuerySrc]: string[] = await p([
+    passiveCustomersQuerySrc,
+    customersTariffsQuerySrc,
+    customersFinalPaymentsQuerySrc
+  ]).map(async val => {
     return await readSqlFile(val)
   })
 
@@ -64,10 +69,14 @@ export default defineEventHandler(async () => {
 
   if (erpCustomers instanceof H3Error) throw erpCustomers
   const cstomerTariffs = await executeQuery(queryStringCustomersTariffsQuerySrc, DbName.A_BILLING) as any
+  const cstomerTFinalPayments = await executeQuery(queryStringCustomersFinalPaymentsQuerySrc, DbName.A_BILLING) as any
 
   const body = await getResponse(erpCustomers.body)
   erpCustomers.header.push('traiffGroup')
   erpCustomers.header.push('traiff')
+  erpCustomers.header.push('finalPayments')
+
+
   cstomerTariffs.body.forEach((obj: any) => {
     body.forEach((main) => {
       if (main.contractNumber === obj.contractNumber) {
@@ -75,9 +84,17 @@ export default defineEventHandler(async () => {
         main.traiff = obj.tariff
       }
     })
+  })
 
+  cstomerTFinalPayments.body.forEach((obj: any) => {
+    body.forEach((main) => {
+      if (main.contractNumber === obj.contractNumber) {
+        main.finalPayments = obj.final_payment
+      }
+    })
   })
 
   connection.reconnect()
-  return { ...erpCustomers, body }
+  const result = { ...erpCustomers, body }
+  return result
 })

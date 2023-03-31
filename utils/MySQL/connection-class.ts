@@ -41,7 +41,7 @@ class MySQLConnection {
   }
 
   reconnect() {
-    this.endPool()
+    this.close()
     this.pool = this.createPool()
   }
 
@@ -80,10 +80,6 @@ class MySQLConnection {
     this.timeouts.set(key, timerId);
   }
 
-  endPool() {
-    this.pool.end();
-  }
-
   public executeQuery<T>(query: string, options: QueryOptions = { timezone: '+04:00' }, timeout: number = 120000): Promise<{ header: string[] | [], body: T[], FieldPackets: FieldInfo[] | undefined }> {
     const queryOptions: QueryOptions = { ...options };
     return new Promise((resolve, reject) => {
@@ -93,7 +89,7 @@ class MySQLConnection {
         }
         else {
           resolve({
-            header: !fields ? [] : fields.map(({ name }) => name),
+            header: !fields ? [] : fields.map((field) => field?.name || 'mustBeReviewed'),
             body: results as T[] || [],
             FieldPackets: fields
           })

@@ -4,12 +4,14 @@ import { log } from './utils/log'
 import { prisma } from './server/api/db'
 import { description } from './package.json'
 import { addComponent } from '@nuxt/kit'
-import { PoolConfig } from 'mysql'
 
 process.on('SIGINT', async (signal) => {
   if (signal === 'SIGINT') {
     await prisma.$disconnect()
     log(`${signal.toUpperCase()}:`, chalk.underline.green('prisma has been disconnected'))
+    import('./admin/utils/ABilling/abilling-connection').then(({ connection }) => connection.close())
+    import('./admin/utils/LanBilling/lanbilling-connection').then(({ connection }) => connection.close())
+    import('./admin/utils/ERP/erp-connection').then(({ connection }) => connection.close())
   }
 })
 

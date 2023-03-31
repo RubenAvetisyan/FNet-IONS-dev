@@ -9,6 +9,7 @@ module.exports = {
     "./nuxt.config.{js,ts}",
   ],
   plugins: [
-    require('flowbite')
+    require('flowbite'),
+    require('flowbite-datepicker')
   ],
 }

@@ -23,7 +23,7 @@ const defaultLinks = [
   },
   {
     text: 'Պասիվ Հաճախորդներ',
-    path: '/user/statements/passivecustomers',
+    path: '/user/statements/original/passivecustomers',
     components: [
       {
         name: 'FTable',
@@ -40,7 +40,7 @@ const defaultLinks = [
               weekStartsOn: 1,
             })
 
-            return 'TPASSIVE CUSTOMERS ' + currentDate
+            return 'PASSIVE CUSTOMERS ' + currentDate
           }
         },
       }
