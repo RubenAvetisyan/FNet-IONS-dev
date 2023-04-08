@@ -85,11 +85,9 @@ export default defineNuxtConfig({
     }
   ],
   auth: {
-    origin: process.env.ORIGIN || 'http://' + host + ':' + port,
-    enableGlobalAppMiddleware: false,
-    globalMiddlewareOptions: {
-      allow404WithoutAuth: false,
-    }
+    enableGlobalAppMiddleware: true,
+    origin: process.env.NUXT_AUTH_ORIGIN,
+    addDefaultCallbackUrl: process.env.NUXT_AUTH_ORIGIN
   },
 
   experimental: {
@@ -111,9 +109,14 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+
+    public: {
+      baseUrl: 'http://ions.fnet.am'
+    },
+
     isTest: process.env.NUXT_IS_TEST || 'false',
     AUTH_ORIGIN: process.env.NUXT_AUTH_ORIGIN,
-    authSecret: description,
+    authSecret: process.env.NUXT_AUTH_SECRET,
     dbConfigs: {
       lanbilling,
       abilling,
