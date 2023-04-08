@@ -107,7 +107,7 @@ const mergeData = (queryA: QueryA, payments: Payments): MergedData[] => {
   });
 };
 
-const mergeData1 = (queryA: QueryA, payments: Payments): MergedData[] => {
+const mergeData1 = (queryA: QueryA, payments: Payments): Partial<MergedData>[] => {
   return payments.map(item => {
     const queries = queryA.find(query => `${query.contractNumber}`.includes(`${item.contractNumber}`))
     // if (!queries) nullCount.push(item.contractNumber)
