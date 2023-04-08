@@ -2,7 +2,7 @@
   "name": "frontftenpaymentapi",
   "description": "FNet Telecom Internal Operation System",
   "private": true,
-  "packageManager": "pnpm@7.25.1",
+  "packageManager": "pnpm@8.1.1",
   "author": {
     "name": "Ruben Avetisyn"
   },
@@ -17,6 +17,7 @@
     "generate": "nuxi generate"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.7",
     "async": "^3.2.4",
     "async-es": "^3.2.4",
     "date-fns": "^2.29.3",
@@ -35,8 +36,6 @@
     "md5": "^2.3.0",
     "mysql": "^2.18.1",
     "next-auth": "4.21.1",
-    "npm": "^9.4.1",
-    "popper.js": "^1.16.1",
     "uuid": "^9.0.0",
     "vue": "^3.2.45",
     "xml2js": "^0.4.23"
@@ -54,7 +53,6 @@
     "@telegraf/session": "latest",
     "@type-challenges/utils": "latest",
     "@types/async": "latest",
-    "@types/exceljs": "latest",
     "@types/lodash": "latest",
     "@types/lodash.intersection": "latest",
     "@types/md5": "latest",
