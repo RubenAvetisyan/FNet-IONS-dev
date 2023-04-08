@@ -16,13 +16,13 @@ const rules = {
 }
 
 const admins = ['135', '75', '80', '78']
-const isAdmin = computed(() => admins.includes(userInfo.value.uid))
+const isAdmin = computed(() => admins.includes(userInfo.value?.uid))
 console.log('isAdmin: ', isAdmin.value);
 
-const region = ref(rules[userInfo.value.uid])
+const region = ref(rules[userInfo.value?.uid])
 console.log('region: ', region.value);
 
-if (region.value !== rules[userInfo.value.uid] && !isAdmin.value) {
+if (region.value !== rules[userInfo.value?.uid] && !isAdmin.value) {
   await navigateTo('/')
 }
 
@@ -206,7 +206,8 @@ async function restart() {
       </div>
       <div flex>
 
-        <FTable :key="currentTable + dateFrom + dateTo" :footer="true" :src="dynamicTable" transition>
+        <FTable v-show="!$isLoading.value" :key="currentTable + dateFrom + dateTo" :footer="true" :src="dynamicTable"
+          transition>
           <template #caption>
             <div flex items-end>
               <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
