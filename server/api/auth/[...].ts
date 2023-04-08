@@ -2,9 +2,9 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { NuxtAuthHandler } from '#auth'
 import login from '~/admin/utils/login';
 import { H3Error } from 'h3';
+import { deafultRuels, RuleKey } from '@@/utils/system/rules'
 
 // TODO: Make this more scalable and reusable, remove from here
-const { rules } = useAuthStore()
 
 export default NuxtAuthHandler({
   pages: {
@@ -68,7 +68,7 @@ export default NuxtAuthHandler({
               id: user.id + '',
               name: user.fullName,
               type: user.type,
-              rule: rules[user.id + '']
+              rule: deafultRuels[user.id + '' as RuleKey]
             }
           } else {
             // eslint-disable-next-line no-console

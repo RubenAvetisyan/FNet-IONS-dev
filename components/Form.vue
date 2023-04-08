@@ -59,24 +59,25 @@ const generateUniqueId = useGenerateUniqueId
                 </div>
                 <div class="flex justify-between">
                     <!-- <div class="flex items-start">
-        <div class="flex items-center h-5">
-        <input :id="generateUniqueId('remember')" type="checkbox" value="" w-4 h-4 bg-gray-50 rounded border
-        border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-600 dark:border-gray-500
-        dark:focus:ring-blue-600 dark:ring-offset-gray-800 required>
-        </div>
-        <label :for="generateUniqueId('remember')" ml-2 text-sm font-medium text-gray-900
-        dark:text-gray-300>Պահպանել
-        տվյալները</label>
-        </div> -->
+                        <div class="flex items-center h-5">
+                        <input :id="generateUniqueId('remember')" type="checkbox" value="" w-4 h-4 bg-gray-50 rounded border
+                        border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-600 dark:border-gray-500
+                        dark:focus:ring-blue-600 dark:ring-offset-gray-800 required>
+                        </div>
+                        <label :for="generateUniqueId('remember')" ml-2 text-sm font-medium text-gray-900
+                        dark:text-gray-300>Պահպանել
+                        տվյալները</label>
+                        </div> -->
                     <!-- <a href="#" text-sm text-blue-700 hover:underline dark:text-blue-500>Lost
-                                                                                                                                                                                Password?</a> -->
+                                                                                                                                                                                                Password?</a> -->
                 </div>
                 <!-- type="submit" -->
-                <div :disabled="disabled" w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none
-                    focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
-                    dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer @click="() => mySignInHandler()">
+                <button :disabled="disabled" type="submit" w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4
+                    focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center
+                    dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer
+                    keydown.enter="mySignInHandler" @click="() => mySignInHandler()">
                     Մուտք գործել համակարգ
-                </div>
+                </button>
         </form>
     </div>
 </template>
