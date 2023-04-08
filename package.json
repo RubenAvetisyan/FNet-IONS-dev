@@ -2,7 +2,7 @@
   "name": "frontftenpaymentapi",
   "description": "FNet Telecom Internal Operation System",
   "private": true,
-  "packageManager": "pnpm@7.9.0",
+  "packageManager": "pnpm@7.25.1",
   "author": {
     "name": "Ruben Avetisyn"
   },
@@ -34,6 +34,7 @@
     "lodash.zipobject": "^4.1.3",
     "md5": "^2.3.0",
     "mysql": "^2.18.1",
+    "next-auth": "4.21.1",
     "npm": "^9.4.1",
     "popper.js": "^1.16.1",
     "uuid": "^9.0.0",
@@ -49,7 +50,7 @@
     "@pinia-plugin-persistedstate/nuxt": "latest",
     "@pinia/nuxt": "latest",
     "@prisma/client": "latest",
-    "@sidebase/nuxt-auth": "latest",
+    "@sidebase/nuxt-auth": "0.5.0-rc.0",
     "@telegraf/session": "latest",
     "@type-challenges/utils": "latest",
     "@types/async": "latest",
@@ -70,7 +71,6 @@
     "knex-types": "^0.5.0",
     "mitt": "latest",
     "mysql-schema": "^1.0.0",
-    "next-auth": "latest",
     "node-fetch-native": "latest",
     "nuxt": "latest",
     "pinia": "latest",
