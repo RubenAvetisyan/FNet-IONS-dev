@@ -9,6 +9,7 @@ export default defineEventHandler((event) => {
     return 'user is logged out'
   }
   catch (error) {
+    console.log('error: ', error);
     return createError(JSON.stringify(error))
   }
 })

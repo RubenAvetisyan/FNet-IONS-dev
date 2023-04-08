@@ -1,5 +1,10 @@
-<script setup>
-definePageMeta({ auth: false })
+<script setup lang="ts">
+definePageMeta({
+  auth: {
+    unauthenticatedOnly: true,
+    navigateAuthenticatedTo: '/',
+  }
+})
 </script>
 
 <template>
@@ -12,6 +17,6 @@ definePageMeta({ auth: false })
         </div>
       </template>
     </Suspense>
-    <LoginForm class="mx-auto" endpoint="/api/auth" />
+          <LoginForm class="mx-auto" />
   </div>
 </template>

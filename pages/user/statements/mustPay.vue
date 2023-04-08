@@ -3,9 +3,6 @@ import { z } from 'zod'
 import { format } from 'date-fns'
 import { isDate } from '@antfu/utils'
 
-definePageMeta({
-  auth: false,
-})
 
 const key = Date.now() + ''
 

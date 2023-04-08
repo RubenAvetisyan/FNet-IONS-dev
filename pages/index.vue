@@ -1,5 +1,6 @@
 <script setup>
-definePageMeta({ auth: false })
+import { keys } from 'lodash';
+
 
 const { data } = await useLazyFetch('/api/lanbilling')
 console.log('data: ', unref(data))
@@ -15,6 +16,25 @@ onMounted(async () => {
   const { data: aBillingSchema } = await useFetch('/api/get-abilling-db-schema')
   nextTick(() => console.log('aBillingSchema.value: ', aBillingSchema.value))
 })
+
+const { data: userInfo } = useAuth()
+
+const rules = {
+  '127': 'Երևան',
+  '224': 'Երևան',
+  '138': 'Երևան',
+  '220': 'Արարատի մարզ',
+  '227': 'Վայոց Ձորի մարզ',
+  '123': 'Գյումրի',
+  '265': 'Գյումրի',
+  '236': 'Գեղարքունիքի մարզ',
+  '54': 'Կոտայքի մարզ',
+  '225': 'Կոտայքի մարզ',
+}
+
+if (Object, keys(rules).includes(userInfo.value.uid)) {
+  navigateTo('/user/statements/totalClients')
+}
 </script>
 
 <template>
@@ -36,6 +56,6 @@ onMounted(async () => {
     <div text="xl dark dark:light-700" select="none">
       համակարգ մուտք գործելու համար անհրաժետ է նույնականացվել
     </div>
-          <pre>{{ tablesrefs }}</pre>
+      <pre>{{ tablesrefs }}</pre>
   </div>
 </template>

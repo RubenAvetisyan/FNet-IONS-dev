@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {
   initCarousels,
   initCollapses,
@@ -27,6 +27,10 @@ useHead({
     { rel: 'manifest', href: '/site.webmanifest' },
   ],
 })
+
+const headers = useRequestHeaders(['cookie']) as HeadersInit
+const { data: token } = await useFetch('/api/token', { headers })
+console.log('token: ', token.value);
 
 onMounted(() => {
   initCarousels()

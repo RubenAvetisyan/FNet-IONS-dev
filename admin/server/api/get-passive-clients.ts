@@ -56,13 +56,10 @@ export default defineEventHandler(async () => {
   map.clear()
   const connectionId = await connection.getConnectionThreadId()
   console.log('connectionId: ', connectionId);
-  const [queryStringPassiveCustomers, queryStringCustomersTariffsQuerySrc, queryStringCustomersFinalPaymentsQuerySrc]: string[] = await p([
-    passiveCustomersQuerySrc,
-    customersTariffsQuerySrc,
-    customersFinalPaymentsQuerySrc
-  ]).map(async val => {
-    return await readSqlFile(val)
-  })
+  const [queryStringPassiveCustomers,
+    queryStringCustomersTariffsQuerySrc,
+    queryStringCustomersFinalPaymentsQuerySrc
+  ]: string[] = await readSqlFile(passiveCustomersQuerySrc, customersTariffsQuerySrc, customersFinalPaymentsQuerySrc)
 
   const passiveCustomers = await executeQuery(queryStringPassiveCustomers, DbName.A_BILLING) as any
   const erpCustomers = await getERPCustomers(erpCustomersQuerySrc, passiveCustomers.body)

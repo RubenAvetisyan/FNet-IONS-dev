@@ -1,11 +1,22 @@
 import { getQuery, H3Error } from 'h3';
-import { customers } from '@/admin/utils/ERP/erp-connection';
+// import { customers } from '@/admin/utils/ERP/erp-connection';
 import filter from 'lodash/filter';
 import { p as myPromise, } from '@antfu/utils';
 import { readSqlFile } from '~~/utils/readSQLFile'
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling';
 import { DbName } from '~~/utils/MySQL/connection-class';
-import { isSameDay, parseISO } 'date-fns'
+import { isSameDay, parseISO } from 'date-fns'
+
+let customers: any = {}
+
+type DataKeys = 'region' | 'city' | 'quarter' | 'street';
+
+const filtersMap: Record<DataKeys, string> = {
+  region: 'addressSubjectArea',
+  city: 'addressCity',
+  quarter: 'addressQuarter',
+  street: 'addressStreet',
+};
 
 const defaultVal = {
   header: [],
@@ -13,38 +24,37 @@ const defaultVal = {
 }
 
 const texts = {
-  region: 'ՄԱՐԶ',
+  regions: 'ՄԱՐԶ',
   city: 'ՔԱՂԱՔ/Գյուղ',
   quarter: 'ՀԱՄԱՅՆՔ',
   street: 'ՓՈՂՈՑ',
 }
 
-let response = {
-  country: customers.get('country'),
-  regions: customers.get('regions'),
-  city: defaultVal,
-  quarter: defaultVal,
-  street: defaultVal,
-}
+
 export default defineEventHandler(async (event) => {
   try {
-
     if (!customers) throw createError('customers not defined. Check "@/admin/utils/ERP/erp-connection"')
 
+    let response = {
+      country: customers.get('country'),
+      regions: customers.get('regions'),
+      city: defaultVal,
+      quarter: defaultVal,
+      street: defaultVal,
+    }
+
     const data = getQuery(event) as { [key: string]: string }
-    const isToday = isSameDay(Date.now(), +data.dateFrom) && isSameDay(+data.dateFrom, +data.dateTo)
-    console.log('is TODAY: ', isToday)
 
     console.log('data: ', data);
 
     if (Object.keys(data).length > 1) {
 
-      const filter = Object.entries(data).map(([k, v]) => {
-        if (k === 'region') return `AND addressSubjectArea.title like '%${v}%'`
-        if (k === 'city') return `AND addressCity.title like '%${v}%'`
-        if (k === 'quarter') return `AND addressQuarter.title like '%${v}%'`
-        if (k === 'street') return `AND addressStreet.title like '%${v}%'`
-      }).join(' ')
+      const filter = Object.entries(data)
+        .map(([k, v]) => {
+          const column = filtersMap[k as DataKeys];
+          return column ? `AND ${column}.title like '%${v}%'` : '';
+        })
+        .join(' ')
       console.log('filter: ', filter);
 
       let queryString = await readSqlFile('../../admin/assets/SQL/ERP/ERP_CUSTOMERS_WITH_SEARCH_VARIABLES.sql')
@@ -83,7 +93,8 @@ export default defineEventHandler(async (event) => {
     }
 
 
-    return response
+    console.log('data.tabKey: ', data.tabKey);
+    return response || defaultVal
 
   } catch (error) {
     console.log('error: ', error);

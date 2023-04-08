@@ -12,12 +12,11 @@ const props = defineProps({
 
 const btn = ref<HTMLElement>()
 
-const componentId = computed(() => `${props.id}-tab` as string)
+const componentId = computed(() => useGenerateUniqueId(`${props.id}-tab`) as string)
 const ariaLabelledby = computed(() => `${componentId.value}-tab`)
 
-onBeforeMount(() => {
+onMounted(() => {
     nextTick(() => {
-        console.log('btn.value: ', btn.value);
         if (props.selected)
             btn.value?.setAttribute("aria-selected", 'true')
     })

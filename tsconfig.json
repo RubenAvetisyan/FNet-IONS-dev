@@ -7,5 +7,25 @@
     "./*.d.ts",
     ".nuxt/nuxt.d.ts",
     "**/*"
-  ]
+  ],
+  "paths": {
+    "~~/*": [
+      "./<rootDir>/*"
+    ],
+    "@@/*": [
+      "./<rootDir>/*"
+    ],
+    "~/admin/*": [
+      "./<rootDir>/admin/*"
+    ],
+    "@/admin/*": [
+      "./<rootDir>/admin/*"
+    ],
+    "assets/*": [
+      "./<rootDir>/assets/*"
+    ],
+    "public/*": [
+      "./<rootDir>/public/*"
+    ]
+  }
 }

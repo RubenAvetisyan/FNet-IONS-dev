@@ -13,16 +13,9 @@ export const useAdminAuthStore = defineStore('adminAuthStore', {
   }),
 
   getters: {
-    getUser: state => {
-      return useSession()
-    },
-    getSessionId: state => {
-      const { data, status, lastRefreshedAt, getCsrfToken, getProviders } = useSession()
-      return getCsrfToken
-    }
   }
 })
 
 
 if (import.meta.hot)
-  import.meta.hot.accept(acceptHMRUpdate(useAdminStore, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useAdminAuthStore, import.meta.hot))

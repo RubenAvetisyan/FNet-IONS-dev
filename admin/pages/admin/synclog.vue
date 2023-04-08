@@ -2,10 +2,6 @@
 import { format } from 'date-fns'
 import { storeToRefs } from 'pinia'
 
-definePageMeta({
-  auth: false
-})
-
 const { $startLoading, $finishLoading } = useNuxtApp()
 
 const { setLog, setLogStartDate, logDate } = useAdminStore()

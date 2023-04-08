@@ -177,7 +177,7 @@ const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark
 <template>
       <div :key="body.length" w="sm md:full" h="full" resize="y" overflow="x-hidden" shadow="md" rounded="sm:lg"
         scrollbar="~ track-color-gray-100 dark:track-color-gray-800 thumb-color-indigo-500 dark:thumb-color-indigo-800">
-        <table w="full" text="sm left gray-500 dark:gray-400">
+        <table class="disabled:opacity-75" w="full" text="sm left gray-500 dark:gray-400">
           <caption py-2 px-4 font-semibold text="lg left gray-900 dark:white" bg="white dark:gray-800" justify="between">
             <slot v-if="$slots.caption" name="caption">
 
@@ -193,7 +193,8 @@ const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark
           <thead sticky top-0 text="xs indigo-700 dark:gray-300 center" bg="gray-200 dark:indigo-700">
             <tr>
               <th v-for="(header, i) in src.header" :key="header" scope="col" p="x-3 y-3"
-                :class="{ ['cursor-pointer']: !!(header?.fn) }" @click="event => header?.fn ? header?.fn(event, header) : null">
+                :class="{ ['cursor-pointer']: !!(header?.fn) }"
+                @click="event => header?.fn ? header?.fn(event, header) : null">
                 <FBtn v-if="isObject(header) && !header?.fn" v-bind="header.data" @click="header.click() || null">{{
                   header.text }}</FBtn>
                 <p v-else-if="columns[i]?.length <= 1">{{ header.text || header }}</p>
@@ -230,11 +231,11 @@ const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark
               </td>
             </lazy-f-tr>
             <!-- <lazy-f-tr v-for="n of Array.from({ length: (body.pageSize - body.data.length) }, (v, i) => i)"
-      :key="`added-${n}`" h-13>
-      <td scope="row" h-13 border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium
-      text-gray-900 whitespace-nowrap dark:text-white text-center>
-      </td>
-      </lazy-f-tr> -->
+                      :key="`added-${n}`" h-13>
+                      <td scope="row" h-13 border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium
+                      text-gray-900 whitespace-nowrap dark:text-white text-center>
+                      </td>
+                      </lazy-f-tr> -->
           </tbody>
         </table>
         <nav v-if="footer" :key="`${body.length}-pagitation`" sticky bottom-0 flex w-full justify-between items-center pt-1

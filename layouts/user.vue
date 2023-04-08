@@ -6,11 +6,12 @@ const isLoading = computed(() => $isLoading.value)
 const msgs = computed(() => {
   return alertMsg.value.split('.')
 })
+
 </script>
 
 <template>
   <main fixed top-0 left-0 right-0 bottom-0 flex text-center h-screen>
-        <Loading v-show="isLoading" />
+      <Loading v-show="isLoading" />
     <AdminDrawer top-0 left-0 />
 
     <div grow>

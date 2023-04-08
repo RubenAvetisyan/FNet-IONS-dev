@@ -2,7 +2,6 @@
 import { Link } from '~~/utils/links'
 
 definePageMeta({
-  requiresAuth: true,
   layout: 'user',
 })
 

@@ -9,11 +9,6 @@ function generateTransactionCode() {
   return `${randomPart}${timestampPart}`.substring(0, 8);
 }
 
-definePageMeta({
-  // key: route => route.fullPath
-  auth: false
-})
-
 const TOKEN = '911f225af566b884fb3501132d65cb68'
 const CONTRACT_ID = ref('')
 const Amount = ref('')

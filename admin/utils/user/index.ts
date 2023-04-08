@@ -1,3 +1,4 @@
+import { DbName } from './../../../utils/MySQL/connection-class';
 import { H3Error } from 'h3'
 import { executeQuery } from '../sync/getPaymentsFromLanBilling'
 import transfrom from './response-transfrom'
@@ -47,10 +48,10 @@ const setQueryString = (id: number) => {
 export default async function (id: number) {
   const queryString = setQueryString(id)
 
-  const reponse = await executeQuery<AuthResponse>(queryString, 'erp')
+  const reponse = await executeQuery<AuthResponse>(queryString, DbName.ERP)
   if (reponse instanceof H3Error)
     return reponse
-  const result = transfrom(reponse)
+  const result = transfrom(reponse.body)
 
   return result
 }

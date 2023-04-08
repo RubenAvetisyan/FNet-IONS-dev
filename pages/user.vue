@@ -1,7 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  requiresAuth: true,
-  layout: 'user',
+  layout: 'user'
 })
 </script>
 

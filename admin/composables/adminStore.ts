@@ -54,7 +54,7 @@ export const useAdminStore = defineStore('adminStore', {
         },
         {
           type: 'link',
-          href: 'http://localhost:3001/admin',
+          href: 'http://ions.fnet.am/admin',
           name: 'Կցել Telegram',
           icon: 'i-mdi-account-plus',
           direct: true,

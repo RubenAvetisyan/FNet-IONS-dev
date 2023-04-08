@@ -1,10 +1,10 @@
 // Импорт типов из файла field-type.d.ts и types.d.ts
 
-import { MySQLTypes } from "./types";
-import { FieldType } from "./field-type";
+// import FieldType from "./types";
+import { MySQLTypes } from "./field-type";
 
 // Функция валидации
-export function validateValue(fieldType: FieldType, value: any): boolean {
+export function validateValue(fieldType: any, value: any): boolean {
   const type = fieldType.type;
 
   // Проверка на соответствие типу данных и значению
@@ -106,7 +106,7 @@ export function validateValue(fieldType: FieldType, value: any): boolean {
 
 
 // Пример использования функции валидации
-const fieldType: FieldType = {
+const fieldType: any = {
   type: MySQLTypes.Varchar150,
   length: 150
 };
@@ -114,4 +114,5 @@ const fieldType: FieldType = {
 const valueToCheck = "Пример значения";
 const isValid = validateValue(fieldType, valueToCheck);
 
-console.log(`Значение "${valueToCheck}" соответствует типу данных ${fieldType.type}: ${isValid}`); // Вывод: Значение "Пример значения" соответствует типу данных varchar(150): true
+console.log(`Значение "${valueToCheck}" соответствует типу данных ${fieldType.type}: ${isValid}`);
+// Вывод: Значение "Пример значения" соответствует типу данных varchar(150): true

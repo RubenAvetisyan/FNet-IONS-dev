@@ -91,12 +91,10 @@ export default defineEventHandler(async event => {
   try {
     map.clear()
     const p = P()
-    p.add(readSqlFile(abillingCustomersQuerySrc))
-    p.add(readSqlFile(erpCustomersQuerySrc))
 
     // const queryStringAbillingCustomers = await readSqlFile(abillingCustomersQuerySrc)
     // const queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc)
-    const items: string[] = await p
+    const items: string[] = await readSqlFile(abillingCustomersQuerySrc, erpCustomersQuerySrc)
     const [queryStringAbillingCustomers, queryStringErpCustomers] = items
 
     const abillingCustomers = await executeQuery(queryStringAbillingCustomers, 'abilling');

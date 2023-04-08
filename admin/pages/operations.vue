@@ -1,6 +1,5 @@
 <script setup>
 definePageMeta({
-  requiresAuth: true,
   layout: 'user',
   key: route => route.fullPath,
 })

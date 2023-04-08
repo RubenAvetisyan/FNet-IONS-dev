@@ -1,7 +1,4 @@
 <script setup>
-definePageMeta({
-  auth: false
-})
 
 const { data, pending } = useFetch('/api/get-passive-clients-full')
 const passiveCustomers = data.value

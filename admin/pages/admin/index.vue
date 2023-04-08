@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  // key: route => route.fullPath
-  auth: false
-})
 </script>
 
 <template>

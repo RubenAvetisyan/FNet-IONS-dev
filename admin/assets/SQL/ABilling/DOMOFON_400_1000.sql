@@ -2,7 +2,7 @@ SELECT
     LEFT(contract.title,
         LOCATE('/', contract.title) - 1) AS 'պայմանգրի №',
     LEFT(CONCAT(contract.status_date, ''),
-        10) AS 'Վերջին լոկավեման ամսաթիվ',
+        10) AS 'Վերջին բլոկավորման ամսաթիվ',
     city.title AS 'քաղաք',
     area.title AS 'համայնտք/շրջն/գյուղ',
     quarter.title AS 'տարածք',
@@ -13,9 +13,12 @@ SELECT
             house.comment) AS 'տուն',
     tariff_plan.title AS 'տարիֆ', 
     Case
-		when status.status = 3 then 'փակ'
-		when status.status = 0 then 'Ակտիվ'
-        when status.status = 7 then 'չի վճարվում'
+		WHEN contract.`status` = 0 THEN 'Ակտիվ'
+				 WHEN contract.`status` = 2 THEN 'անջատված'
+				 WHEN contract.`status` = 3 THEN 'փակ'
+				 WHEN contract.`status` = 4 THEN 'կասեցված'
+				 WHEN contract.`status` = 6 THEN 'միացված չէ'
+				 WHEN contract.`status` = 7 THEN 'չվճարված'
 	END as 'կարգավիճակ'
 FROM
     billing.contract

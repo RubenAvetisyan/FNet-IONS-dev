@@ -1,7 +1,7 @@
 import { defineEventHandler, H3Error } from 'h3'
 import { z } from 'zod'
 import { format, isDate, parseISO } from 'date-fns'
-import { clearUndefined, p as P, uniq } from '@antfu/utils'
+import { uniq } from '@antfu/utils'
 
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import { readSqlFile } from '~~/utils/readSQLFile'
@@ -90,13 +90,10 @@ const getResponse = async (erpCustomers: ErpCustomers): Promise<ErpCustomers['bo
 export default defineEventHandler(async event => {
   try {
     map.clear()
-    const p = P()
-    p.add(readSqlFile(mustPayCustomersQuerySrc))
-    p.add(readSqlFile(erpCustomersQuerySrc))
 
     // const queryStringmustPayCustomers = await readSqlFile(mustPayCustomersQuerySrc)
     // const queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc)
-    const items: string[] = await p
+    const items: string[] = await readSqlFile(mustPayCustomersQuerySrc, erpCustomersQuerySrc)
     const [queryStringmustPayCustomers, queryStringErpCustomers] = items
 
     const mustPayCustomers = await executeQuery<MustPay['body']>(queryStringmustPayCustomers, 'abilling')
