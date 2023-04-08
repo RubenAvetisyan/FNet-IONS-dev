@@ -1,7 +1,7 @@
 import { format, isSameDay, parseISO, differenceInDays, } from 'date-fns';
 
-const dateFromValue = ref<Date | number>(parseISO('2023-03-01'))
-const dateToValue = ref<Date | number>(parseISO('2023-03-31'))
+const dateFromValue = ref<Date | number>(parseISO('2022-03-01'))
+const dateToValue = ref<Date | number>(Date.now())
 
 const dateFrom = computed({
   get() {
@@ -33,4 +33,14 @@ const dateTo = computed({
 export const useDate = () => ({
   dateFromValue, dateToValue,
   dateFrom, dateTo
+})
+
+export const useDateRange = () => computed({
+  get() {
+    return { dateFrom: dateFrom.value, dateTo: dateTo.value }
+  },
+  set(value) {
+    dateFrom.value = value.dateFrom
+    dateTo.value = value.dateTo
+  },
 })

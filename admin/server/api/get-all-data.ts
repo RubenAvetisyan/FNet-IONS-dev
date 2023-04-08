@@ -1,3 +1,4 @@
+import { DbName } from './../../../utils/MySQL/connection-class';
 import { defineEventHandler, H3Error, readBody } from 'h3'
 import { endOfDay, parseISO, startOfDay } from 'date-fns'
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
@@ -17,7 +18,7 @@ export default defineEventHandler(async (event) => {
   const { date, replacer = ['', ''] } = await readBody<{ date: QueryDate; replacer?: [string, string] }>(event)
   const requestQuery = await query(date)
   const queryString = replacer ? requestQuery.replace(...replacer) : requestQuery
-  const response = await executeQuery<GetPaymentsResponseBody>(queryString, 'abilling')
+  const response = await executeQuery<GetPaymentsResponseBody>(queryString, DbName.A_BILLING)
 
   if (response instanceof H3Error) {
     console.log('response: ', response);

@@ -1,22 +1,10 @@
-import { $fetch } from 'ofetch';
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { NuxtAuthHandler } from '#auth'
 import login from '~/admin/utils/login';
 import { H3Error } from 'h3';
 
 // TODO: Make this more scalable and reusable, remove from here
-const rules = {
-  '127': 'Երևան',
-  '224': 'Երևան',
-  '138': 'Երևան',
-  '220': 'Արարատի մարզ',
-  '227': 'Վայոց Ձորի մարզ',
-  '123': 'Գյումրի',
-  '265': 'Գյումրի',
-  '236': 'Գեղարքունիքի մարզ',
-  '54': 'Կոտայքի մարզ',
-  '225': 'Կոտայքի մարզ',
-} as Record<string, string>
+const { rules } = useAuthStore()
 
 export default NuxtAuthHandler({
   pages: {
@@ -59,7 +47,7 @@ export default NuxtAuthHandler({
         username: { label: 'Մուտքանուն', type: 'text', placeholder: '(hint: ruben.avetisyan@fnet.am)' },
         password: { label: 'Գաղտնաբառ', type: 'password', placeholder: '(hint: inchvorpassword)' }
       },
-      async authorize(credentials: any, req: any) {
+      async authorize(credentials: { username: string, password: string }, req: any) {
         try {
           // You need to provide your own logic here that takes the credentials
           // submitted and returns either a object representing a user or value
