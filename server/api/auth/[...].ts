@@ -15,12 +15,12 @@ export default NuxtAuthHandler({
   callbacks: {
     // Callback when the JWT is created / updated, see https://next-auth.js.org/configuration/callbacks#jwt-callback
     jwt: async ({ token, user }) => {
-      const isSignIn = user ? true : false;
+      const isSignIn = !!user
       if (isSignIn && token) {
-        // token.jwt = user ? (user as any).type || '' : '';
-        token.id = user ? user?.id || '' : '';
-        token.rule = user ? (user as any)?.rule || '' : '';
-        token.type = user ? (user as any)?.type || '' : '';
+        token.jwt = (user as any).type || '';
+        token.id = user?.id || '';
+        token.rule = (user as any)?.rule || '';
+        token.type = (user as any)?.type || '';
       }
       return Promise.resolve(token);
     },
