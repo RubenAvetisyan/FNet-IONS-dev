@@ -141,7 +141,7 @@ export default defineCachedEventHandler(async (event) => {
           nextTabKey: 'region',
           fn: () => { }
         },
-        'ակտիվ', 'պասիվ', 'Հայաստան'
+        'ակտիվ', 'պասիվ', 'ընդամենը'
       ],
       body: [{
         'Հայաստան': 'քանակ',
@@ -151,7 +151,7 @@ export default defineCachedEventHandler(async (event) => {
       }]
     } :
     {
-      header: [queryData.tabKey === 'region' ? 'ՄԱՐԶԵՐ' : queryData.text, 'ակտիվ', 'պասիվ', 'Հայաստան'],
+      header: [queryData.tabKey === 'region' ? 'ՄԱՐԶԵՐ' : queryData.text, 'ակտիվ', 'պասիվ', 'ընդամենը'],
       body: result
     }
 
