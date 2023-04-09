@@ -19,8 +19,12 @@ const password = ref('')
 
 const { baseUrl } = useRuntimeConfig()
 
+const { $isLoading, $startLoading, $finishLoading } = useNuxtApp()
+
 const mySignInHandler = async () => {
+    $startLoading()
     const { error, url, status } = await signIn('credentials', { username: username.value, password: password.value, redirect: false })
+    $finishLoading()
     console.log('url: ', url);
     console.log('status: ', status);
     if (error) {
