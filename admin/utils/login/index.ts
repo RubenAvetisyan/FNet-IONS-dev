@@ -46,12 +46,14 @@ on ps_title.id = ps.permset_id
 }
 
 export default async function (user: string, password: string): Promise<AuthResult | H3Error> {
-  const queryString = setQueryString(user, password)
+  try {
+    const queryString = setQueryString(user, password)
 
-  const reponse = await executeQuery<AuthResponse>(queryString, DbName.ERP)
-  if (reponse instanceof H3Error)
-    return reponse
+    const reponse = await executeQuery<AuthResponse>(queryString, DbName.ERP)
 
-  const result = transfrom(reponse.body)
-  return result
+    const result = transfrom(reponse.body)
+    return result
+  } catch (error) {
+    throw error
+  }
 }
