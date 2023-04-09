@@ -10,23 +10,21 @@ const db = {
   erp,
 }
 
-export const executeQuery = async <T>(queryString: string, databaseName: DbName, options?: QueryOptions): Promise<
-  | {
-    header: string[];
-    body: T[];
-    FieldPackets: FieldInfo[] | undefined;
-  }
-  | H3Error
-> => {
+export const executeQuery = async <T>(queryString: string, databaseName: DbName, options?: QueryOptions): Promise<{
+  header: string[];
+  body: T[];
+  FieldPackets: FieldInfo[] | undefined;
+}> => {
   try {
     const dbInstance = db[databaseName] // await getBillingDb(paymentSystem)
-    if (!dbInstance || dbInstance instanceof H3Error)
-      return createError(`the ${databaseName} DB conncetion is faild`)
+    if (!dbInstance)
+      throw createError(`the ${databaseName} DB conncetion is faild`)
+    if (dbInstance instanceof H3Error) throw dbInstance
 
     const result = makeQuery<T>(queryString, dbInstance.connection, options)
     return result
   }
   catch (error) {
-    return createError(JSON.stringify(error))
+    throw error
   }
 }
