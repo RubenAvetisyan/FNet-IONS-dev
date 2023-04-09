@@ -1,5 +1,4 @@
 import { DbName } from '@/utils/MySQL/connection-class';
-import { p } from '@antfu/utils';
 import { defineEventHandler, H3Error } from 'h3'
 import intersection from 'lodash.intersection'
 import { connection } from '@/admin/utils/ABilling/abilling-connection';
@@ -24,7 +23,7 @@ async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: {
   let contractNumbers: string | string[] = await getContractNumbers(passiveCustomers)
   contractNumbers = contractNumbers.join(',')
 
-  let queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc)
+  let queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc) as string
   // await executeQuery('SET @contractNumbers := null', 'erp');
   queryStringErpCustomers = queryStringErpCustomers.replace('@contractNumbers', contractNumbers)
   return executeQuery<ErpCustomers>(queryStringErpCustomers, DbName.ERP)
@@ -59,7 +58,7 @@ export default defineEventHandler(async () => {
   const [queryStringPassiveCustomers,
     queryStringCustomersTariffsQuerySrc,
     queryStringCustomersFinalPaymentsQuerySrc
-  ]: string[] = await readSqlFile(passiveCustomersQuerySrc, customersTariffsQuerySrc, customersFinalPaymentsQuerySrc)
+  ] = await readSqlFile(passiveCustomersQuerySrc, customersTariffsQuerySrc, customersFinalPaymentsQuerySrc)
 
   const passiveCustomers = await executeQuery(queryStringPassiveCustomers, DbName.A_BILLING) as any
   const erpCustomers = await getERPCustomers(erpCustomersQuerySrc, passiveCustomers.body)
