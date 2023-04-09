@@ -100,7 +100,7 @@ const { data, refresh, error } = await fetch({ tabKey: 'country' })
 $finishLoading()
 
 const defaultVal = {
-  header: ['name', 'ակտիվ', 'պասիվ', 'Հայաստան'],
+  header: ['name', 'ակտիվ', 'պասիվ', 'ընդամենը'],
   body: [
     // {
     //   name: 'some data',
@@ -238,6 +238,31 @@ const dateRange = computed({
   },
 })
 
+
+const xlsxHeader = computed(() => {
+  return dynamicTable.value.header.map(header => {
+    const sheetHeaderColumnText = typeof header !== 'string' ? header.text : header
+    return {
+      header: sheetHeaderColumnText,
+      key: sheetHeaderColumnText,
+      width: 20,
+    }
+  })
+})
+
+const xlsxBody = computed(() => {
+  return dynamicTable.value.body.map((item) => {
+    const result = {}
+    xlsxHeader.value.forEach((header, i) => {
+      const itemValue = Object.values(item)[i]
+      console.log('sheetBodyColumnText: ', itemValue, itemValue instanceof Object);
+      const sheetBodyColumnText = itemValue instanceof Object ? Object.values(item)[i].text : itemValue
+      result[header.key] = sheetBodyColumnText
+    })
+    return result // zipobject(props.src.header, item)
+  })
+})
+
 const { baseUrl } = useRuntimeConfig()
 
 </script>
@@ -264,10 +289,13 @@ const { baseUrl } = useRuntimeConfig()
                 <div flex items-end>
                   <!-- <DateFixedRange v-model="dateRange" /> -->
                   <!-- <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
-                                                                            <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" /> -->
-                  <div flex h-8 f-btn ml-4 p-2 items-center @click="() => refreshAll()">Թարմացնել տվյալները</div>
-                </div>
-              </template>
+                                                                                                            <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" /> -->
+                        <div flex h-8 f-btn ml-4 p-2 items-center @click="() => refreshAll()">Թարմացնել տվյալները</div>
+                      </div>
+                    </template>
+                    <template #save>
+                      <SaveXlsx :key="currentTable + dateFrom + dateTo" :header="xlsxHeader" :body="xlsxBody" float-right />
+                    </template>
             </FTable>
           </div>
   </div>
