@@ -19,11 +19,11 @@ const msgs = computed(() => {
 })
 
 const links = ref([
-  { name: 'Home', link: '/' },
-  { name: 'Payment API', link: '/payment' },
-  { name: 'Services', link: '/user' },
-  { name: 'Pricing', link: '/user' },
-  { name: 'Contact', link: '/user' },
+  { name: 'Հիմանական էջ', link: '/' },
+  // { name: 'Payment API', link: '/payment' },
+  { name: 'Հաշվետվություններ', link: '/user/statements' },
+  // { name: 'Pricing', link: '/user' },
+  // { name: 'Contact', link: '/user' },
 ])
 </script>
 
