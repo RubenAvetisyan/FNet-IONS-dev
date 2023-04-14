@@ -7,7 +7,7 @@ const rules = {
   '127': 'Երևան',
   '224': 'Երևան',
   '138': 'Երևան',
-  '220': 'Արարատի մարզ',
+  '195': 'Արարատի մարզ',
   '227': 'Վայոց Ձորի մարզ',
   '123': 'Գյումրի',
   '265': 'Գյումրի',
@@ -88,7 +88,7 @@ const fetch = async (extendQuery = {}) => {
 
   const { data, refresh, error } = await useFetch('/api/get-totals', {
     key: dateFrom.value + dateTo.value,
-    query: q
+    query: q,
   })
 
   fetchRefresh.value = refresh
@@ -110,6 +110,21 @@ const defaultVal = {
     // }
   ]
 }
+
+const filters = ref({
+  city: '',
+  quarter: '',
+  street: ''
+})
+
+const updateDetails = ref('')
+const { data: details, pending } = await useLazyAsyncData('details', () => $fetch('/api/get-passive_detailed', {
+  query: {
+    filters: updateDetails.value
+  }
+}), {
+  watch: [updateDetails]
+})
 
 const brudcoumbs = ref(new Set([{
   text: 'Հայաստան',
@@ -133,6 +148,10 @@ const dynamicTable = computed(() => {
   return countrayTable.value
 })
 
+const detailedTable = ref(defaultVal)
+const detailedTableTitle = ref('')
+const showDynamicTable = ref(true)
+
 function transform(data, curTab) {
   const fn = async (e, header) => {
 
@@ -143,6 +162,10 @@ function transform(data, curTab) {
       text: isEnd ? 'Հայաստան' : header.text,
       fn: () => curTab.value = isEnd ? 'country' : header.tabKey
     })
+
+    if (curTab.value === 'city') filters.value.city = header.text
+    if (curTab.value === 'quarter') filters.value.quarter = header.text
+    if (curTab.value === 'street') filters.value.street = header.text
 
     radMap.value[curTab.value] = true
     if (!header.nextTabKey) query.value = {}
@@ -159,6 +182,20 @@ function transform(data, curTab) {
     elseData?.value[currentTable.value]?.body.forEach(item => {
       const bodyFirstKey = elseData?.value[currentTable.value].header[0]
       item[bodyFirstKey] = { ...item[bodyFirstKey], fn }
+
+      if (Object.keys(filters.value).includes(currentTable.value))
+        item.passive = {
+          text: item.passive,
+          tabKey: item[bodyFirstKey].tabKey,
+          fn: () => {
+            filters.value[currentTable.value] = item[bodyFirstKey].text
+            updateDetails.value = Object.entries(filters.value).map(([k, value]) => {
+              return { target: k, value }
+            })
+            detailedTableTitle.value = `Պասիվ հաճախորդների ցանկ. (${item[bodyFirstKey].text})}`
+            showDynamicTable.value = false
+          }
+        }
     })
 
     if (currentTable.value === 'region') regionsTable.value = elseData.value[currentTable.value]
@@ -240,63 +277,91 @@ const dateRange = computed({
 
 
 const xlsxHeader = computed(() => {
-  return dynamicTable.value.header.map(header => {
-    const sheetHeaderColumnText = typeof header !== 'string' ? header.text : header
-    return {
-      header: sheetHeaderColumnText,
-      key: sheetHeaderColumnText,
-      width: 20,
-    }
-  })
+  return dynamicTable.value.header.map((header, i) => {
+    return [0, 2].includes(i) ? header?.text || header : ''
+  }).filter(s => s)
 })
 
 const xlsxBody = computed(() => {
   return dynamicTable.value.body.map((item) => {
-    const result = {}
-    xlsxHeader.value.forEach((header, i) => {
-      const itemValue = Object.values(item)[i]
-      console.log('sheetBodyColumnText: ', itemValue, itemValue instanceof Object);
-      const sheetBodyColumnText = itemValue instanceof Object ? Object.values(item)[i].text : itemValue
-      result[header.key] = sheetBodyColumnText
+    const result = []
+    Object.values(item).forEach((v, i) => {
+      const itemValue = v?.text || v
+
+      if ([0, 2].includes(i)) {
+        result.push(itemValue)
+      }
+
     })
     return result // zipobject(props.src.header, item)
   })
 })
 
 const { baseUrl } = useRuntimeConfig()
+watch(() => pending.value, p => {
+  if (p) {
+    $startLoading()
+  } else {
+    $finishLoading()
+  }
+})
+
+watch(() => details.value, (n) => {
+  if (n) detailedTable.value = {
+    header: ['Պայմանագիր №', 'Անուն/ Ազգանուն', 'Տարիֆ', 'Վճար', 'Հաշվեկշիռ', 'Վճարման օր', 'Վերջ. վճար. օր', 'Կարգավիճակ', 'Հասցե', 'Հեռախոս'],
+    body: n.body
+  }
+}, {
+  immediate: true,
+  deep: true
+})
 
 </script>
 
 
 <template>
-        <div py-4 px-0>
-          <div relative flex w-full>
-            <nuxt-link :href="baseUrl + '/user/statements/totalClients'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700
-              dark:bg-indigo-500 h-8 text-center px-2 flex items-center text-light dark:text-dark>
-              ՀԱՅԱՍՏԱՆ
-            </nuxt-link>
-            <div v-if="regionsTable.header[0] !== 'name'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8
-              text-center px-2 flex items-center text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ</div>
-            <nuxt-link to="/user/statements/totalClientPaymens" btn rounded-0 hover:bg-indigo-300 bg-indigo-500
-              dark:bg-indigo-300 h-8 text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
-              գումարային</nuxt-link>
+    <div py-0 px-0 h-full>
+      <div relative flex w-full>
+        <nuxt-link :href="baseUrl + '/user/statements/totalClients'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700
+          dark:bg-indigo-500 h-8 text-center px-2 flex items-center text-light dark:text-dark>
+          ՀԱՅԱՍՏԱՆ
+        </nuxt-link>
+        <div v-if="regionsTable.header[0] !== 'name'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8
+          text-center px-2 flex items-center text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ</div>
+        <nuxt-link to="/user/statements/totalClientPaymens" btn rounded-0 hover:bg-indigo-300 bg-indigo-500
+          dark:bg-indigo-300 h-8 text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
+          գումարային</nuxt-link>
 
-          </div>
-          <div flex>
+      </div>
+      <div v-show="showDynamicTable" flex w-3xl h-full>
+        <FTable :key="currentTable + dateFrom + dateTo" :footer="true" :src="dynamicTable" transition w-prose max-w-700>
+          <template #caption>
+            <div flex items-end>
+              <!-- <DateFixedRange v-model="dateRange" /> -->
+              <!-- <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" /> -->
+              <div flex h-8 f-btn ml-4 p-2 items-center @click="() => refreshAll()">Թարմացնել տվյալները</div>
+            </div>
+          </template>
+          <template #save>
+            <SaveXlsx :key="currentTable + dateFrom + dateTo" :header="xlsxHeader" :body="xlsxBody" float-right />
+          </template>
+        </FTable>
+      </div>
+      <div w-full lg:h-4xl>
+        <FTable :key="JSON.stringify(detailedTable.value)" :name="detailedTableTitle" :src="detailedTable || defaultVal"
+          :footer="true" :rows="detailedTable.body.length">
 
-            <FTable :key="currentTable + dateFrom + dateTo" :footer="true" :src="dynamicTable" transition>
-              <template #caption>
-                <div flex items-end>
-                  <!-- <DateFixedRange v-model="dateRange" /> -->
-                  <!-- <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
-                                                                                                            <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" /> -->
-                        <div flex h-8 f-btn ml-4 p-2 items-center @click="() => refreshAll()">Թարմացնել տվյալները</div>
-                      </div>
-                    </template>
-                    <template #save>
-                      <SaveXlsx :key="currentTable + dateFrom + dateTo" :header="xlsxHeader" :body="xlsxBody" float-right />
-                    </template>
-            </FTable>
-          </div>
+          <template #caption>
+            <div v-show="!showDynamicTable" float-right f-btn @click="() => showDynamicTable = !showDynamicTable">
+              Վերադառնալ հիմանական ցանկ</div>
+          </template>
+
+          <template #save>
+            <SaveXlsx :key="currentTable + dateFrom + dateTo" :header="detailedTable.header"
+              :body="detailedTable.body.map(b => Object.values(b))" float-right />
+          </template>
+        </FTable>
+      </div>
   </div>
 </template>

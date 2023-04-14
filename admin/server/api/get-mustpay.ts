@@ -55,12 +55,12 @@ type MustPay = z.TypeOf<typeof mustPaySchema>;
 type MustPayErpCustomer = z.TypeOf<typeof responeSchema>;
 
 const mustPayCustomersQuerySrc = '../../admin/assets/SQL/ABilling/INES.sql'
-const erpCustomersQuerySrc = '../../admin/assets/SQL/ERP/ERP_Customers.sql'
+const erpCustomersQuerySrc = '../uniqP../admin/assets/SQL/ERP/ERP_Customers.sql'
 
 const map: Map<string, MustPay['body'][0]> = new Map()
 
 
-const getContractNumbers = (passiveCustomers: MustPay['body'][0]) => {
+const getContractNumbers = async (passiveCustomers: MustPay['body'][0]) => {
   if (map && passiveCustomers.contract)
     map.set(passiveCustomers.contract, passiveCustomers)
 
@@ -68,7 +68,7 @@ const getContractNumbers = (passiveCustomers: MustPay['body'][0]) => {
 }
 
 async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: MustPay['body']) {
-  let contractNumbers: string | string[] = await P(passiveCustomers).map(getContractNumbers)
+  let contractNumbers: string | string[] = await Promise.all(passiveCustomers.map(getContractNumbers))
   contractNumbers = uniq(contractNumbers).join(',')
 
   // await executeQuery(`SET @contractNumbers := '${contractNumbers}';`, 'erp');

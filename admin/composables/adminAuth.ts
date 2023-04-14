@@ -10,15 +10,15 @@ export const useAdminAuthStore = defineStore('adminAuthStore', {
     user: {
       fullName: ''
     },
-    adminIds: ['135', '75', '80', '78']
+    adminIds: ['75', '80', '135', '78']
   }),
 
   getters: {
     isAdmin(): boolean {
-      const { data } = useAuth()
+      const { data, status } = useAuth()
       const userInfo = data.value as SessionData & { uid: string; region: string }
-      const currentUserId = userInfo.uid
-      return this.adminIds.includes(currentUserId)
+      const currentUserId = userInfo?.uid
+      return status.value === 'authenticated' && this.adminIds.includes(currentUserId)
     }
   }
 })

@@ -23,7 +23,7 @@ const msgs = computed(() => {
         </alert>
       </div>
 
-      <div h-screen mx-auto pb-28 relative>
+        <div h-screen mx-auto relative>
         <slot />
       </div>
     </div>

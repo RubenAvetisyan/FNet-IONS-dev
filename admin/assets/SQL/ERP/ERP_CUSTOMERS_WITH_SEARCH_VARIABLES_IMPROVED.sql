@@ -38,7 +38,9 @@ INNER JOIN address_house as H ON H.street_id = S.id AND H.quarter_id = Q.id
 WHERE pl.param_id = 35) as address ON address.house_id = param_address.house_id
 WHERE 
 	customer_link.object_title IN (contractNumbers)
-  AND customer_link.object_title NOT LIKE '%3000%'
+  AND LEFT(customer_link.object_title, 1) <> 3
+  AND customer.title NOT LIKE '%Андрей Речкалов%'
+  AND customer.title NOT LIKE '%Речкалов Андрей%'
   AND address.region is not null
   AND date(customer.date_created) >= '2022-01-01'
   AND date(customer.date_created) <= current_date()

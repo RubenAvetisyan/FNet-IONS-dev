@@ -49,8 +49,6 @@ const setColums = (headers, body) => {
       columns.value.push(sordby(intersection(body.map(item => item[header] || item[i]))))
     })
   }
-
-
 }
 
 onMounted(() => {
@@ -76,8 +74,9 @@ const filteredArray = (array, cols) => _filter(array, (item) => {
 })
 
 function getPaginatedItems(items, page, pageSize = 0, fromMinimum, filters) {
+  console.log('items: ', items.filter(obj => obj.contractNumber === '9002733'));
   const cols = filters.filter(s => s)
-  let pagedItems = filteredArray(items.text || items, cols)
+  let pagedItems = filteredArray(items?.text || items, cols)
 
   columns.value = []
   setColums(props.src.header, pagedItems)
@@ -149,11 +148,7 @@ function getData() {
 }
 
 const xlsxHeader = computed(() => {
-  return props.src.header.map(header => ({
-    header,
-    key: header,
-    width: 20,
-  }))
+  return props.src.header?.map(header => header?.text || header)
 })
 
 const xlsxBody = computed(() => {
@@ -191,17 +186,17 @@ const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark
 </script>
 
 <template>
-      <div :key="body.length" w="sm md:full" h="full" resize="y" overflow="x-hidden" shadow="md" rounded="sm:lg"
-        scrollbar="~ track-color-gray-100 dark:track-color-gray-800 thumb-color-indigo-500 dark:thumb-color-indigo-800">
-        <table class="disabled:opacity-75" w="full" text="sm left gray-500 dark:gray-400">
-          <caption py-2 px-4 font-semibold text="lg left gray-900 dark:white" bg="white dark:gray-800" justify="between">
-            <slot v-if="$slots.caption" name="caption">
+        <div :key="body.length" w="sm md:full" lg:h-5xl max-h-full resize="y" overflow="x-hidden" shadow="md" rounded="sm:lg"
+          scrollbar="~ track-color-gray-100 dark:track-color-gray-800 thumb-color-indigo-500 dark:thumb-color-indigo-800">
+          <table class="disabled:opacity-75" w="full" text="sm left gray-500 dark:gray-400">
+            <caption py-2 px-4 font-semibold text="lg left gray-900 dark:white" bg="white dark:gray-800" justify="between">
+              <slot v-if="$slots.caption" name="caption">
 
-            </slot>
-            <p>{{ name && `${name} տեղեկագիր՝ առ ${today}` }}</p>
-            <div w="full max-prose" mt-1>
-              <span text="sm gray-500 dark:gray-400 code" font-normal>Արտահանումը՝ *.xlsx ֆորմատով</span>
-                <slot name="save"></slot>
+              </slot>
+              <p>{{ name && `${name} տեղեկագիր՝ առ ${today}` }}</p>
+              <div w="full max-prose" mt-1>
+                <span text="sm gray-500 dark:gray-400 code" font-normal>Արտահանումը՝ *.xlsx ֆորմատով</span>
+                <slot v-if="$slots.save" name="save"></slot>
                 <SaveXlsx v-if="!$slots.save" :header="xlsxHeader" :body="xlsxBody" float-right />
               </div>
             </caption>
@@ -228,11 +223,12 @@ const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark
               </tr>
             </thead>
             <tbody>
-              <lazy-f-tr v-for="items in body.data" :key="items[0]" w-full>
+              <lazy-f-tr v-for="(items, index) in body.data" :key="items[0]" w-full>
                 <td v-for="(item, i) in (typeof items === 'string' ? items.split(',') : items)"
                   :key="`${src.header[i]}-${item}`" scope="row" p="x-2 y-2" text="center"
-                  :class="[i === 0 && firstColumnClass, { ['cursor-pointer']: !!(item?.fn) }]" select-none
-                  hover="bg-indigo-400 text-indigo-700" hover:group:select-text @click="event => item?.fn(event, item)">
+                  :class="[i === 0 && firstColumnClass, { ['cursor-pointer']: !!(item?.fn || i !== 0) }]" select-none
+                  hover="bg-indigo-400 text-indigo-700" hover:group:select-text
+                  @click="event => item?.fn ? item.fn(event, item, i) : null">
                   <!-- <NuxtLink v-if="(item?.link && typeof item !== 'string')" to="item.link">{{ item.text }}</NuxtLink> -->
                   <span>{{ (item?.text || item) }}</span>
                 </td>
@@ -246,11 +242,11 @@ const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark
                 </td>
               </lazy-f-tr>
               <!-- <lazy-f-tr v-for="n of Array.from({ length: (body.pageSize - body.data.length) }, (v, i) => i)"
-                                          :key="`added-${n}`" h-13>
-                                          <td scope="row" h-13 border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium
-                                          text-gray-900 whitespace-nowrap dark:text-white text-center>
-                                          </td>
-                                          </lazy-f-tr> -->
+              :key="`added-${n}`" h-13>
+              <td scope="row" h-13 border-r border-indigo-100 dark:border-indigo-500 dark:bg-indigo-600 font-medium
+              text-gray-900 whitespace-nowrap dark:text-white text-center>
+              </td>
+              </lazy-f-tr> -->
           </tbody>
         </table>
         <nav v-if="footer" :key="`${body.length}-pagitation`" sticky bottom-0 flex w-full justify-between items-center pt-1

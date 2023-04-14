@@ -15,36 +15,42 @@ export const useAdminStore = defineStore('adminStore', {
     basePath: '/admin',
     leftPanel: {
       list: [
+        // {
+        //   type: 'button',
+        //   name: 'Վճարային համակարգեր',
+        //   icon: 'i-mdi-bank-transfer',
+        //   sub: [
+        //     {
+        //       type: 'link',
+        //       name: 'Lan-Billing',
+        //       icon: 'i-mdi-wallet-outline',
+        //       link: '/',
+        //     },
+        //     {
+        //       type: 'link',
+        //       name: 'ABilling',
+        //       icon: 'i-mdi-wallet-plus',
+        //       link: '/',
+        //     },
+        //     {
+        //       type: 'link',
+        //       name: 'հաշվետվություններ',
+        //       icon: 'i-mdi-chart-box-outline',
+        //       link: '/user/statements',
+        //     },
+        //     {
+        //       type: 'link',
+        //       name: 'Համաժամացումների տեղեկագիր',
+        //       icon: 'i-mdi-database-sync',
+        //       link: '/admin/synclog',
+        //     },
+        //   ],
+        // },
         {
-          type: 'button',
-          name: 'Վճարային համակարգեր',
-          icon: 'i-mdi-bank-transfer',
-          sub: [
-            {
-              type: 'link',
-              name: 'Lan-Billing',
-              icon: 'i-mdi-wallet-outline',
-              link: '/',
-            },
-            {
-              type: 'link',
-              name: 'ABilling',
-              icon: 'i-mdi-wallet-plus',
-              link: '/',
-            },
-            {
-              type: 'link',
-              name: 'հաշվետվություններ',
-              icon: 'i-mdi-chart-box-outline',
-              link: '/user/statements',
-            },
-            {
-              type: 'link',
-              name: 'Համաժամացումների տեղեկագիր',
-              icon: 'i-mdi-database-sync',
-              link: '/admin/synclog',
-            },
-          ],
+          type: 'link',
+          name: 'հաշվետվություններ',
+          icon: 'i-mdi-chart-box-outline',
+          link: '/user/statements',
         },
         {
           type: 'link',
@@ -52,13 +58,13 @@ export const useAdminStore = defineStore('adminStore', {
           name: 'Ադմինիստրավորում',
           icon: 'i-mdi-view-dashboard-edit',
         },
-        {
-          type: 'link',
-          href: 'http://ions.fnet.am/admin',
-          name: 'Կցել Telegram',
-          icon: 'i-mdi-account-plus',
-          direct: true,
-        },
+        // {
+        //   type: 'link',
+        //   href: 'http://ions.fnet.am/admin',
+        //   name: 'Կցել Telegram',
+        //   icon: 'i-mdi-account-plus',
+        //   direct: true,
+        // },
       ] as AdminStoreList[],
     },
     log: { header: [], body: [] } as Log,

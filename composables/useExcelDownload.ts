@@ -9,10 +9,14 @@ export default function useExcelDownload(header: Header, body: Body) {
     const worksheet = workbook.addWorksheet('Лист 1');
 
     // Заполняем заголовки
-    worksheet.columns = header;
+    worksheet.columns = header.map(str => ({
+      header: str,
+      key: str,
+      width: 20,
+    }));
 
     // Заполняем данные
-    body.forEach((row) => {
+    body.forEach((row, i) => {
       worksheet.addRow(row);
     });
 

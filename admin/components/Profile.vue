@@ -1,6 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-defineProps({
+const props = defineProps({
   fullName: {
     type: String,
     default: '',
@@ -19,16 +19,16 @@ const { isminified } = storeToRefs(useDrawerStore())
 const { user, getSessionId } = useAdminAuthStore()
 
 onMounted(() => {
-  console.log('useSession(): ', useSession());
+
 })
 
 const avatar = computed(() => {
-  if (!user?.fullName)
+  if (!user?.fullName && props.fullName)
     return ''
-  return user.fullName[0].toUpperCase()
+  return (user.fullName[0] || props.fullName).toUpperCase()
 })
 
-const token = computed(() => getSessionId)
+const token = computed(() => 123)
 
 const type = computed(() => {
   return user?.groupId?.includes(UserGroupId.Admin) ? UserGroupName.Admin : user?.type || ''
@@ -77,7 +77,7 @@ const testLink = `https://t.me/fnetIoSystemBot?start=${encodeURIComponent(token.
       </div>
       <!-- USER FULL NAME -->
       <h5 v-if="fullName" m="b-1" text="xl gray-900 dark:white" font="medium">
-        Bonnie Green
+        {{ fullName }}
       </h5>
       <div w="full" text="sm gray-500 dark:gray-400" overflow="x-hidden">
         {{ type }}

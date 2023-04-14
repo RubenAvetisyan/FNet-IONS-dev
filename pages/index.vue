@@ -23,7 +23,7 @@ const rules = {
   '127': 'Երևան',
   '224': 'Երևան',
   '138': 'Երևան',
-  '220': 'Արարատի մարզ',
+  '195': 'Արարատի մարզ',
   '227': 'Վայոց Ձորի մարզ',
   '123': 'Գյումրի',
   '265': 'Գյումրի',
@@ -32,9 +32,13 @@ const rules = {
   '225': 'Կոտայքի մարզ',
 }
 
-if (Object, keys(rules).includes(userInfo.value.uid)) {
-  navigateTo('/user/statements/totalClients')
-}
+nextTick(() => {
+  if (useAdminAuthStore().isAdmin) {
+    // navigateTo('/', { external: true })
+  } else if (Object.keys(rules).includes(userInfo.value.uid)) {
+    navigateTo('/user/statements/totalClients', { external: true })
+  }
+})
 </script>
 
 <template>

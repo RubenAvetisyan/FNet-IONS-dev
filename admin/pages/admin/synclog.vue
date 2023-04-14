@@ -59,18 +59,18 @@ useHead({
 
 <template>
         <div m="4" p="b-50">
-          <FTable v-if="src" :src="src" name="ABilling համակարգի միջոցով վճարված տրանզակցիաների"
-              :save-as-filename="'Termin Payments ' + currentDate" :filters="filters" class="mt-2">
-                  <template #caption>
-                    <div w-full max-w-xs flex="inline" justify="between" mx-auto mt-2 mb-2 mr-2 float-left>
-                      <date-picker v-model="date.dateFrom" name="dateFrom" label="Սկիզբ" ma-0 />
-                      <date-picker v-model="date.dateTo" name="dateTo" label="Վերջ" ma-0 />
-                    </div>
-                  </template>
+          <FTable v-if="src" :src="src" :footer="true" name="ABilling համակարգի միջոցով վճարված տրանզակցիաների"
+            :save-as-filename="'Termin Payments ' + currentDate" :filters="filters" class="mt-2">
+            <template #caption>
+              <div w-full max-w-xs flex="inline" justify="between" mx-auto mt-2 mb-2 mr-2 float-left>
+                <date-picker v-model="date.dateFrom" name="dateFrom" label="Սկիզբ" ma-0 />
+                <date-picker v-model="date.dateTo" name="dateTo" label="Վերջ" ma-0 />
+              </div>
+            </template>
 
-                  <template #default="{ body }">
-                    <div :key="summ">
-                      Total: {{ getSumm(body.filteredArray, 3) }} դրամ
+            <template #default="{ body }">
+              <div :key="summ" text-brand-primary>
+                <span font-black font-medium>ընդամենը:</span> {{ getSumm(body.filteredArray, 3) }} դրամ
         </div>
       </template>
     </FTable>

@@ -1,25 +1,32 @@
-SELECT DISTINCT
-    contract.title AS `Договор`,
+USE billing;
+
+SELECT
+	group_concat(MAIN.`Статус`) as `Статус`,
+	MAIN.* 
+FROM (SELECT DISTINCT
+    concat(LEFT(contract.title, 7), ',') AS `Договор`,
 		contract.date1 as `Дата подключения`,
     contract.date2 as `Дата отключения`,
-    CT.title AS 'Тариф',
+    ifnull(CT.title, CTL.title) AS 'Тариф',
     if(CTO.time_to > curdate(), tariff_option.title, '') AS `Скидка`,
 		CASE WHEN locate('%', tariff_option.title) > 0 AND (CTO.time_to is null OR date(CTO.time_to) > now()) THEN CT.cost - tariff_option.title/100 * CT.cost
 			 WHEN locate('-', tariff_option.title) > 0 THEN SUBSTRING_INDEX(SUBSTRING_INDEX(tariff_option.title, '-', -1), ' ', 1)
+       WHEN CTL.title IS NOT NULL THEN REPLACE(SUBSTRING_INDEX(SUBSTRING_INDEX(CTL.config, 'cost=', -1), '\n', 1), ',', '')
 			 ELSE CT.cost
-		END as `конечная цена`,
+		END as `Рекомендуемая сумма`,
     coalesce(CTO.time_from, '') as `Дата начала скидки`,
     if(tariff_option.title like '%обещанный%платеж%', adddate(CTO.time_to, 5), coalesce(CTO.time_to, '')) as `Дата окончания скидки`,
-		cb.balance AS `Баланс`,
+		ifnull(cb.balance, 0) AS `Баланс`,
     coalesce(sum(CP.summa), 0) as `Сумма последнего платежа`,
+    SUBSTRING_INDEX(SUBSTRING_INDEX(CG.title, '-', -1), ' ', -1) as `Дата платежа по тарфу`,
     coalesce(CP.dt, 'платежи отсутствуют') as `Дата последнего платежа`,
 		CASE
 				 WHEN contract.`status` = 0 THEN 'Ակտիվ'
-				 WHEN contract.`status` = 2 THEN 'անջատված'
-				 WHEN contract.`status` = 3 THEN 'փակ'
-				 WHEN contract.`status` = 4 THEN 'կասեցված'
-				 WHEN contract.`status` = 6 THEN 'միացված չէ'
-				 WHEN contract.`status` = 7 THEN 'չվճարված'
+				 WHEN contract.`status` = 2 THEN 'Անջատված'
+				 WHEN contract.`status` = 3 THEN 'Փակ'
+				 WHEN contract.`status` = 4 THEN 'Կասեցված'
+				 WHEN contract.`status` = 6 THEN 'Միացված չէ'
+				 WHEN contract.`status` = 7 THEN 'Պասիվ'
 			END as `Статус`,
 		LEFT(CONCAT(contract.status_date, ''), 10) AS `Последняя Дата Блокировки`,
     PARAMS.city AS 'Город',
@@ -33,6 +40,7 @@ SELECT DISTINCT
 		if(isnull(PARAMS.floor) OR (PARAMS.flat >=0 AND PARAMS.floor < 1), '', CONCAT('эт. ', PARAMS.floor)) as 'этаж'
 FROM
     billing.contract
+    LEFT JOIN contract_group AS CG ON contract.gr&(1<<CG.id) > 0
 		LEFT JOIN contract_tariff ON contract_tariff.cid = contract.id
     LEFT JOIN (SELECT 
 										ct.cid,
@@ -49,6 +57,7 @@ FROM
 											 AND (date2 IS NULL OR date2 >= CURDATE())) AS ct
 								INNER JOIN tariff_plan AS tp ON ct.tpid = tp.id
 							) as CT ON CT.cid = contract.id
+		LEFT JOIN contract_tree_link AS CTL ON CTL.cid = contract.id
 		LEFT JOIN (SELECT cto.id, cto.time_from, cto.time_to, cto.cid, cto.option_id
 							FROM contract_tariff_option AS cto
 							INNER JOIN (
@@ -57,13 +66,14 @@ FROM
 								GROUP BY cid
 							) AS max_cto
 							ON cto.cid = max_cto.cid 
-							AND cto.activated_time = max_cto.max_activated_time 
+							-- AND cto.activated_time = max_cto.max_activated_time 
 							AND cto.deactivated_time is null
 							) AS CTO ON CTO.cid = CT.cid
-		LEFT JOIN tariff_option ON tariff_option.id = CTO.option_id
+		LEFT JOIN tariff_option ON tariff_option.id = coalesce(CTO.option_id, CTL.cid)
     INNER JOIN (
 								SELECT 
-										c.scid,
+										contract.scid,
+                    param1.val as contractName,
 										CAST(ah.house AS UNSIGNED) AS house,
 										ah.frac,
 										ah.comment,
@@ -76,18 +86,20 @@ FROM
                     cpt2.pod,
                     cpt2.floor
 								FROM
-										billing.contract c
-										INNER JOIN billing.contract_parameter_type_2 cpt2 ON c.id = cpt2.cid
+										billing.contract
+										INNER JOIN billing.contract_parameter_type_2 cpt2 ON contract.id = cpt2.cid
 										INNER JOIN billing.address_house ah ON cpt2.hid = ah.id
 										INNER JOIN billing.address_quarter aq ON ah.quarterId = aq.id
 										INNER JOIN billing.address_street ast ON ah.streetId = ast.id
 										INNER JOIN billing.address_area aa ON ah.areaId = aa.id
 										INNER JOIN billing.address_city ac ON aq.cityId = ac.id
-								WHERE
-										ast.title LIKE '%Երկաթուղայիններ%'
+                    LEFT JOIN billing.contract_parameter_type_1 AS param1 ON param1.cid = contract.scid AND param1.pid = 13
+								-- WHERE
+-- 										ast.title LIKE '%Վարդանանց%'
+--                     AND ah.house IN (32)
 						) AS PARAMS ON PARAMS.scid = contract.id OR PARAMS.scid = contract.scid
     LEFT JOIN (
-								SELECT cb.cid, (cb.summa1 + cb.summa2 - cb.summa3 + cb.summa4) AS balance, CONCAT(MAX(cb.yy), '-', MAX(cb.mm)) AS last_balance_date
+								SELECT cb.cid, (cb.summa1 + cb.summa2 - cb.summa3 - cb.summa4) AS balance, CONCAT(MAX(cb.yy), '-', MAX(cb.mm)) AS last_balance_date
 								FROM contract_balance cb
 								GROUP BY cb.cid
 						) AS cb ON cb.cid = coalesce(contract.scid, contract.id)
@@ -109,275 +121,11 @@ FROM
 		) AS CP ON CP.cid = COALESCE(contract.scid, contract.id)
 WHERE
     contract.title NOT LIKE '%CCTV%'
-		-- AND contract.title like '%9001505%'
-		AND LEFT(contract.title, 7) NOT IN (9000001,
-9000003,
-9000004,
-9000005,
-9000006,
-9000007,
-9000008,
-9000009,
-9000010,
-9000011,
-9000012,
-9000013,
-9000015,
-9000016,
-9000017,
-9000020,
-9000021,
-9000023,
-9000024,
-9000026,
-9000027,
-9000029,
-9000034,
-9000044,
-9000045,
-9000046,
-9000060,
-9000072,
-9000093,
-9000097,
-9000124,
-9000144,
-9000145,
-9000146,
-9000147,
-9000149,
-9000150,
-9000151,
-9000152,
-9000153,
-9000154,
-9000155,
-9000156,
-9000157,
-9000159,
-9000161,
-9000162,
-9000163,
-9000164,
-9000165,
-9000166,
-9000167,
-9000168,
-9000169,
-9000171,
-9000172,
-9000173,
-9000174,
-9000176,
-9000178,
-9000179,
-9000180,
-9000181,
-9000182,
-9000183,
-9000184,
-9000185,
-9000186,
-9000188,
-9000189,
-9000190,
-9000191,
-9000192,
-9000193,
-9000195,
-9000196,
-9000197,
-9000198,
-9000199,
-9000201,
-9000202,
-9000203,
-9000204,
-9000205,
-9000207,
-9000208,
-9000209,
-9000211,
-9000212,
-9000217,
-9000218,
-9000219,
-9000222,
-9000223,
-9000224,
-9000225,
-9000227,
-9000228,
-9000229,
-9000230,
-9000231,
-9000232,
-9000234,
-9000235,
-9000237,
-9000238,
-9000239,
-9000240,
-7026510,
-9000241,
-9000242,
-9000243,
-9000244,
-9000246,
-9000247,
-5507558,
-5507788,
-9000248,
-9000250,
-9000251,
-5517400,
-9000253,
-9000254,
-9000256,
-9000257,
-9000258,
-9000259,
-9000261,
-9000263,
-9000264,
-5803694,
-5804369,
-7030273,
-5509554,
-9000265,
-5510166,
-7025223,
-7029658,
-9000266,
-9000267,
-5508130,
-9000269,
-9000270,
-9000274,
-9000275,
-5600883,
-5410652,
-7028284,
-5510456,
-9000287,
-9000289,
-9000290,
-9000291,
-9000292,
-9000293,
-5518257,
-5513319,
-9000305,
-7026110,
-9000310,
-7011010,
-9000311,
-9000314,
-9000315,
-9000316,
-9000317,
-9000318,
-7028432,
-5401768,
-5601869,
-7024858,
-5509715,
-7022302,
-5516144,
-5803749,
-7029975,
-9000325,
-9000326,
-9000327,
-7028119,
-7009678,
-7019351,
-9000341,
-9000345,
-9000348,
-7037091,
-9000353,
-9000355,
-7029884,
-5522638,
-7023604,
-7025758,
-9000385,
-9000389,
-9000391,
-9000393,
-9000394,
-9000399,
-9000400,
-9000403,
-9000405,
-9000406,
-9000407,
-9000408,
-9000418,
-9000438,
-9000454,
-9000463,
-9000466,
-9000475,
-9000476,
-9000478,
-9000480,
-9000482,
-9000496,
-9000497,
-9000504,
-9000511,
-9000513,
-9000514,
-9000515,
-5514942,
-9000569,
-9000570,
-9000612,
-9000624,
-9000625,
-9000626,
-9000627,
-9000628,
-9000647,
-9000648,
-9000689,
-9000752,
-9000823,
-9000835,
-9000917,
-9001022,
-9001033,
-9001034,
-9001108,
-9001111,
-9001120,
-9001127,
-9001129,
-9001148,
-9001150,
-9001153,
-9001158,
-9001292,
-9001302,
-9001307,
-9001311,
-9001316,
-9001317,
-9001319,
-9002025,
-9002046,
-9002047,
-9002049,
-9002063,
-9002064,
-9002103,
-9002104,
-9002105,
-9002106,
-9002107,
-9002108,
-9002109)
-group by contract.title, contract.`status`
-ORDER BY contract.scid DESC, contract.id DESC;
+		AND PARAMS.contractName NOT like '%Андрей Речкалов%'
+    AND PARAMS.contractName NOT like '%Речкалов Андрей%'
+    AND contract.comment NOT REGEXP '(Речкалов|ест|Նոր Արեշ 11, д. 91|est|юл|TEst|Yan|եստ|բաժանորդ|TEST|Անուն|անուն|ազգանուն|Ազգանուն)'
+group by contract.title, contract.`status`) AS MAIN
+WHERE MAIN.`Рекомендуемая сумма` IS NOT NULL
+AND MAIN.`Рекомендуемая сумма` > MAIN.`Баланс`
+GROUP BY MAIN.`Договор`
+ORDER BY MAIN.`Договор`;

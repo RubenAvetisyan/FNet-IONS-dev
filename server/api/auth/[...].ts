@@ -10,7 +10,8 @@ export default NuxtAuthHandler({
   pages: {
     // Change the default behavior to use `/login` as the path for the sign-in page
     signIn: '/login',
-    signOut: '/'
+    signOut: '/login',
+    error: '/login'
   },
   callbacks: {
     // Callback when the JWT is created / updated, see https://next-auth.js.org/configuration/callbacks#jwt-callback

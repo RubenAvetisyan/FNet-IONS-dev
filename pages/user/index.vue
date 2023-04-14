@@ -1,14 +1,18 @@
 <script setup lang="ts">
 definePageMeta({
   key: route => route.fullPath,
+  auth: {
+    unauthenticatedOnly: true,
+    navigateAuthenticatedTo: '/',
+  }
 })
 
-const { savedName } = useUserStore()
+const { data: userInfo } = useAuth()
 </script>
 
 <template>
   <div>
-    <div>Բարի գալուստ` {{ savedName }}</div>
+        <div>Բարի գալուստ` {{ userInfo?.user?.name }}</div>
     <div card container m-5>
       Hellow User
     </div>

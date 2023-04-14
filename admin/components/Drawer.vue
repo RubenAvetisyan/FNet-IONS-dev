@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 
+const route = useRoute()
+const { data } = useAuth()
+
+const isAllowed = ref(['135', '75', '80', '78'].includes(data.value?.uid))
+
 const { getWidth, isminified } = storeToRefs(useDrawerStore())
 const { adminLeftPanel } = storeToRefs(useAdminStore())
 const { minify } = useDrawerStore()
@@ -10,12 +15,14 @@ const rotate = ref(0)
 
 const translate = ref('')
 const computedMx = ref('')
+const profileName = ref(data.value?.user?.name)
 
 watch(() => isminified.value, (isMini) => {
   if (isMini) {
     rotate.value = 180
     translate.value = ''
     computedMx.value = 'auto'
+    profileName.value = data.value?.user?.name ? data.value?.user?.name[0] : ''
   }
   else {
     rotate.value = 0
@@ -38,18 +45,18 @@ watch(adminLeftPanel.value, (panel) => {
   <ClientOnly>
     <div fixed h="screen" top="0" z="100" :w="getWidth" :max="`w-${getWidth}`" shadow="xl brand-media"
       bg="light dark:gray-800" transition="duration-700" ease-in-out text="brand-primary" relative>
-      <AdminProfile />
-      <div absolute right="-3" top="1" z="100" border rounded="full" bg="light" shadow="sm light-700 hover:purple-700"
-        cursor="pointer" @click.stop="minify">
+      <AdminProfile :full-name="profileName" />
+      <div absolute right="-3" top="1" z="100" border rounded="full" bg="light"
+        shadow="sm light-700 hover:brand-secondary" cursor="pointer" @click.stop="minify">
         <div i-mdi-arrow-left-thick text="md:brand-primary" transition="duration-500" :class="`rotate-${rotate}`" />
       </div>
 
       <div overflow="y-auto x-hidden">
-        <ul v-if="list?.length" space="y-0">
+        <ul v-if="list?.length && isAllowed" space="y-0">
           <n-list-item v-for="item in list || []" :key="item.name" :exact="item?.type === 'link'"
             :link="item?.link || item?.href || ''" :external="!!item?.href" :href="item?.href"
             :is-menuitem="item.type === 'button' || !!item?.direct" :name="item?.name" :icon="item?.icon"
-            :is-mini="isminified">
+            :is-mini="isminified.value">
 
             <template #list>
               <n-list-item v-for="sub in item?.sub" :key="sub.name" :exact="sub?.type === 'link'"
@@ -71,7 +78,7 @@ watch(adminLeftPanel.value, (panel) => {
         </ul>
       </div>
 
-      <login-button class="absolute bottom-0 left-0 right-0 w-full pb-5" />
+      <LoginButton :is-mini="isminified.value" class="absolute bottom-0 left-0 right-0 rounded-0 w-full pb-5" />
     </div>
   </ClientOnly>
 </template>

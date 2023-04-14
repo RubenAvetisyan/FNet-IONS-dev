@@ -12,7 +12,7 @@
     "start": "node .output/server/index.mjs",
     "lint": "eslint . --fix",
     "server": "node ../fNet-payment-api/server.js",
-    "serve": "node_modules/.bin/ttab -t 'Node Server' 'npm run server' & node_modules/.bin/ttab -t 'Building assets' 'npm run dev'",
+    "serve": "node_modules/.bin/ttab -t 'Node Server' 'npm run server' & node_modules/.bin/ttab -t 'Building assets' 'pnpm run dev'",
     "postinstall": "nuxi prepare",
     "generate": "nuxi generate"
   },

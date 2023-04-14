@@ -120,6 +120,18 @@ export default defineCachedEventHandler(async (event) => {
   const result = actives.map((activeCustomer: Body, index: number) => {
     const passiveCustomer = passives[index]
 
+    const passiveValue = passiveCustomer?.count || 0
+    const passiveKey = queryData.tabKey === 'country' ? passiveValue : {
+
+    }
+    // passiveValue = queryData.tabKey === 'country' ? passiveValue :
+    //   {
+    //     [passiveValue]: {
+    //       text: ,
+    //       tabKey: queryData.tabKey,
+    //       nextTabKey
+    //     }
+    //   }
     return {
       [queryData.tabKey === 'region' ? 'ՄԱՐԶԵՐ' : queryData.text]: {
         text: activeCustomer[queryData.tabKey as Key],
@@ -128,7 +140,7 @@ export default defineCachedEventHandler(async (event) => {
       },
       active: activeCustomer?.count || 0,
       passive: passiveCustomer?.count || 0,
-      total: (activeCustomer?.count || 0) + (passiveCustomer?.count || 0),
+      total: (activeCustomer?.count || 0) + passiveValue,
     };
   });
 

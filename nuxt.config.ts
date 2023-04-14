@@ -1,9 +1,14 @@
+import { resolve } from 'path';
+import { readFileSync } from 'fs';
 import chalk from 'chalk'
 import * as flowbite from 'flowbite'
 import { log } from './utils/log'
 import { prisma } from './server/api/db'
 import { description } from './package.json'
 import { addComponent } from '@nuxt/kit'
+
+const sslKeyFile = process.env.NITRO_SSL_KEY;
+const sslCertFile = process.env.NITRO_SSL_CERT
 
 process.on('SIGINT', async (signal) => {
   if (signal === 'SIGINT') {
@@ -86,8 +91,10 @@ export default defineNuxtConfig({
   ],
   auth: {
     enableGlobalAppMiddleware: true,
-    origin: process.env.NUXT_AUTH_ORIGIN,
-    addDefaultCallbackUrl: process.env.NUXT_AUTH_ORIGIN
+    // origin: process.env.NUXT_AUTH_ORIGIN,
+    addDefaultCallbackUrl: '/',
+    basePath: '/api/auth',
+    ...(process.env.NODE_ENV === 'production' && { origin: process.env.NUXT_AUTH_ORIGIN })
   },
 
   experimental: {
@@ -141,22 +148,35 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'node-cluster',
+    preset: 'node-server',
   },
 
   // vite: {
   //   server: {
   //     hmr: {
-  //       host: 'localhost',
-  //       protocol: "ws",
-  //       clientPort: 80,
-  //       path: "hmr/",
+  //       protocol: 'wss',
+  //       clientPort: 443,
+  //       path: "hmr/"
   //     },
-  //     https: false
+  //     https: {
+  //       key: sslKeyFile ? readFileSync(resolve(__dirname, sslKeyFile)) : undefined,
+  //       cert: sslCertFile ? readFileSync(resolve(__dirname, sslCertFile)) : undefined,
+  //     },
+  //     cors: true,
   //   },
   // }
 
-  // reactStrictMode: true,
-  // swcMinify: true,
+  vite: {
+    server: {
+      hmr: {
+        protocol: 'wss',
+        path: "hmr/"
+      },
+      https: {
+        key: sslKeyFile ? readFileSync(resolve(__dirname, sslKeyFile)) : undefined,
+        cert: sslCertFile ? readFileSync(resolve(__dirname, sslCertFile)) : undefined,
+      },
+    }
+  }
 
 })

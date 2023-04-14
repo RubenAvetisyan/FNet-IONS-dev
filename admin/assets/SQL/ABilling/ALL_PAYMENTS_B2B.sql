@@ -1,6 +1,6 @@
-SELECT MAIN.title, sum(MAIN.summa) FROM (SELECT 
+SELECT MAIN.contractNumber as contractNumber, sum(MAIN.summa) as `summa` FROM (SELECT 
 contract.id,
-contract.title,
+contract.title as contractNumber,
 contract_payment.id as payment_id, 
 contract_payment.cid,
 contract_payment.uid as user_id,
@@ -24,7 +24,7 @@ SELECT LEFT(contract.title, 7) as contractNumber, CT.title as TARIFF FROM billin
 LEFT JOIN contract ON contract.id = CT.cid
 WHERE contract.title NOT LIKE '3000%'
 AND CT.title LIKE '%B2B%') AS TARIFFS ON TARIFFS.contractNumber = contract.title
-WHERE contract_payment.dt >= '2023-03-01'
+WHERE contract_payment.dt >= DATE_FORMAT(NOW(), '%Y-%m-01')
 AND PT.id <> 9 AND PT.up <> 9
-AND contract.title NOT LIKE '3000%' GROUP BY comment) AS MAIN
-GROUP BY MAIN.title
+AND contract.title NOT LIKE '3000%' GROUP BY contract_payment.comment) AS MAIN
+GROUP BY MAIN.contractNumber
