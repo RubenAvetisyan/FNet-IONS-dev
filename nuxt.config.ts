@@ -170,8 +170,10 @@ export default defineNuxtConfig({
     server: {
       hmr: {
         protocol: 'wss',
-        clientPort: 24678,
-        path: "hmr/"
+        port: 24678,
+        clientPort: 443,
+        path: "hmr/",
+        timeout: 3,
       },
       https: {
         key: sslKeyFile ? readFileSync(resolve(__dirname, sslKeyFile)) : undefined,
