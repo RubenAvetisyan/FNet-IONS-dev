@@ -169,11 +169,7 @@ export default defineNuxtConfig({
   vite: {
     server: {
       hmr: {
-        protocol: 'wss',
-        port: 24678,
-        clientPort: 443,
-        path: "hmr/",
-        timeout: 3,
+        protocol: 'wss'
       },
       https: {
         key: sslKeyFile ? readFileSync(resolve(__dirname, sslKeyFile)) : undefined,
