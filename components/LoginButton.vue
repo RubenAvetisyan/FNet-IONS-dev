@@ -17,7 +17,10 @@ const isAdmin = ref(false)
 const isUser = ref(false)
 const btnText = computed(() => status ? 'Ելք' : 'Մուտք')
 
-const logout = () => signOut({ redirect: true, callbackUrl: '/login' })
+const logout = () => {
+  signOut()
+  // useFetch('/api/auth/signout')
+}
 </script>
 
 <template>

@@ -91,10 +91,10 @@ export default defineNuxtConfig({
   ],
   auth: {
     enableGlobalAppMiddleware: true,
-    // origin: process.env.NUXT_AUTH_ORIGIN,
-    addDefaultCallbackUrl: '/',
-    basePath: '/api/auth',
-    ...(process.env.NODE_ENV === 'production' && { origin: process.env.NUXT_AUTH_ORIGIN })
+    origin: process.env.NUXT_AUTH_ORIGIN,
+    // addDefaultCallbackUrl: '/user/statements/totalClients',
+    basePath: '/api/auth/',
+    // ...(process.env.NODE_ENV === 'production' && { origin: process.env.NUXT_AUTH_ORIGIN })
   },
 
   experimental: {
@@ -117,9 +117,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
 
-    public: {
-      baseUrl: 'http://ions.fnet.am'
-    },
+    // public: {
+    //   baseUrl: 'http://ions.fnet.am'
+    // },
 
     isTest: process.env.NUXT_IS_TEST || 'false',
     AUTH_ORIGIN: process.env.NUXT_AUTH_ORIGIN,
@@ -170,6 +170,7 @@ export default defineNuxtConfig({
     server: {
       hmr: {
         protocol: 'wss',
+        clientPort: 24678,
         path: "hmr/"
       },
       https: {

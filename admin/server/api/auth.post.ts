@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     const ROLE = $enum(Role).getValues().find(val => val === roleFromType)
     
     const userCreated = upsertUser({
-      userId: +response.id,
+      userId: +response?.id,
       name: response.fullName,
       email: response.email,
       token,

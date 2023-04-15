@@ -37,6 +37,7 @@ class MySQLConnection {
   }
 
   private createPool(): Pool {
+    console.log('this.config: ', JSON.stringify(this.config));
     return createPool(this.config);
   }
 

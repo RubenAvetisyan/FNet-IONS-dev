@@ -4,6 +4,24 @@ import login from '~/admin/utils/login';
 import { H3Error } from 'h3';
 import { deafultRuels, RuleKey } from '@@/utils/system/rules'
 
+const ruels = {
+  '135': 'Հայաստան',
+  '136': 'Հայաստան',
+  '75': 'Հայաստան',
+  '80': 'Հայաստան',
+  '78': 'Հայաստան',
+  '127': 'Երևան',
+  '224': 'Երևան',
+  '138': 'Երևան',
+  '195': 'Արարատի մարզ',
+  '227': 'Վայոց Ձորի մարզ',
+  '123': 'Գյումրի',
+  '265': 'Գյումրի',
+  '236': 'Գեղարքունիքի մարզ',
+  '54': 'Կոտայքի մարզ',
+  '225': 'Կոտայքի մարզ',
+}
+
 // TODO: Make this more scalable and reusable, remove from here
 
 export default NuxtAuthHandler({
@@ -11,14 +29,15 @@ export default NuxtAuthHandler({
     // Change the default behavior to use `/login` as the path for the sign-in page
     signIn: '/login',
     signOut: '/login',
-    error: '/login'
+    error: '/?error="unauthenticated"'
   },
   callbacks: {
     // Callback when the JWT is created / updated, see https://next-auth.js.org/configuration/callbacks#jwt-callback
     jwt: async ({ token, user }) => {
+      console.log('user: ', user);
       const isSignIn = !!user
       if (isSignIn && token) {
-        token.jwt = (user as any).type || '';
+        token.jwt = (user as any)?.type || '';
         token.id = user?.id || '';
         token.rule = (user as any)?.rule || '';
         token.type = (user as any)?.type || '';
@@ -27,9 +46,10 @@ export default NuxtAuthHandler({
     },
     // Callback whenever session is checked, see https://next-auth.js.org/configuration/callbacks#session-callback
     session: async ({ session, token }) => {
-      (session as any).role = token.type;
-      (session as any).region = token.rule;
-      (session as any).uid = token.id;
+      console.log('session: ', session);
+      (session as any).role = token?.type;
+      (session as any).region = token?.rule;
+      (session as any).uid = token?.id;
       return Promise.resolve(session);
     },
   },
@@ -57,13 +77,19 @@ export default NuxtAuthHandler({
 
           // const user = { id: '1', name: 'J Smith', username: 'jsmith', password: 'hunter2' }
 
+          console.log('credentials.username: ', credentials.username);
+          console.log('credentials.password: ', credentials.password);
           const user = await login(credentials.username, credentials.password)
-          if (user instanceof H3Error)
+
+          if (user instanceof H3Error) {
             throw user
+          }
+
           console.log('response: ', user);
 
 
           if (user.groupId.length && user.fullName) {
+            console.log('user: ', user);
             // Any object returned will be saved in `user` property of the JWT
             return {
               id: user.id + '',
@@ -76,12 +102,17 @@ export default NuxtAuthHandler({
             console.error('Warning: Malicious login attempt registered, bad credentials provided')
 
             // If you return null then an error will be displayed advising the user to check their details.
+            // throw createError({
+            //   statusCode: 403,
+            //   statusMessage: "Credentials not working",
+            // })
             return null
 
             // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
           }
         } catch (error) {
           console.log('error: ', error);
+          return null
         }
       }
     })

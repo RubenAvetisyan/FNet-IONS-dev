@@ -1,26 +1,13 @@
 <script setup>
 import { format, isSameDay, parseISO, differenceInDays, subDays } from 'date-fns';
-
+import { deafultRuels } from '~/utils/system/rules'
 const { data: userInfo } = useAuth()
 
-const rules = {
-  '127': 'Երևան',
-  '224': 'Երևան',
-  '138': 'Երևան',
-  '195': 'Արարատի մարզ',
-  '227': 'Վայոց Ձորի մարզ',
-  '123': 'Գյումրի',
-  '265': 'Գյումրի',
-  '236': 'Գեղարքունիքի մարզ',
-  '54': 'Կոտայքի մարզ',
-  '225': 'Կոտայքի մարզ',
-}
+const admins = ['135', '75', '80', '78']
 
-const admins = [135, 75, 80, 78]
+const region = ref(userInfo?.value.region)
 
-const region = ref(userInfo.value.region)
-
-if (region.value !== rules[userInfo.value.uid] && !admins.includes(+userInfo.value.uid)) {
+if (region.value !== deafultRuels[userInfo.value.uid] && !admins.includes(userInfo.value.uid)) {
   await navigateTo('/')
 }
 

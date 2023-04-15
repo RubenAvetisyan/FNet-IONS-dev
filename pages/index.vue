@@ -1,44 +1,44 @@
 <script setup>
-import { keys } from 'lodash';
+// import { keys } from 'lodash';
 
 
-const { data } = await useLazyFetch('/api/lanbilling')
-console.log('data: ', unref(data))
+// const { data } = await useLazyFetch('/api/lanbilling')
+// console.log('data: ', unref(data))
 
 
 
-const refs = ref([])
+// const refs = ref([])
 
-const tablesrefs = computed(() => refs.value)
+// const tablesrefs = computed(() => refs.value)
 
 
-onMounted(async () => {
-  const { data: aBillingSchema } = await useFetch('/api/get-abilling-db-schema')
-  nextTick(() => console.log('aBillingSchema.value: ', aBillingSchema.value))
-})
+// onMounted(async () => {
+//   const { data: aBillingSchema } = await useFetch('/api/get-abilling-db-schema')
+//   nextTick(() => console.log('aBillingSchema.value: ', aBillingSchema.value))
+// })
 
-const { data: userInfo } = useAuth()
+// const { data: userInfo } = useAuth()
 
-const rules = {
-  '127': 'Երևան',
-  '224': 'Երևան',
-  '138': 'Երևան',
-  '195': 'Արարատի մարզ',
-  '227': 'Վայոց Ձորի մարզ',
-  '123': 'Գյումրի',
-  '265': 'Գյումրի',
-  '236': 'Գեղարքունիքի մարզ',
-  '54': 'Կոտայքի մարզ',
-  '225': 'Կոտայքի մարզ',
-}
+// const rules = {
+//   '127': 'Երևան',
+//   '224': 'Երևան',
+//   '138': 'Երևան',
+//   '195': 'Արարատի մարզ',
+//   '227': 'Վայոց Ձորի մարզ',
+//   '123': 'Գյումրի',
+//   '265': 'Գյումրի',
+//   '236': 'Գեղարքունիքի մարզ',
+//   '54': 'Կոտայքի մարզ',
+//   '225': 'Կոտայքի մարզ',
+// }
 
-nextTick(() => {
-  if (useAdminAuthStore().isAdmin) {
-    // navigateTo('/', { external: true })
-  } else if (Object.keys(rules).includes(userInfo.value.uid)) {
-    navigateTo('/user/statements/totalClients', { external: true })
-  }
-})
+// nextTick(() => {
+//   if (useAdminAuthStore().isAdmin) {
+//     // navigateTo('/', { external: true })
+//   } else if (Object.keys(rules).includes(userInfo.value.uid)) {
+//     navigateTo('/user/statements/totalClients', { external: true })
+//   }
+// })
 </script>
 
 <template>
@@ -60,6 +60,6 @@ nextTick(() => {
     <div text="xl dark dark:light-700" select="none">
       համակարգ մուտք գործելու համար անհրաժետ է նույնականացվել
     </div>
-      <pre>{{ tablesrefs }}</pre>
+          <!-- <pre>{{ tablesrefs }}</pre> -->
   </div>
 </template>

@@ -1,28 +1,16 @@
 <script setup>
+import { deafultRuels } from '~/utils/system/rules'
 
 const { data: userInfo } = useAuth()
-
-const rules = {
-  '127': 'Երևան',
-  '224': 'Երևան',
-  '138': 'Երևան',
-  '195': 'Արարատի մարզ',
-  '227': 'Վայոց Ձորի մարզ',
-  '123': 'Գյումրի',
-  '265': 'Գյումրի',
-  '236': 'Գեղարքունիքի մարզ',
-  '54': 'Կոտայքի մարզ',
-  '225': 'Կոտայքի մարզ',
-}
 
 const admins = ['135', '75', '80', '78']
 const isAdmin = computed(() => admins.includes(userInfo.value?.uid))
 console.log('isAdmin: ', isAdmin.value);
 
-const region = ref(rules[userInfo.value?.uid])
+const region = ref(deafultRuels[userInfo.value?.uid])
 console.log('region: ', region.value);
 
-if (region.value !== rules[userInfo.value?.uid] && !isAdmin.value) {
+if (region.value !== deafultRuels[userInfo.value?.uid] && !isAdmin.value) {
   await navigateTo('/')
 }
 
