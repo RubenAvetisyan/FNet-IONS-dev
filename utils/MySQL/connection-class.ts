@@ -46,7 +46,7 @@ class MySQLConnection {
     this.pool = this.createPool()
   }
 
-  public async getConnectionThreadId() {
+  public async getConnectionThreadId(): Promise<number | null> {
     return new Promise((resolve, reject) => {
       this.pool.getConnection((err, connection) => {
         if (err) {
@@ -84,17 +84,43 @@ class MySQLConnection {
   public executeQuery<T>(query: string, options: QueryOptions = { timezone: '+04:00' }, timeout: number = 120000): Promise<{ header: string[] | [], body: T[], FieldPackets: FieldInfo[] | undefined }> {
     const queryOptions: QueryOptions = { ...options };
     return new Promise((resolve, reject) => {
-      this.pool.query(query, queryOptions, (error, results = [], fields) => {
+      this.pool.query('SET SESSION group_concat_max_len = 50000;', (err) => {
+        if (err) throw err
+        this.pool.query(query, queryOptions, async (error, results = [], fields) => {
+          try {
+            const threadId = await this.getConnectionThreadId()
+            if (error) {
+              (threadId && await this.killThreadById(threadId))
+              reject(error)
+            }
+            else {
+              resolve({
+                header: !fields ? [] : fields.map((field) => field?.name || 'mustBeReviewed'),
+                body: results as T[] || [],
+                FieldPackets: fields
+              })
+              console.log('threadId: ', threadId);
+              if (threadId) {
+                await this.killThreadById(threadId)
+              }
+            }
+          } catch (error) {
+            throw error
+          };
+        });
+      })
+    });
+  }
+
+  public async killThreadById(threadId: number) {
+    return new Promise((resolve, reject) => {
+      const killQuery = `KILL ${threadId}`;
+      this.pool.query(killQuery, (error, results) => {
         if (error) {
-          reject(error)
+          reject(error);
+        } else {
+          resolve(results);
         }
-        else {
-          resolve({
-            header: !fields ? [] : fields.map((field) => field?.name || 'mustBeReviewed'),
-            body: results as T[] || [],
-            FieldPackets: fields
-          })
-        };
       });
     });
   }

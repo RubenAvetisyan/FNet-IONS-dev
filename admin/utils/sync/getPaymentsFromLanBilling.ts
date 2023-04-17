@@ -10,6 +10,8 @@ const db = {
   erp,
 }
 
+type BodyType = { [key: string]: string | number | boolean | Date | null }
+
 export const executeQuery = async <T>(queryString: string, databaseName: DbName, options?: QueryOptions): Promise<{
   header: string[];
   body: T[];

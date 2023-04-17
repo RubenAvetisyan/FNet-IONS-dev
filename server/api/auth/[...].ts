@@ -2,25 +2,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { NuxtAuthHandler } from '#auth'
 import login from '~/admin/utils/login';
 import { H3Error } from 'h3';
-import { deafultRuels, RuleKey } from '@@/utils/system/rules'
-
-const ruels = {
-  '135': 'Հայաստան',
-  '136': 'Հայաստան',
-  '75': 'Հայաստան',
-  '80': 'Հայաստան',
-  '78': 'Հայաստան',
-  '127': 'Երևան',
-  '224': 'Երևան',
-  '138': 'Երևան',
-  '195': 'Արարատի մարզ',
-  '227': 'Վայոց Ձորի մարզ',
-  '123': 'Գյումրի',
-  '265': 'Գյումրի',
-  '236': 'Գեղարքունիքի մարզ',
-  '54': 'Կոտայքի մարզ',
-  '225': 'Կոտայքի մարզ',
-}
+import { deafultRuels, admins, RuleKey } from '@@/utils/system/rules'
 
 // TODO: Make this more scalable and reusable, remove from here
 
@@ -41,6 +23,9 @@ export default NuxtAuthHandler({
         token.id = user?.id || '';
         token.rule = (user as any)?.rule || '';
         token.type = (user as any)?.type || '';
+        token.isAdmin = admins.includes(user.id);
+        token.isUser = !!deafultRuels[user.id as RuleKey] && !admins.includes(user.id);
+        token.maxAge = 24 * 60 * 60
       }
       return Promise.resolve(token);
     },
@@ -50,6 +35,9 @@ export default NuxtAuthHandler({
       (session as any).role = token?.type;
       (session as any).region = token?.rule;
       (session as any).uid = token?.id;
+      (session as any).isAdmin = token?.isAdmin || false;
+      (session as any).isUser = token?.isUser || false;
+      (session as any).maxAge = 24 * 60 * 60
       return Promise.resolve(session);
     },
   },

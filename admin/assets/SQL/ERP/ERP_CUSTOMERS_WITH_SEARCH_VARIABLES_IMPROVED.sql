@@ -1,5 +1,5 @@
 SELECT
-	customerNumber,
+	group_concat(customerNumber) as customerNumbersString,
   customerName,
   country,
   region,

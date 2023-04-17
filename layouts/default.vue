@@ -37,26 +37,26 @@ const links = ref([
         </template>
 
         <template #listItems>
-              <n-list-item v-for="link in links" :key="links.name" :link="link.link" :exact="link?.exact"
-                :external="link.external" :tooltipText="link?.tooltipText" tooltipPlacement="bottom">
-                {{ link.name }}
-            </n-list-item>
-          </template>
-        </navbar>
-        <div class="fixed w-1/3 left-0 right-0 px-10 top-0 z-100 mx-auto">
-          <alert v-if="isAlert" class="flex items-center mx-auto">
-            <span class="font-medium">{{ msgs[0] }}.</span>
-            {{ msgs[1] || '' }}
-          </alert>
-        </div>
-        <div container h-full mx-auto mb-1 px-10>
-          <slot />
-        </div>
-        <!-- <div class="mt-5 mx-auto text-center opacity-90 text-sm">
-          <sticky-footer>
-            <FooterM mt-1 />
-          </sticky-footer>
-        </div> -->
+          <n-list-item v-for="link in links" :key="links.name" :link="link.link" :exact="link?.exact"
+            :external="link.external" :tooltipText="link?.tooltipText" tooltipPlacement="bottom">
+            {{ link.name }}
+          </n-list-item>
+        </template>
+      </navbar>
+      <div class="fixed w-1/3 left-0 right-0 px-10 top-0 z-100 mx-auto">
+        <alert v-if="isAlert" class="flex items-center mx-auto">
+          <span class="font-medium">{{ msgs[0] }}.</span>
+          {{ msgs[1] || '' }}
+        </alert>
+      </div>
+      <div container h-full mx-auto mb-1 px-10>
+        <slot />
+      </div>
+      <!-- <div class="mt-5 mx-auto text-center opacity-90 text-sm">
+              <sticky-footer>
+                <FooterM mt-1 />
+              </sticky-footer>
+            </div> -->
       <teleport to="body">
         <ModalLoginForm />
       </teleport>

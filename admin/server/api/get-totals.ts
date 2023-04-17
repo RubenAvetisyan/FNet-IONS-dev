@@ -60,112 +60,122 @@ const texts = {
 }
 
 export default defineCachedEventHandler(async (event) => {
-  const queryData = getQuery(event) as Record<string, string>
-  console.log('queryData: ', queryData);
+  try {
+    const queryData = getQuery(event) as Record<string, string>
+    console.log('queryData: ', queryData);
 
-  const sqlFilters = setFilters(queryData)
+    const sqlFilters = setFilters(queryData)
 
 
-  const queryStrings = await readSqlFile(
-    SqlFilePaths.ERP_CUSTOMERS_WITH_SEARCH_VARIABLES,
-    SqlFilePaths.ACTIVE_CONTRACT_NUMBERS,
-    SqlFilePaths.PASSIVE_CONTRACT_NUMBERS_ONLY,
-    // SqlFilePaths.ALL_CONTRACT_NUMBERS
-  ) as string[]
+    const queryStrings = await readSqlFile(
+      SqlFilePaths.ERP_CUSTOMERS_WITH_SEARCH_VARIABLES,
+      SqlFilePaths.ACTIVE_CONTRACT_NUMBERS,
+      SqlFilePaths.PASSIVE_CONTRACT_NUMBERS_ONLY,
+      // SqlFilePaths.ALL_CONTRACT_NUMBERS
+    ) as string[]
 
-  let queryString = queryStrings[0]
+    let queryString = queryStrings[0]
 
-  queryString = queryString.replace('2022-01-01', `${queryData.dateFrom}`)
-  queryString = queryString.replace('current_date()', `'${queryData.dateTo}'`)
-  queryString = queryString.replace('FILTERS', sqlFilters)
-  const sqlGroupBy = setGroupBy(queryData.tabKey)
+    // queryString = queryString.replace('2022-01-01', `${queryData.dateFrom}`)
+    // queryString = queryString.replace('current_date()', `'${queryData.dateTo}'`)
+    queryString = queryString.replace('FILTERS', sqlFilters)
+    const sqlGroupBy = setGroupBy(queryData.tabKey)
 
-  queryString = queryString.replace('GROUPS', sqlGroupBy)
+    queryString = queryString.replace('GROUPS', sqlGroupBy)
 
-  const CONTRACT_NUMBERS = await usePromise<string[]>(queryStrings.slice(1).map(async (qs) => {
-    const response = await executeQuery<{ contractNumber: number }>(qs, DbName.A_BILLING)
-    if (response instanceof H3Error) throw response
-    return response.body.map(({ contractNumber }) => contractNumber).join(',')
-  }))
+    const CONTRACT_NUMBERS = await usePromise<string[]>(queryStrings.slice(1).map(async (qs) => {
+      const response = await executeQuery<{ contractNumber: number }>(qs, DbName.A_BILLING)
+      if (response instanceof H3Error) throw response
+      return response.body.map(({ contractNumber }) => contractNumber).join(',')
+    }))
 
-  type Body = {
-    customerNumber: number;
-    customerName: string;
-    region: string;
-    city: string;
-    quarter: string;
-    street: string;
-    count: number;
-  }
-
-  type Key = keyof Body;
-
-  const [actives, passives] = await usePromise<Body[][]>(CONTRACT_NUMBERS.map(async (contractNumber, i): Promise<Body[]> => {
-    const k = ['active', 'passive'][i]
-
-    let qs = queryString
-    qs = qs.replace('contractNumbers', contractNumber)
-    const response = await executeQuery<Body>(qs, DbName.ERP)
-
-    if (response instanceof H3Error) throw response
-    return response.body.map(obj => ({ ...obj }))
-  }))
-
-  const next = Object.entries(texts).find((_, i) => {
-    return i > 0 && i <= Object.entries(texts).length ? Object.keys(texts)[i - 1] === queryData.tabKey : false
-  })
-
-  const nextTabKey = next ? next[0] : '' as string
-
-  const result = actives.map((activeCustomer: Body, index: number) => {
-    const passiveCustomer = passives[index]
-
-    const passiveValue = passiveCustomer?.count || 0
-    const passiveKey = queryData.tabKey === 'country' ? passiveValue : {
-
+    type Body = {
+      customerNumbersString: string;
+      customerName: string;
+      region: string;
+      city: string;
+      quarter: string;
+      street: string;
+      count: number;
     }
-    // passiveValue = queryData.tabKey === 'country' ? passiveValue :
-    //   {
-    //     [passiveValue]: {
-    //       text: ,
-    //       tabKey: queryData.tabKey,
-    //       nextTabKey
-    //     }
-    //   }
-    return {
-      [queryData.tabKey === 'region' ? 'ՄԱՐԶԵՐ' : queryData.text]: {
-        text: activeCustomer[queryData.tabKey as Key],
-        tabKey: queryData.tabKey,
-        nextTabKey
-      },
-      active: activeCustomer?.count || 0,
-      passive: passiveCustomer?.count || 0,
-      total: (activeCustomer?.count || 0) + passiveValue,
-    };
-  });
 
-  const response = queryData.tabKey === 'country' ?
-    {
-      header: [
-        {
-          text: 'Հայաստան',
-          tabKey: 'country',
-          nextTabKey: 'region',
-          fn: () => { }
+    type Key = keyof Body;
+
+    const [actives, passives] = await usePromise<Body[][]>(CONTRACT_NUMBERS.map(async (contractNumber, i): Promise<Body[]> => {
+      const k = ['active', 'passive'][i]
+
+      let qs = queryString
+      qs = qs.replace('contractNumbers', contractNumber)
+      const response = await executeQuery<Body>(qs, DbName.ERP)
+
+      if (response instanceof H3Error) throw response
+      return response.body.map(obj => ({ ...obj }))
+    }))
+
+    const next = Object.entries(texts).find((_, i) => {
+      return i > 0 && i <= Object.entries(texts).length ? Object.keys(texts)[i - 1] === queryData.tabKey : false
+    })
+
+    const nextTabKey = next ? next[0] : '' as string
+
+    const passiveCustomerNumbers: { [key: string]: string } = {}
+
+    const result = actives.map((activeCustomer: Body, index: number) => {
+      const passiveCustomer = passives[index]
+
+      const passiveValue = passiveCustomer?.count || 0
+      // const passiveKey = queryData.tabKey === 'country' ? passiveValue : {
+
+      // }
+      // passiveValue = queryData.tabKey === 'country' ? passiveValue :
+      //   {
+      //     [passiveValue]: {
+      //       text: ,
+      //       tabKey: queryData.tabKey,
+      //       nextTabKey
+      //     }
+      //   }
+
+      passiveCustomerNumbers[activeCustomer[queryData.tabKey as Key]] = passiveCustomer?.customerNumbersString || ''
+      return {
+        [queryData.tabKey === 'region' ? 'ՄԱՐԶԵՐ' : queryData.text]: {
+          text: activeCustomer[queryData.tabKey as Key],
+          tabKey: queryData.tabKey,
+          nextTabKey
         },
-        'ակտիվ', 'պասիվ', 'ընդամենը'
-      ],
-      body: [{
-        'Հայաստան': 'քանակ',
-        active: result[0]?.active,
-        passive: result[0]?.passive,
-        total: result[0]?.total
-      }]
-    } :
-    {
-      header: [queryData.tabKey === 'region' ? 'ՄԱՐԶԵՐ' : queryData.text, 'ակտիվ', 'պասիվ', 'ընդամենը'],
-      body: result
-    }
+        active: activeCustomer?.count || 0,
+        passive: passiveCustomer?.count || 0,
+        total: (activeCustomer?.count || 0) + passiveValue,
+      };
+    });
 
-  return { [queryData.tabKey]: response }
+    const response = queryData.tabKey === 'country' ?
+      {
+        header: [
+          {
+            text: 'Հայաստան',
+            tabKey: 'country',
+            nextTabKey: 'region',
+            fn: () => { }
+          },
+          'ակտիվ', 'պասիվ', 'ընդամենը'
+        ],
+        body: [{
+          'Հայաստան': 'քանակ',
+          active: result[0]?.active,
+          passive: result[0]?.passive,
+          total: result[0]?.total,
+        }],
+        passiveCustomerNumbers
+      } :
+      {
+        header: [queryData.tabKey === 'region' ? 'ՄԱՐԶԵՐ' : queryData.text, 'ակտիվ', 'պասիվ', 'ընդամենը'],
+        body: result,
+        passiveCustomerNumbers,
+      }
+
+    return { [queryData.tabKey]: response }
+  } catch (error) {
+    console.error('error: ', error);
+  }
 })

@@ -50,6 +50,7 @@ export default async function (user: string, password: string): Promise<AuthResu
     const queryString = setQueryString(user, password)
 
     const reponse = await executeQuery<AuthResponse>(queryString, DbName.ERP)
+    console.log('LOGIN reponse: ', reponse);
 
     const result = transfrom(reponse.body)
     return result

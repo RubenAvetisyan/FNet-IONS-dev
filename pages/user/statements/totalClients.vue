@@ -1,15 +1,16 @@
 <script setup>
 import { format, isSameDay, parseISO, differenceInDays, subDays } from 'date-fns';
-import { deafultRuels } from '~/utils/system/rules'
-const { data: userInfo } = useAuth()
+const route = useRoute()
+const router = useRouter()
+const basePath = '/user/statements/totalClientPaymens'
+const { data: userInfo, status } = useAuth()
+const isAdmin = computed(() => userInfo.value.isAdmin)
 
-const admins = ['135', '75', '80', '78']
+const region = ref(isAdmin.value ? '' : userInfo?.value.region)
 
-const region = ref(userInfo?.value.region)
-
-if (region.value !== deafultRuels[userInfo.value.uid] && !admins.includes(userInfo.value.uid)) {
-  await navigateTo('/')
-}
+// if (status.value === 'authenticated' && !userInfo?.value.isUser && !isAdmin.value) {
+//   await navigateTo('/user/statement/')
+// }
 
 const dateFromValue = ref(Date.now())
 const dateToValue = ref(Date.now())
@@ -99,6 +100,7 @@ const defaultVal = {
 }
 
 const filters = ref({
+  contractNumbers: '',
   city: '',
   quarter: '',
   street: ''
@@ -106,10 +108,12 @@ const filters = ref({
 
 const updateDetails = ref('')
 const { data: details, pending } = await useLazyAsyncData('details', () => $fetch('/api/get-passive_detailed', {
-  query: {
+  method: 'POST',
+  body: {
     filters: updateDetails.value
   }
 }), {
+  server: true,
   watch: [updateDetails]
 })
 
@@ -176,9 +180,13 @@ function transform(data, curTab) {
           tabKey: item[bodyFirstKey].tabKey,
           fn: () => {
             filters.value[currentTable.value] = item[bodyFirstKey].text
-            updateDetails.value = Object.entries(filters.value).map(([k, value]) => {
-              return { target: k, value }
-            })
+            updateDetails.value = [{
+              target: 'contractNumbers',
+              value: elseData?.value[currentTable.value].passiveCustomerNumbers[item[bodyFirstKey].text].replace(/,\s*$/, "")
+            }]
+            //   Object.entries(filters.value).map(([k, value]) => {
+            //   return { target: k, value }
+            // })
             detailedTableTitle.value = `Պասիվ հաճախորդների ցանկ. (${item[bodyFirstKey].text})}`
             showDynamicTable.value = false
           }
@@ -291,6 +299,8 @@ watch(() => pending.value, p => {
   } else {
     $finishLoading()
   }
+}, {
+  immediate: true
 })
 
 watch(() => details.value, (n) => {
@@ -309,24 +319,24 @@ watch(() => details.value, (n) => {
 <template>
     <div py-0 px-0 h-full>
       <div relative flex w-full>
-        <nuxt-link :href="baseUrl + '/user/statements/totalClients'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700
-          dark:bg-indigo-500 h-8 text-center px-2 flex items-center text-light dark:text-dark>
-          ՀԱՅԱՍՏԱՆ
-        </nuxt-link>
-        <div v-if="regionsTable.header[0] !== 'name'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8
-          text-center px-2 flex items-center text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ</div>
-        <nuxt-link to="/user/statements/totalClientPaymens" btn rounded-0 hover:bg-indigo-300 bg-indigo-500
-          dark:bg-indigo-300 h-8 text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
-          գումարային</nuxt-link>
+          <nuxt-link to="https://ions.fnet.am/user/statements/totalClients" btn rounded-0 hover:bg-indigo-500 bg-indigo-700
+            dark:bg-indigo-500 h-8 text-center px-2 flex items-center text-light dark:text-dark>
+            ՀԱՅԱՍՏԱՆ
+          </nuxt-link>
+          <div v-if="regionsTable.header[0] !== 'name'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8
+            text-center px-2 flex items-center text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ</div>
+          <nuxt-link to="/user/statements/totalClientPaymens" btn rounded-0 hover:bg-indigo-300 bg-indigo-500
+            dark:bg-indigo-300 h-8 text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
+            գումարային</nuxt-link>
 
-      </div>
-      <div v-show="showDynamicTable" flex w-3xl h-full>
-        <FTable :key="currentTable + dateFrom + dateTo" :footer="true" :src="dynamicTable" transition w-prose max-w-700>
-          <template #caption>
-            <div flex items-end>
-              <!-- <DateFixedRange v-model="dateRange" /> -->
-              <!-- <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" /> -->
+        </div>
+        <div v-show="showDynamicTable" flex w-3xl h-full lg:h-4xl>
+          <FTable :key="currentTable + dateFrom + dateTo" :footer="true" :src="dynamicTable" :rows="dynamicTable.body.length" transition w-prose max-w-700>
+            <template #caption>
+              <div flex items-end>
+                <!-- <DateFixedRange v-model="dateRange" /> -->
+                <!-- <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" /> -->
               <div flex h-8 f-btn ml-4 p-2 items-center @click="() => refreshAll()">Թարմացնել տվյալները</div>
             </div>
           </template>

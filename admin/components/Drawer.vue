@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 const route = useRoute()
 const { data } = useAuth()
 
-const isAllowed = ref(['135', '75', '80', '78'].includes(data.value?.uid))
+const isAllowed = ref(data.value?.isAdmin)
 
 const { getWidth, isminified } = storeToRefs(useDrawerStore())
 const { adminLeftPanel } = storeToRefs(useAdminStore())
@@ -28,6 +28,7 @@ watch(() => isminified.value, (isMini) => {
     rotate.value = 0
     translate.value = 'x-8'
     computedMx.value = ''
+    profileName.value = data.value?.user?.name
   }
 
 })

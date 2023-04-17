@@ -10,11 +10,9 @@ const props = defineProps({
 const color = useColorMode()
 const isDark = computed(() => color.value === 'dark')
 
-const { signOut, getSession, status, data } = useAuth()
+const { signOut, status, data } = useAuth()
 console.log('status: ', status);
 console.log('user: ', data.value);
-const isAdmin = ref(false)
-const isUser = ref(false)
 const btnText = computed(() => status ? 'Ելք' : 'Մուտք')
 
 const logout = () => {
