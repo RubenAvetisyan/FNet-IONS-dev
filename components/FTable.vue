@@ -74,7 +74,6 @@ const filteredArray = (array, cols) => _filter(array, (item) => {
 })
 
 function getPaginatedItems(items, page, pageSize = 0, fromMinimum, filters) {
-  console.log('items: ', items.filter(obj => obj.contractNumber === '9002733'));
   const cols = filters.filter(s => s)
   let pagedItems = filteredArray(items?.text || items, cols)
 
@@ -209,10 +208,10 @@ const firstColumnClass = 'border-r border-indigo-100 dark:border-indigo-500 dark
                   header.text }}</FBtn>
                 <p v-else-if="columns[i]?.length <= 1">{{ header.text || header }}</p>
                 <FSelect v-else mx-0 w-full break-words text="sm left gray-400 dark:gray-100" :name="header" :options="{
-                  labe: header,
-                  values: columns[i],
-                  selected: 0
-                }" :custom-fn="fn(i)" justify="between">
+                    labe: header,
+                    values: columns[i],
+                    selected: 0
+                  }" :custom-fn="fn(i)" justify="between">
                   <Chevron aria-disabled="colIndex === i" :is-up="!!chevronIsUp(colIndex, i)" :active="colIndex === i"
                     rounded-1 dark:bg-indigo-50 text="sm left gray-100 dark:gray-800" @click="() => columnFilter(header)" />
                 </FSelect>

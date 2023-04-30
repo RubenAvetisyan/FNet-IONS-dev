@@ -1,10 +1,9 @@
 USE billing;
 
 SELECT
-	group_concat(MAIN.`Статус`) as `Статус`,
-	MAIN.* 
+	MAIN.*
 FROM (SELECT DISTINCT
-    concat(LEFT(contract.title, 7), ',') AS `Договор`,
+    LEFT(contract.title, 7) AS `Договор`,
 		contract.date1 as `Дата подключения`,
     contract.date2 as `Дата отключения`,
     ifnull(CT.title, CTL.title) AS 'Тариф',
@@ -22,11 +21,8 @@ FROM (SELECT DISTINCT
     coalesce(CP.dt, 'платежи отсутствуют') as `Дата последнего платежа`,
 		CASE
 				 WHEN contract.`status` = 0 THEN 'Ակտիվ'
-				 WHEN contract.`status` = 2 THEN 'Անջատված'
-				 WHEN contract.`status` = 3 THEN 'Փակ'
-				 WHEN contract.`status` = 4 THEN 'Կասեցված'
-				 WHEN contract.`status` = 6 THEN 'Միացված չէ'
 				 WHEN contract.`status` = 7 THEN 'Պասիվ'
+         ELSE NULL
 			END as `Статус`,
 		LEFT(CONCAT(contract.status_date, ''), 10) AS `Последняя Дата Блокировки`,
     PARAMS.city AS 'Город',
@@ -126,6 +122,7 @@ WHERE
     AND contract.comment NOT REGEXP '(Речкалов|ест|Նոր Արեշ 11, д. 91|est|юл|TEst|Yan|եստ|բաժանորդ|TEST|Անուն|անուն|ազգանուն|Ազգանուն)'
 group by contract.title, contract.`status`) AS MAIN
 WHERE MAIN.`Рекомендуемая сумма` IS NOT NULL
-AND MAIN.`Рекомендуемая сумма` > MAIN.`Баланс`
+AND MAIN.`Статус` IS NOT NULL
+AND MAIN.`Тариф` LIKE '%b2b%'
 GROUP BY MAIN.`Договор`
 ORDER BY MAIN.`Договор`;

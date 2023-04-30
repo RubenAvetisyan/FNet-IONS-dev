@@ -8,7 +8,7 @@ const disabled = ref(false)
 //     }
 // })
 
-const { signIn } = useAuth()
+const { signIn, data } = useAuth()
 
 // const { login: storeLogin } = useAdminAuthStore()
 
@@ -20,6 +20,14 @@ const password = ref('')
 const { baseUrl } = useRuntimeConfig()
 
 const { $isLoading, $startLoading, $finishLoading } = useNuxtApp()
+const { setAlert, AlertEnumType } = useAlertStore()
+
+const redirect = (data: any) => {
+    console.log('data.user.name: ', data.user.name);
+    if (data.user.name.includes('Տեխնիկական բաժին'))
+        return '/user/statements/Special/pon'
+    return '/user/statements/totalClients'
+}
 
 const mySignInHandler = async () => {
     console.log('username: ', username);
@@ -28,21 +36,19 @@ const mySignInHandler = async () => {
     const { error, url, status } = await signIn('credentials', {
         username: username.value,
         password: password.value,
-        redirect: true,
-        callbackUrl: `/user/statements/totalClients`
+        redirect: false
     })
     $finishLoading()
-    console.log('url: ', url);
-    console.log('status: ', status.value);
-    window.alert('url: ' + url)
+
     if (error) {
-        console.log('error: ', error);
+        setAlert('Սխալ տվյալներ', AlertEnumType.error)
+        isValidated.value = false
         // Do your custom error handling here
         return null
     } else {
-        window.alert('url: ' + url)
-        // No error, continue with the sign in, e.g., by following the returned redirect:
-        return navigateTo(url || '/user/statements/totalClients', { external: true })
+        setAlert('Դուք հաջողությամբ նույնականացվեցիք․․․', AlertEnumType.success)
+        // || redirect(data.value) No error, continue with the sign in, e.g., by following the returned redirect:
+        return navigateTo(url, { external: true })
     }
 }
 
@@ -51,14 +57,6 @@ const login = () => {
     if (username.value && password.value) {
         console.log('username.value: ', username.value);
         mySignInHandler()
-        //     const response = useFetch('/api/auth/:credentails', {
-        //         method: 'post',
-        //         body: {
-        //             username: username.value,
-        //             password: password.value
-        //         }
-        //     })
-        //     console.log('useFetch response: ', response);
     }
 }
 </script>

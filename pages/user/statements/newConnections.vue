@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { format, parseISO } from 'date-fns'
+const { data: user } = useAuth()
 
+console.log('includes(user.value.uid): ', !['224'].includes(user.value?.uid));
+if (!user.value.isAdmin && !['224'].includes(user.value?.uid)) {
+  navigateTo({
+    path: '/protected'
+  })
+}
 type StringIndexedObject = {
   [key: string]: string;
 };
@@ -21,49 +28,10 @@ type ConnectionsResponse = {
 
 const { data: connections } = await useFetch('/api/get-new-Connections', {
   pick: ['header', 'body'],
-  transform: data => {
-    const headerTransform = {
-      'contractNumber': 'Պայմանագիր №',
-      'Контрагент': 'Անուն Ազգանուն',
-      'tariff': 'Տարիֆ',
-      'connection_date': 'Միացման ամսաթիվ',
-      'price': 'Գումար',
-      'balance': 'Հաշվեկշիռ',
-      'pay_dt_by_tariff': 'Վճարման օր',
-      'last_pay_dt': 'Վերջ․ վճ․ ամսաթիվ',
-      'summa': 'Վճարված գումար',
-      'status': 'Կարգավիճակ',
-      'address': 'Հասցե',
-      'phone': 'հեռախոս'
-    }
-    const body = data.body.map(obj => {
-      const newObj: StringIndexedObject = {};
-
-      for (const key in obj) {
-        let value: string;
-
-        if (key === 'connection_date') {
-          value = format(parseISO(obj[key] as string) as Date, 'yyyy-MM-dd');
-        } else {
-          value = (obj[key as keyof ConnectionsResponse] + '');
-        }
-
-        newObj[headerTransform[key as keyof ConnectionsResponse]] = value;
-      }
-
-      return newObj;
-    })
-
-    return {
-      header: [...Object.values(headerTransform)],
-      body: body.map(obj => Object.values(obj))
-    }
-  }
 })
 
 const header = computed(() => {
-  const header = connections.value?.header || []
-  console.log('header: ', header);
+  const header = [...new Set(connections.value?.body.map(b => Object.keys(b)).flat())]
   return header
 })
 
@@ -72,7 +40,10 @@ const body = computed(() => connections.value?.body || [])
 
 <template>
   <div w-full h-full>
-    <FTable v-if="connections" :key="2" :src="connections" :rows="body.length || 12" :footer="true" :save="connections">
+        <FTable v-if="connections" :key="2" :src="{
+            header,
+            body
+          }" :rows="body.length || 12" :footer="true" :save="connections">
       <template #save>
         <SaveXlsx :key="Date.now() + ''" :header="header" :body="body" float-right />
       </template>

@@ -1,4 +1,4 @@
-SELECT MAIN.contractNumber as contractNumber, sum(MAIN.summa) as `summa` FROM (SELECT 
+SELECT MAIN.contractNumber as contractNumber, MAIN.tariff, sum(MAIN.summa) as `summa` FROM (SELECT 
 contract.id,
 contract.title as contractNumber,
 contract_payment.id as payment_id, 
@@ -7,6 +7,7 @@ contract_payment.uid as user_id,
 contract_payment.summa,
 contract_payment.`comment`,
 contract_payment.lm as `datetime`,
+TARIFFS.TARIFF as `tariff`,
 PT.title as `payment_type`,
 IF(PT.up > 0, (SELECT pt.title FROM contract_payment_types as pt WHERE PT.up = pt.id), '') as payment_group,
 user.`name` as user_name
@@ -27,4 +28,4 @@ AND CT.title LIKE '%B2B%') AS TARIFFS ON TARIFFS.contractNumber = contract.title
 WHERE contract_payment.dt >= DATE_FORMAT(NOW(), '%Y-%m-01')
 AND PT.id <> 9 AND PT.up <> 9
 AND contract.title NOT LIKE '3000%' GROUP BY contract_payment.comment) AS MAIN
-GROUP BY MAIN.contractNumber
+GROUP BY MAIN.tariff

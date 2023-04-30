@@ -5,11 +5,12 @@ import { connection } from '@/admin/utils/ABilling/abilling-connection';
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import { readSqlFile } from '~~/utils/readSQLFile'
 
-const passiveCustomersQuerySrc = '../../admin/assets/SQL/ABilling/PASSIVE_CLIENTS.sql'
-const customersTariffsQuerySrc = '../../admin/assets/SQL/ABilling/Tariffs.sql'
-const customersFinalPaymentsQuerySrc = '../../admin/assets/SQL/ABilling/FINAL_PAYMENTS.sql'
-const erpCustomersQuerySrc = '../../admin/assets/SQL/ERP/ERP_Customers.sql'
-
+enum SqlFilePathsP {
+  PASSIVE_CLIENTS = '../../admin/assets/SQL/ABilling/PASSIVE_CLIENTS.sql',
+  Tariffs = '../../admin/assets/SQL/ABilling/Tariffs.sql',
+  FINAL_PAYMENTS = '../../admin/assets/SQL/ABilling/FINAL_PAYMENTS.sql',
+  ERP_Customers = '../../admin/assets/SQL/ERP/ERP_Customers.sql',
+}
 const map: Map<string, any> = new Map()
 
 
@@ -19,11 +20,11 @@ const getContractNumbers = async (passiveCustomers: {}[]) => Promise.all(passive
 
   return obj.contractNumber
 }))
-async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: {}[]) {
+async function getERPCustomers(ERP_Customers: string, passiveCustomers: {}[]) {
   let contractNumbers: string | string[] = await getContractNumbers(passiveCustomers)
   contractNumbers = contractNumbers.join(',')
 
-  let queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc) as string
+  let queryStringErpCustomers = await readSqlFile(ERP_Customers) as string
   // await executeQuery('SET @contractNumbers := null', 'erp');
   queryStringErpCustomers = queryStringErpCustomers.replace('@contractNumbers', contractNumbers)
   return executeQuery<ErpCustomers>(queryStringErpCustomers, DbName.ERP)
@@ -58,10 +59,10 @@ export default defineEventHandler(async () => {
   const [queryStringPassiveCustomers,
     queryStringCustomersTariffsQuerySrc,
     queryStringCustomersFinalPaymentsQuerySrc
-  ] = await readSqlFile(passiveCustomersQuerySrc, customersTariffsQuerySrc, customersFinalPaymentsQuerySrc)
+  ] = await readSqlFile(SqlFilePathsP.PASSIVE_CLIENTS, SqlFilePathsP.Tariffs, SqlFilePathsP.FINAL_PAYMENTS)
 
   const passiveCustomers = await executeQuery(queryStringPassiveCustomers, DbName.A_BILLING) as any
-  const erpCustomers = await getERPCustomers(erpCustomersQuerySrc, passiveCustomers.body)
+  const erpCustomers = await getERPCustomers(SqlFilePathsP.ERP_Customers, passiveCustomers.body)
 
   if (erpCustomers instanceof H3Error) throw erpCustomers
   const cstomerTariffs = await executeQuery(queryStringCustomersTariffsQuerySrc, DbName.A_BILLING) as any

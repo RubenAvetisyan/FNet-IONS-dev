@@ -1,11 +1,17 @@
+import { DbName } from './../../../utils/MySQL/connection-class';
 import { defineEventHandler, H3Error } from 'h3'
 import { z } from 'zod'
 import { format, isDate, parseISO } from 'date-fns'
-import { uniq } from '@antfu/utils'
+import { uniq, clearUndefined, p as P } from '@antfu/utils'
 
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import { readSqlFile } from '~~/utils/readSQLFile'
 import intersection from 'lodash.intersection'
+
+enum SqlFilePaths {
+  INES = '../../admin/assets/SQL/ABilling/INES.sql',
+  ERP_Customers = '../../admin/assets/SQL/ERP/ERP_Customers.sql'
+}
 
 const mustPaySchema = z.object({
   header: z.array(z.string()),
@@ -31,36 +37,34 @@ const mustPaySchema = z.object({
   ).nonempty()
 })
 
+const b = z.object({
+  contract: z.string(),
+  agreementDate: z.string().optional().nullable(),
+  customerName: z.string().optional().nullable(),
+  street: z.string().optional().nullable(),
+  phone: z.string().optional().nullable().optional(),
+  contractId: z.number().optional().nullable(),
+  customerType: z.string().optional().nullable(),
+  balance: z.number().optional().nullable(),
+  tariff: z.string().optional().nullable(),
+  discount: z.string().optional().nullable(),
+  totalCostTariff: z.number().optional().nullable(),
+  discountEndDate: z.string().optional().nullable(),
+  dayOfPayment: z.number().optional().nullable(),
+  status: z.string().optional().nullable(),
+})
 const responeSchema = z.object({
   header: z.array(z.string()),
-  body: z.array(z.object({
-    contract: z.string(),
-    agreementDate: z.string().optional().nullable(),
-    customerName: z.string().optional().nullable(),
-    street: z.string().optional().nullable(),
-    phone: z.string().optional().nullable().optional(),
-    contractId: z.number().optional().nullable(),
-    customerType: z.string().optional().nullable(),
-    balance: z.number().optional().nullable(),
-    tariff: z.string().optional().nullable(),
-    discount: z.string().optional().nullable(),
-    totalCostTariff: z.number().optional().nullable(),
-    discountEndDate: z.string().optional().nullable(),
-    dayOfPayment: z.number().optional().nullable(),
-    status: z.string().optional().nullable(),
-  }))
+  body: z.array(b)
 })
 
 type MustPay = z.TypeOf<typeof mustPaySchema>;
 type MustPayErpCustomer = z.TypeOf<typeof responeSchema>;
 
-const mustPayCustomersQuerySrc = '../../admin/assets/SQL/ABilling/INES.sql'
-const erpCustomersQuerySrc = '../uniqP../admin/assets/SQL/ERP/ERP_Customers.sql'
-
-const map: Map<string, MustPay['body'][0]> = new Map()
+const map: Map<string, z.TypeOf<typeof b>> = new Map()
 
 
-const getContractNumbers = async (passiveCustomers: MustPay['body'][0]) => {
+const getContractNumbers = (passiveCustomers: z.TypeOf<typeof b>) => {
   if (map && passiveCustomers.contract)
     map.set(passiveCustomers.contract, passiveCustomers)
 
@@ -68,14 +72,17 @@ const getContractNumbers = async (passiveCustomers: MustPay['body'][0]) => {
 }
 
 async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: MustPay['body']) {
-  let contractNumbers: string | string[] = await Promise.all(passiveCustomers.map(getContractNumbers))
-  contractNumbers = uniq(contractNumbers).join(',')
+  if (!erpCustomersQuerySrc) throw createError('erpCustomersQuerySrc not defined in function "getERPCustomers"')
+
+  let contractNumbers = passiveCustomers.map(getContractNumbers).filter(s => typeof s === 'string' && s.length) as string[]
+
+  contractNumbers = uniq(contractNumbers)
 
   // await executeQuery(`SET @contractNumbers := '${contractNumbers}';`, 'erp');
-  return executeQuery<ErpCustomers>(erpCustomersQuerySrc.replace('@contractNumbers', contractNumbers), 'erp')
+  return executeQuery<ErpCustomers>(erpCustomersQuerySrc.replace('@contractNumbers', contractNumbers.join(',')), DbName.ERP)
 }
 
-const getResponse = async (erpCustomers: ErpCustomers): Promise<ErpCustomers['body']>=> await P(erpCustomers.body, { concurrency: 12 }).map((customers) => {
+const getResponse = async (erpCustomers: ErpCustomers): Promise<ErpCustomers['body']> => await P(erpCustomers.body, { concurrency: 12 }).map((customers) => {
   // customers.phone = customers.phone.split(',').join(', ')
 
   if (!map)
@@ -91,12 +98,10 @@ export default defineEventHandler(async event => {
   try {
     map.clear()
 
-    // const queryStringmustPayCustomers = await readSqlFile(mustPayCustomersQuerySrc)
-    // const queryStringErpCustomers = await readSqlFile(erpCustomersQuerySrc)
-    const items: string[] = await readSqlFile(mustPayCustomersQuerySrc, erpCustomersQuerySrc)
+    const items = await readSqlFile(SqlFilePaths.INES, SqlFilePaths.ERP_Customers) as string[]
     const [queryStringmustPayCustomers, queryStringErpCustomers] = items
 
-    const mustPayCustomers = await executeQuery<MustPay['body']>(queryStringmustPayCustomers, 'abilling')
+    const mustPayCustomers = await executeQuery<MustPay['body'][0]>(queryStringmustPayCustomers, DbName.A_BILLING)
 
     if (mustPayCustomers instanceof H3Error) {
       console.error('mustPayCustomers: ', mustPayCustomers);

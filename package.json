@@ -2,7 +2,7 @@
   "name": "frontftenpaymentapi",
   "description": "FNet Telecom Internal Operation System",
   "private": true,
-  "packageManager": "pnpm@8.1.1",
+  "packageManager": "pnpm@8.3.1",
   "author": {
     "name": "Ruben Avetisyn"
   },
@@ -22,7 +22,7 @@
     "async-es": "^3.2.4",
     "date-fns": "^2.29.3",
     "exceljs": "^4.3.0",
-    "flowbite": "^1.6.3",
+    "flowbite": "^1.6.5",
     "flowbite-datepicker": "^1.2.2",
     "knex": "^2.4.2",
     "lodash.drop": "^4.1.1",
@@ -38,6 +38,7 @@
     "next-auth": "4.21.1",
     "uuid": "^9.0.0",
     "vue": "^3.2.45",
+    "vue-virtual-scroller": "2.0.0-beta.8",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
@@ -45,6 +46,7 @@
     "@iconify-json/carbon": "latest",
     "@iconify-json/mdi": "latest",
     "@iconify-json/twemoji": "1.1.5",
+    "@nuxt/devtools": "^0.4.2",
     "@nuxtjs/color-mode": "latest",
     "@pinia-plugin-persistedstate/nuxt": "latest",
     "@pinia/nuxt": "latest",

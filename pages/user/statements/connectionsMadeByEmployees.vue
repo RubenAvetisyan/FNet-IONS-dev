@@ -1,5 +1,13 @@
 <script setup lang="ts">
 
+const { data: user } = useAuth()
+
+if (!user.value?.isAdmin && !['127', '224'].includes(user.value?.uid)) {
+  navigateTo({
+    path: '/protected'
+  })
+}
+
 const userConnectedConracts = ref('')
 const { data: userDetails } = await useLazyAsyncData('employees', () => $fetch('/api/get-employees-connections', {
   method: 'post',
@@ -8,13 +16,27 @@ const { data: userDetails } = await useLazyAsyncData('employees', () => $fetch('
   }
 }), {
   pick: ['header', 'body'],
+  transform: data => {
+    console.log('data: ', data);
+    const body = data.body.map((b) => Object.values(b))
+
+    return {
+      header: data.header,
+      body
+    }
+  },
   watch: [userConnectedConracts]
 })
 
 const { data: userInfo } = await useFetch('/api/get-employees-connections', {
+  method: 'GET',
   pick: ['header', 'body'],
-  transform: data => {
-    const header = ['Միացումների քանակ', 'Աշխատակից']
+  transform: (data) => {
+    const header = [{
+      text: 'Միացումների քանակ'
+    }, {
+      text: 'Աշխատակից'
+    }]
     const body = data.body.map(obj => {
       return {
         count: obj.count,
@@ -35,11 +57,11 @@ const { data: userInfo } = await useFetch('/api/get-employees-connections', {
 
 const connectionsTable = computed(() => {
   const result = {
-    header: userInfo.value?.header,
+    header: userInfo.value?.header || [],
     body: userInfo.value?.body.map(obj => {
       obj.employee.fn = () => userConnectedConracts.value = obj.employee.contractNumbers
       return obj
-    })
+    }) || []
   }
 
   return result
@@ -47,30 +69,32 @@ const connectionsTable = computed(() => {
 
 const connectionsTableRows = ref(6)
 
-const result = ref({})
+const result = ref<{
+  header: (string | number | { text: string })[];
+  body: any[];
+} | null>(null)
 
 watch(() => userDetails.value, (n) => {
   if (n) {
     console.log('userDetails.value: ', n);
     result.value = {
-      header: n.header,
-      body: n.body
+      header: n.header || [],
+      body: n.body || []
     }
     connectionsTableRows.value = 1
   }
+  console.log('result.value : ', result.value);
 })
 </script>
 
 <template>
-  <div>
-    <div flex justify-between>
-      <div w-lg>
-        <FTable :src="connectionsTable" :rows="connectionsTableRows" :footer="true" />
-      </div>
-      <div w-xl>
-        <FTable :key="1" :src="userInfo" :rows="1" :footer="true" />
-      </div>
-    </div>
-    <FTable :key="2" :src="result" :rows="6" :footer="true" />
+                            <div>
+                                <div fixed top-0 bottom-0 flex justify-between>
+                                  <FTable :src="connectionsTable" :rows="connectionsTable.body.length" :footer="true" max-w-sm />
+                                  <FTable v-show="result" :key="result?.body.join('')" :src="result || {
+                                    header: [],
+                                    body: []
+                                  }" :rows="result?.body.length || 0" :footer="true" w-full lg:h-4xl />
+                                </div>
   </div>
 </template>

@@ -24,18 +24,20 @@ const MustPaySchema = z.object({
 });
 
 // type MustPay = z.TypeOf<typeof MustPaySchema>;
+const { $isLoading, $startLoading, $finishLoading } = useNuxtApp()
 
+$startLoading()
 const { data, pending } = await useFetch('/api/get-mustpay', {
   pick: ['header', 'body']
 })
+$finishLoading()
+
 const mustPay = computed(() => {
   console.log('data.value: ', data.value);
   const header = data.value?.header || []
   const body = data.value?.body || []
   return { header, body }
 })
-
-const { $finishLoading, $startLoading, $isLoading } = useNuxtApp()
 
 onMounted(() => {
   if ($isLoading.value) $startLoading()

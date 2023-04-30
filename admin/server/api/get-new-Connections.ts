@@ -14,7 +14,7 @@ enum SqlFilePaths {
 }
 
 type ConnectionsResponse = {
-  contractNumber: string;
+  'Պայ\nմանա\nգիր №': string;
   Контрагент: string;
   tariff: string;
   connection_date: Date;
@@ -60,14 +60,16 @@ export default defineCachedEventHandler(async (event) => {
 
     const qs = contractsQuery.replace('contractNumbers', contractNumbers)
     const result = await executeQuery<ConnectionsResponse>(qs, DbName.A_BILLING)
-    const customers = await executeQuery<Customers>(customersQuery, DbName.ERP)
-    // const CONTRACTS_IN_DETAIL_BY_CONTRACT_NUMBERS_RANGE = await executeQuery(contractsQuery.replace('contractNumbers',), DbName.A_BILLING)
+    const customers = await executeQuery<Customers>(customersQuery.replace(`GROUP BY customer_link.object_title`, ` AND customer_link.object_title IN (${contractNumbers}) GROUP BY customer_link.object_title`), DbName.ERP)
+
     result.body = result.body.map(body => {
-      const phone = customers.body.find(({ customerNumber }) => customerNumber === body.contractNumber)?.phone || ''
-      return { ...body, phone }
+      const phone = customers.body.find(({ customerNumber }) => customerNumber == body['Պայ\nմանա\nգիր №'])?.phone || ''
+      return { ...body, 'հեռախես': phone }
     })
     return result
   } catch (error: any) {
     createError(error.message)
   }
+}, {
+  maxAge: 60
 })

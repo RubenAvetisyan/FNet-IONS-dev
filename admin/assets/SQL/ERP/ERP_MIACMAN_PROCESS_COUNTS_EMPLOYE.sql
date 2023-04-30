@@ -21,7 +21,7 @@ SELECT * FROM (
     AND process_link.object_title NOT LIKE '%Андрей Речкалов%'
 		GROUP BY process_link.object_title) AS t1
 		LEFT JOIN (
-			SELECT process_log.id as log_p_id, process_log.dt, process_log.user_id, user.title as userName
+			SELECT process_log.id as log_p_id, process_log.dt, process_log.user_id, user.title as userName, data
       FROM erp.process_log
       LEFT JOIN user ON user.id = process_log.user_id
       WHERE user_id <> 0 AND dt LIKE CONCAT(DATE_FORMAT(NOW(), '%Y-%m'), '%') AND data LIKE '%Միացված%'

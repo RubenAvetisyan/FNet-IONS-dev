@@ -20,10 +20,10 @@
 const { status, data: userInfo } = useAuth()
 
 console.log('userInfo.isAdmin: ', userInfo.isAdmin);
-if (!userInfo.isAdmin) navigateTo({
-  path: '/user/statements/totalClients',
-  force: true
-})
+// if (!userInfo.isAdmin) navigateTo({
+//   path: '/user/statements/totalClients',
+//   force: true
+// })
 
 // const rules = {
 //   '127': 'Երևան',

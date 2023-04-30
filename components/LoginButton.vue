@@ -11,7 +11,7 @@ const color = useColorMode()
 const isDark = computed(() => color.value === 'dark')
 
 const { signOut, status, data } = useAuth()
-console.log('status: ', status);
+console.log('status: ', status.value);
 console.log('user: ', data.value);
 const btnText = computed(() => status ? 'Ելք' : 'Մուտք')
 

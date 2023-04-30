@@ -2,15 +2,18 @@
 import { format, isSameDay, parseISO, differenceInDays, subDays } from 'date-fns';
 const route = useRoute()
 const router = useRouter()
-const basePath = '/user/statements/totalClientPaymens'
+const basePath = '/user/statements/totalClientPayments'
 const { data: userInfo, status } = useAuth()
 const isAdmin = computed(() => userInfo.value.isAdmin)
 
 const region = ref(isAdmin.value ? '' : userInfo?.value.region)
 
-// if (status.value === 'authenticated' && !userInfo?.value.isUser && !isAdmin.value) {
-//   await navigateTo('/user/statement/')
-// }
+if (status.value === 'authenticated' && !userInfo?.value.isUser && !isAdmin.value) {
+  await navigateTo({
+    path: '/user/statement/',
+    replace: true
+  })
+}
 
 const dateFromValue = ref(Date.now())
 const dateToValue = ref(Date.now())
@@ -66,8 +69,6 @@ const query = computed(() => {
   }
 })
 
-const fetchRefresh = ref(null)
-
 const fetch = async (extendQuery = {}) => {
 
   toggleDisabled()
@@ -79,13 +80,11 @@ const fetch = async (extendQuery = {}) => {
     query: q,
   })
 
-  fetchRefresh.value = refresh
   toggleDisabled()
   $finishLoading()
   return { data, refresh, error }
 }
 const { data, refresh, error } = await fetch({ tabKey: 'country' })
-$finishLoading()
 
 const defaultVal = {
   header: ['name', 'ակտիվ', 'պասիվ', 'ընդամենը'],
@@ -117,10 +116,6 @@ const { data: details, pending } = await useLazyAsyncData('details', () => $fetc
   watch: [updateDetails]
 })
 
-const brudcoumbs = ref(new Set([{
-  text: 'Հայաստան',
-}]))
-
 // const table = ref(transform(data.value.country, currentTable.value))
 const countrayTable = ref(transform(data.value.country, currentTable))
 const regionsTable = ref(defaultVal) // ref(transform(data.value.regions, currentTable))
@@ -149,10 +144,6 @@ function transform(data, curTab) {
     prevTable.value = curTab.value + ''
     curTab.value = header.nextTabKey || 'country'
     const isEnd = tables.findIndex(v => v === header.nextTabKey) === tables.length - 1
-    brudcoumbs.value.add({
-      text: isEnd ? 'Հայաստան' : header.text,
-      fn: () => curTab.value = isEnd ? 'country' : header.tabKey
-    })
 
     if (curTab.value === 'city') filters.value.city = header.text
     if (curTab.value === 'quarter') filters.value.quarter = header.text
@@ -228,38 +219,6 @@ const refreshAll = async () => {
   }
 }
 
-async function update(newTabKey = '', newText = '', currentTableValue = 'country') {
-  currentTable.value = currentTableValue
-  const tabKey = newTabKey || dynamicTable.value.header[0].tabKey || dynamicTable.value.body[0][dynamicTable.value.header[0]].tabKey
-  const text = newText || dynamicTable.value.header[0].text || dynamicTable.value.body[0][dynamicTable.value.header[0]].text
-  const q = query.value
-  if (!region.value) {
-    delete q.region
-    delete q.city
-    delete q.quarter
-    delete q.street
-    regionsTable.value = defaultVal
-    citiesTable.value = defaultVal
-    quarterTable.value = defaultVal
-    streetTable.value = defaultVal
-  }
-  const { data: elseData } = await fetch({
-    ...q,
-    dateFrom,
-    dateTo,
-    country: query.value.country,
-    tabKey,
-    text
-  })
-
-  if (currentTable.value === 'country') countrayTable.value = transform(elseData?.value[currentTable.value], currentTable)
-  if (currentTable.value === 'region') regionsTable.value = transform(elseData?.value[currentTable.value], currentTable)
-  if (currentTable.value === 'city') citiesTable.value = transform(elseData?.value[currentTable.value], currentTable)
-  if (currentTable.value === 'quarter') quarterTable.value = transform(elseData?.value[currentTable.value], currentTable)
-  if (currentTable.value === 'street') streetTable.value = transform(elseData?.value[currentTable.value], currentTable)
-  refreshNuxtData(dateFrom.value + dateTo.value + 1)
-}
-
 const dateRange = computed({
   get() {
     return { dateFrom: dateFrom.value, dateTo: dateTo.value }
@@ -317,26 +276,27 @@ watch(() => details.value, (n) => {
 
 
 <template>
-    <div py-0 px-0 h-full>
-      <div relative flex w-full>
-          <nuxt-link to="https://ions.fnet.am/user/statements/totalClients" btn rounded-0 hover:bg-indigo-500 bg-indigo-700
-            dark:bg-indigo-500 h-8 text-center px-2 flex items-center text-light dark:text-dark>
-            ՀԱՅԱՍՏԱՆ
-          </nuxt-link>
-          <div v-if="regionsTable.header[0] !== 'name'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8
-            text-center px-2 flex items-center text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ</div>
-          <nuxt-link to="/user/statements/totalClientPaymens" btn rounded-0 hover:bg-indigo-300 bg-indigo-500
-            dark:bg-indigo-300 h-8 text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
-            գումարային</nuxt-link>
+                <div w-full h-full>
+                  <div relative flex w-full>
+                    <nuxt-link to="https://ions.fnet.am/user/statements/totalClients" btn rounded-0 hover:bg-indigo-500 bg-indigo-700
+                      dark:bg-indigo-500 h-8 text-center px-2 flex items-center text-light dark:text-dark>
+                      ՀԱՅԱՍՏԱՆ
+                    </nuxt-link>
+                    <div v-if="regionsTable.header[0] !== 'name'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8
+                      text-center px-2 flex items-center text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ</div>
+                    <nuxt-link to="/user/statements/totalClientPayments" btn rounded-0 hover:bg-indigo-300 bg-indigo-500
+                      dark:bg-indigo-300 h-8 text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
+                      գումարային</nuxt-link>
 
-        </div>
-        <div v-show="showDynamicTable" flex w-3xl h-full lg:h-4xl>
-          <FTable :key="currentTable + dateFrom + dateTo" :footer="true" :src="dynamicTable" :rows="dynamicTable.body.length" transition w-prose max-w-700>
+                  </div>
+                  <div v-show="showDynamicTable" flex w-3xl h-full lg:h-4xl>
+                    <FTable :key="currentTable + dateFrom + dateTo" :footer="true" :src="dynamicTable" :rows="dynamicTable.body.length"
+                      transition w-prose max-w-700>
             <template #caption>
               <div flex items-end>
                 <!-- <DateFixedRange v-model="dateRange" /> -->
                 <!-- <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" /> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" /> -->
               <div flex h-8 f-btn ml-4 p-2 items-center @click="() => refreshAll()">Թարմացնել տվյալները</div>
             </div>
           </template>

@@ -13,6 +13,17 @@ enum SqlFilePaths {
 }
 
 type QueryObj = { filters: StringifiedFilterObject[] } | undefined
+type Connections = {
+  count: number;
+  employee: string;
+  user_id: number;
+  contractNumbers: string
+}
+type ConnectedConracts = {}
+type Result<T extends boolean> = {
+  header: string[],
+  body: T extends true ? ConnectedConracts : Connections
+}
 export default defineEventHandler(async (event) => {
   try {
     const [connectionsQuery, contractsQuery] = await readSqlFile(
@@ -20,27 +31,18 @@ export default defineEventHandler(async (event) => {
       SqlFilePaths.CONTRACTS_IN_DETAIL_BY_CONTRACT_NUMBERS_RANGE
     ) as string
 
-    let result = null
     if (getMethod(event) === 'POST') {
       const body = await readBody(event)
-      console.log('body?.contractNumbers: ', body?.contractNumbers);
+
       if (body?.contractNumbers) {
         const qs = contractsQuery.replace('contractNumbers', body.contractNumbers)
-        result = await executeQuery(qs, DbName.A_BILLING)
+        return await executeQuery<ConnectedConracts>(qs, DbName.A_BILLING)
       }
-    }
-    else {
-      result = await executeQuery<{
-        count: number;
-        employee: string;
-        user_id: number;
-        contractNumbers: string
-      }>(connectionsQuery, DbName.ERP)
+    } else {
+      return await executeQuery<Connections>(connectionsQuery, DbName.ERP)
     }
     // const CONTRACTS_IN_DETAIL_BY_CONTRACT_NUMBERS_RANGE = await executeQuery(contractsQuery.replace('contractNumbers',), DbName.A_BILLING)
-
-    return result
   } catch (error: any) {
-    createError(error.message)
+    throw createError(error.message)
   }
 })

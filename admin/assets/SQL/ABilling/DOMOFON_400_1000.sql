@@ -1,12 +1,14 @@
-SELECT 
+use billing;
+
+SELECT
     LEFT(contract.title,
         LOCATE('/', contract.title) - 1) AS 'պայմանգրի №',
     LEFT(CONCAT(contract.status_date, ''),
         10) AS 'Վերջին բլոկավորման ամսաթիվ',
-    city.title AS 'քաղաք',
-    area.title AS 'համայնտք/շրջն/գյուղ',
-    quarter.title AS 'տարածք',
-    street.title AS 'թեղոց',
+    city.title AS 'Քաղաք',
+    area.title AS 'Համայնտք/շրջն/գյուղ',
+    quarter.title AS 'Տարածք',
+    street.title AS 'Փողոց',
     CONCAT(house.house,
             house.frac,
             ' ',
@@ -18,7 +20,7 @@ SELECT
 				 WHEN contract.`status` = 3 THEN 'փակ'
 				 WHEN contract.`status` = 4 THEN 'կասեցված'
 				 WHEN contract.`status` = 6 THEN 'միացված չէ'
-				 WHEN contract.`status` = 7 THEN 'չվճարված'
+				 WHEN contract.`status` = 7 THEN 'Պասիվ'
 	END as 'կարգավիճակ'
 FROM
     billing.contract
@@ -43,5 +45,7 @@ WHERE
     LEFT(contract.title, 1) > 3
         AND param2.address NOT LIKE ('%ест%')
         AND param2.address NOT LIKE ('%Նոր Արեշ 11, д. 91%')
-        AND tariff_plan.title in ('Domofon 400', 'Domofon 1000')
+        AND contract.comment NOT REGEXP '(Речкалов|ест|Նոր Արեշ 11, д. 91|est|юл|TEst|Yan|եստ|բաժանորդ|TEST|Անուն|անուն|ազգանուն|Ազգանուն)'
+        AND tariff_plan.title LIKE '%Domofon%'
+        AND tariff_plan.title NOT LIKE 'Domofon_CAM Service'
 GROUP BY scid

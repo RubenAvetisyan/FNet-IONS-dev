@@ -94,12 +94,22 @@ export default NuxtAuthHandler({
             //   statusCode: 403,
             //   statusMessage: "Credentials not working",
             // })
+            // createError({
+            //   statusCode: 403,
+            //   statusMessage: 'Not authentificated',
+            //   message: 'Please check your credentails!'
+            // })
             return null
 
             // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
           }
         } catch (error) {
           console.log('error: ', error);
+          createError({
+            statusCode: 403,
+            statusMessage: 'Not authentificated',
+            message: 'Please check your credentails!'
+          })
           return null
         }
       }

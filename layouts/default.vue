@@ -7,7 +7,9 @@ onMounted(() => {
   initModals()
 })
 
-const { isAlert, alertMsg } = storeToRefs(useAlertStore())
+const alertStore = useAlertStore()
+const { isAlert, alertMsg } = storeToRefs(alertStore)
+console.log('isAlert: ', isAlert);
 
 const route = useRoute()
 const { $isLoading } = useNuxtApp()
@@ -15,7 +17,8 @@ const { $isLoading } = useNuxtApp()
 const isLoading = computed(() => $isLoading.value)
 
 const msgs = computed(() => {
-  return alertMsg.value.split('.')
+  console.log('alertMsg: ', alertMsg.value);
+  return alertMsg || []
 })
 
 const links = ref([
@@ -25,6 +28,8 @@ const links = ref([
   // { name: 'Pricing', link: '/user' },
   // { name: 'Contact', link: '/user' },
 ])
+
+onErrorCaptured((err) => alertStore.setAlert(err, 'warning'))
 </script>
 
 <template>
@@ -43,20 +48,17 @@ const links = ref([
           </n-list-item>
         </template>
       </navbar>
-      <div class="fixed w-1/3 left-0 right-0 px-10 top-0 z-100 mx-auto">
-        <alert v-if="isAlert" class="flex items-center mx-auto">
-          <span class="font-medium">{{ msgs[0] }}.</span>
-          {{ msgs[1] || '' }}
-        </alert>
+        <div class="fixed w-1/3 top-0 left-0 right-0 px-10 top-0 z-100 mx-auto z-100">
+          <Alert />
       </div>
       <div container h-full mx-auto mb-1 px-10>
         <slot />
       </div>
       <!-- <div class="mt-5 mx-auto text-center opacity-90 text-sm">
-              <sticky-footer>
-                <FooterM mt-1 />
-              </sticky-footer>
-            </div> -->
+<sticky-footer>
+<FooterM mt-1 />
+</sticky-footer>
+</div> -->
       <teleport to="body">
         <ModalLoginForm />
       </teleport>

@@ -4,7 +4,7 @@ const { isAlert, alertMsg } = storeToRefs(useAlertStore())
 const { $isLoading } = useNuxtApp()
 const isLoading = computed(() => $isLoading.value)
 const msgs = computed(() => {
-  return alertMsg.value.split('.')
+  return alertMsg.split('.')
 })
 
 </script>
@@ -17,10 +17,7 @@ const msgs = computed(() => {
     <div grow>
       <!-- <Alerter /> -->
       <div v-if="isAlert" fixed w="1/3" left-0 right-0 px-10 top-2 z-100 mx-auto>
-        <alert v-if="isAlert" flex items-center mx-auto>
-          <span font-medium>{{ msgs[0] }}.</span>
-          {{ msgs[1] || '' }}
-        </alert>
+          <Alert />
       </div>
 
         <div h-screen mx-auto relative>

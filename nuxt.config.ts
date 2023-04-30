@@ -68,6 +68,7 @@ export default defineNuxtConfig({
     keepalive: true,
   },
   modules: [
+    '@nuxt/devtools',
     '@vueuse/nuxt',
     '@unocss/nuxt',
     '@pinia/nuxt',
@@ -89,6 +90,15 @@ export default defineNuxtConfig({
       }
     }
   ],
+
+  devtools: {
+    // Enable devtools (default: true)
+    enabled: false,
+    // VS Code Server options
+    // vscode: {},
+    // ...other options
+  },
+
   auth: {
     enableGlobalAppMiddleware: true,
     origin: process.env.NUXT_AUTH_ORIGIN,

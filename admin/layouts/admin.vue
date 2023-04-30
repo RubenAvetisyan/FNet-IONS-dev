@@ -20,12 +20,7 @@ watch(() => useNuxtApp().$isLoading.value, (loading) => {
       <Loading v-show="isLoading" />
       <AdminDrawer class="top-0 left-0" />
       <!-- <AdminNewDrawer /> -->
-        <div v-if="isAlert" class="fixed w-1/3 left-0 right-0 px-10 top-2 z-100 mx-auto">
-          <alert v-if="isAlert" class="flex items-center mx-auto">
-            <span class="font-medium">{{ msgs[0] }}.</span>
-            {{ msgs[1] || '' }}
-          </alert>
-        </div>
+          <Alert />
         <div class="grow place-content-center">
           <!-- <Alerter /> -->
           <!-- drawer init and show -->

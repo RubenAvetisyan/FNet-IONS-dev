@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { setAlert } = useAlertStore()
+const { setAlert, AlertEnumType } = useAlertStore()
+const { status } = useAuth()
 
 // const login = async (disabled) => {
 //   if (!username.value || password.value)
@@ -12,6 +13,13 @@ const { setAlert } = useAlertStore()
 
 //   disabled.value = false
 // }
+
+const props = defineProps({
+  error: Object
+})
+
+if (process.client && status.value === 'unauthenticated')
+  setAlert('Please Log in', AlertEnumType.info)
 
 const tabs = shallowRef([
   // {
@@ -64,7 +72,8 @@ function createComponents(component: { componentName: string, id: string;[key: s
 </script>
 
 <template>
-    <div class="py-6 px-6 lg:px-8">
+      <div class="py-6 px-6 lg:px-8">
+                  <pre>{{ error }}</pre>
       <Tab>
         <template #default>
           <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">

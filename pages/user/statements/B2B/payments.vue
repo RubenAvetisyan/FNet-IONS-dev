@@ -1,18 +1,23 @@
 <script setup lang="ts">
 
 const { data: userInfo } = useAuth()
-const { isAdmin } = useAdminAuthStore()
-console.log('isAdmin: ', isAdmin);
+
+if (!userInfo.value.isAdmin) {
+  navigateTo({
+    path: '/protected'
+  })
+}
 
 const updates = ref(0)
 
-const { pending, data: payments } = useLazyAsyncData('payments', () => $fetch('/api/b2b-payments'), {
+const { pending, data: payments } = await useLazyAsyncData('payments', () => $fetch('/api/b2b-payments'), {
   transform: data => {
     console.log('data: ', data);
     return {
-      header: ['Պայանագրի №', 'գումար'], body: data.body.map(({ contractNumber, summa }) => ({
-        'Պայանագրի №': contractNumber,
-        'գումար': summa
+      header: ['Սակագին', 'Հավաքագրված գումար'],
+      body: data.body.map(({ tariff, summa }) => ({
+        tariff,
+        summa
       }))
     }
   },
@@ -20,24 +25,23 @@ const { pending, data: payments } = useLazyAsyncData('payments', () => $fetch('/
 })
 
 const result = ref({
+  header: ['Սակագին', 'Հավաքագրված գումար'],
   body: [{
-    contractNumber: 0,
+    tariff: '',
     summa: 0
   }],
-  header: ['Պայանագրի №', 'գումար']
 })
 
 onMounted(() => {
   nextTick(() => {
-    if (userInfo.value?.uid !== '145' && !isAdmin) navigateTo('/')
+    if (userInfo.value?.uid !== '145' && !userInfo.value?.isAdmin) navigateTo('/')
   })
 })
 
-watch(payments, (oldPayments, newPayments) => {
-  console.log('oldPayments: ', oldPayments?.value);
-  console.log('newPayments: ', newPayments?.value);
-  if (newPayments?.value)
-    result.value = newPayments.value
+watch(() => payments.value, (newPayments, oldPayments) => {
+
+  if (newPayments && JSON.stringify(newPayments) !== JSON.stringify(oldPayments))
+    result.value = newPayments
   // Because count starts out null, you won't have access
   // to its contents immediately, but you can watch it.
 }, {
@@ -47,9 +51,13 @@ watch(payments, (oldPayments, newPayments) => {
 </script>
 
 <template>
-  <div>
-    <div f-btn @click="() => updates++">Թարմացնել տվյալները</div>
+    <div fixed flex flex-col top-0 bottom-0 w-3xl>
+      <div f-btn max-w-prose @click="() => updates++">Թարմացնել տվյալները</div>
 
-    <FTable :src="result"></FTable>
+      <FTable :src="result" :rows="result.body.length" :footer="true" name="Ըստ սակագնի B2B Վճարումների մասին">
+        <template #default="{ body }">
+          <div>{{ body.total_pages }}</div>
+        </template>
+      </FTable>
   </div>
 </template>

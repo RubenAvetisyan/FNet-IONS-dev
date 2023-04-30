@@ -1,62 +1,61 @@
 import format from "date-fns/format"
+import { admins } from "./system/rules";
 
-const defaultLinks = [
-  {
-    text: 'վճարման ենթակա միացումների ցուցակ',
-    path: '/user/statements/11-need-to-pay',
-    query: {
-      query: {},
-    },
-  },
-  {
-    text: 'Միացումների ցուցակ ըստ հասցեների և ամսաթվերի',
-    path: '/user/statements/connections-by-address-and-creationdate',
-    components: [{
-      name: 'FInput',
-      type: 'input',
-      props: {
-        label: 'mtInput',
-        vModel: '',
-        id: 'myInput',
-      },
-    }],
-  },
-  {
-    text: 'Պասիվ Հաճախորդներ',
-    path: '/user/statements/original/passivecustomers',
-    components: [
-      {
-        name: 'FTable',
-        type: 'table',
-        props: {
-          id: 'passivecustomers',
-          src: {
-            header: [1, 2, 3],
-            body: [1, 2, 3],
-          },
-          rows: 7,
-          filename: () => {
-            const currentDate = format(Date.now(), 'yyyy-MM-dd - H b', {
-              weekStartsOn: 1,
-            })
+type AccessRules = (string | number);
+type GroupID = AccessRules[];
+type UserID = AccessRules[];
 
-            return 'PASSIVE CUSTOMERS ' + currentDate
-          }
-        },
-      }
-    ]
-  },
-  {
-    text: 'Հաճախորդներ',
-    path: '/user/statements/totalClients',
-  },
-]
+enum AccessTypes {
+  GroupIDs = 'groupIds',
+  UserIDs = 'userIds'
+}
+
+type Access<T extends AccessTypes> = {
+  [key in T]: GroupID | UserID;
+};
+
+type RouteRules<P extends string, T extends AccessTypes> = {
+  [path in P]: {
+    access: Access<T>;
+    block?: {
+      redirectPath: string;
+    };
+  };
+};
+
+class RouteRule<P extends string, T extends AccessTypes>{
+  rules
+  constructor(rule: RouteRules<P, T>) {
+    this.rules = rule
+  }
+}
+
+type RouteValue<P extends string, T extends AccessTypes> = {
+  path: T;
+  rules: RouteRule<P, T>
+}
 
 class Route {
-  _routes: Map<string, any>
+  _routes: Map<string, RouteValue<string>>
   constructor() {
     this._routes = new Map()
-    useRouter().getRoutes().forEach(route => this._routes.set(route?.name || route?.path?.join('').replace('/', ''), route))
+    const routes = useRouter().getRoutes()
+    routes.forEach(route => {
+      const name = route?.name?.toString()
+      const path = route.path.toString().replace('/', '')
+      this._routes.set(name || path, {
+        path,
+        rules: new RouteRule({
+          [path]: {
+            access: {
+              groupIds: [],
+              userIds: [],
+            }
+          }
+        })
+
+      })
+    })
     console.log(this._routes.entries())
   }
 
@@ -73,8 +72,66 @@ class Route {
   }
 }
 
+interface SingleLink<Path extends string> {
+  text: string;
+  path: string;
+  rules?: RouteRule<Path, AccessTypes>;
+  query?: { query: {} };
+  components?: Component[];
+  permissuions?: string[];
+}
+
+interface Component {
+  name: string;
+  type: string;
+  props: {
+    [key: string]: any;
+  };
+}
+
+const defaultLinks: SingleLink<string>[] = [
+  {
+    text: 'վճարման ենթակա միացումների ցուցակ',
+    path: '/user/statements/mustPay',
+    query: {
+      query: {},
+    },
+    rules: new RouteRule({
+      '/user/statements/mustPay': {
+        access: {
+          groupIds: [],
+          userIds: admins
+        }
+      }
+    })
+  },
+  {
+    text: 'Միացումների ցուցակ ըստ հասցեների և ամսաթվերի',
+    path: '/user/statements/connectionsMadeByEmployees',
+    components: [{
+      name: 'FInput',
+      type: 'input',
+      props: {
+        label: 'myInput',
+        vModel: '',
+        id: 'myInput',
+      },
+    }],
+  },
+  {
+    text: 'Պասիվ Հաճախորդներ',
+    path: '/user/statements/original/passivecustomers'
+  },
+  {
+    text: 'Հաճախորդներ',
+    path: '/user/statements/totalClients',
+    permissuions: []
+  },
+]
+
 export class Link {
-  links: {}[]
+  links: SingleLink<string>[]
+  routes: Route
   // routes: Route
   constructor(public route?: any) {
     this.links = defaultLinks
@@ -82,7 +139,7 @@ export class Link {
     //     defaultLink.path = route.path ? this.setPath(defaultLink.path) : defaultLink.path
     //     return defaultLink
     // })
-    // this.routes = new Route()
+    this.routes = new Route()
     // console.log('this.routes: ', this.routes);
   }
 

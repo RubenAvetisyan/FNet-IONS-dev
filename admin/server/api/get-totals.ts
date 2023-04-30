@@ -10,13 +10,15 @@ type DataKeys = 'region' | 'city' | 'quarter' | 'street';
 
 enum SqlFilePaths {
   ACTIVE = '../../admin/assets/SQL/ABilling/TOTAL_ACTIVE_CLIENTS.sql',
+  ACTIVE_CLIENTS = '../../admin/assets/SQL/ABilling/ACTIVE_CLIENTS.sql',
   ACTIVE_CONTRACT_NUMBERS = '../../admin/assets/SQL/ABilling/ACTIVE_CONTRACT_NUMBERS.sql',
   PASSIVE = '../../admin/assets/SQL/ABilling/TOTAL_PASSIVE_CLIENTS.sql',
+  PASSIVE_CLIENTS = '../../admin/assets/SQL/ABilling/PASSIVE_CLIENTS.sql',
   PASSIVE_CONTRACT_NUMBERS_ONLY = '../../admin/assets/SQL/ABilling/PASSIVE_CONTRACT_NUMBERS_ONLY.sql',
   ALL = '../../admin/assets/SQL/ABilling/TOTAL_EXISTING_CLIENTS.sql',
   ALL_CONTRACT_NUMBERS = '../../admin/assets/SQL/ABilling/ALL_CONTRACT_NUMBERS.sql',
   PAYMENTS = '../../admin/assets/SQL/ABilling/payment_cid_summa_by_date.sql',
-  ERP_CUSTOMERS_WITH_SEARCH_VARIABLES = '../../admin/assets/SQL/ERP/ERP_CUSTOMERS_WITH_SEARCH_VARIABLES_IMPROVED.sql'
+  ERP_CUSTOMERS_WITH_SEARCH_VARIABLES_IMPROVED = '../../admin/assets/SQL/ERP/ERP_CUSTOMERS_WITH_SEARCH_VARIABLES_IMPROVED.sql'
 }
 
 type QueryResponse = H3Error | {
@@ -59,18 +61,19 @@ const texts = {
   street: 'ՓՈՂՈՑ',
 }
 
-export default defineCachedEventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
   try {
     const queryData = getQuery(event) as Record<string, string>
     console.log('queryData: ', queryData);
 
     const sqlFilters = setFilters(queryData)
+    console.log('sqlFilters: ', sqlFilters);
 
 
     const queryStrings = await readSqlFile(
-      SqlFilePaths.ERP_CUSTOMERS_WITH_SEARCH_VARIABLES,
+      SqlFilePaths.ERP_CUSTOMERS_WITH_SEARCH_VARIABLES_IMPROVED,
       SqlFilePaths.ACTIVE_CONTRACT_NUMBERS,
-      SqlFilePaths.PASSIVE_CONTRACT_NUMBERS_ONLY,
+      SqlFilePaths.PASSIVE_CLIENTS,
       // SqlFilePaths.ALL_CONTRACT_NUMBERS
     ) as string[]
 
@@ -81,7 +84,7 @@ export default defineCachedEventHandler(async (event) => {
     queryString = queryString.replace('FILTERS', sqlFilters)
     const sqlGroupBy = setGroupBy(queryData.tabKey)
 
-    queryString = queryString.replace('GROUPS', sqlGroupBy)
+    queryString = queryString.replace('GROUPS', sqlGroupBy) + ` ORDER BY MAIN.${queryData.tabKey}`
 
     const CONTRACT_NUMBERS = await usePromise<string[]>(queryStrings.slice(1).map(async (qs) => {
       const response = await executeQuery<{ contractNumber: number }>(qs, DbName.A_BILLING)
@@ -120,34 +123,57 @@ export default defineCachedEventHandler(async (event) => {
 
     const passiveCustomerNumbers: { [key: string]: string } = {}
 
-    const result = actives.map((activeCustomer: Body, index: number) => {
-      const passiveCustomer = passives[index]
+    const vz: Record<string, string | number> = {}
 
-      const passiveValue = passiveCustomer?.count || 0
-      // const passiveKey = queryData.tabKey === 'country' ? passiveValue : {
+    let set: Set<string> | null = new Set()
+    let activeMap: Map<string, number> | null = new Map()
+    let passiveMap: Map<string, number> | null = new Map()
 
-      // }
-      // passiveValue = queryData.tabKey === 'country' ? passiveValue :
-      //   {
-      //     [passiveValue]: {
-      //       text: ,
-      //       tabKey: queryData.tabKey,
-      //       nextTabKey
-      //     }
-      //   }
+    actives.forEach((activeCustomer: Body, index: number) => {
+      if (set instanceof Set && activeMap instanceof Map) {
+        const key = activeCustomer[queryData.tabKey as Key] as string
+        set.add(key)
+        const value = activeMap.get(key) || 0
+        activeMap.set(key, value + activeCustomer.count)
+        passiveCustomerNumbers[key] = activeCustomer?.customerNumbersString || ''
+      }
+    })
 
-      passiveCustomerNumbers[activeCustomer[queryData.tabKey as Key]] = passiveCustomer?.customerNumbersString || ''
-      return {
-        [queryData.tabKey === 'region' ? 'ՄԱՐԶԵՐ' : queryData.text]: {
-          text: activeCustomer[queryData.tabKey as Key],
-          tabKey: queryData.tabKey,
-          nextTabKey
-        },
-        active: activeCustomer?.count || 0,
-        passive: passiveCustomer?.count || 0,
-        total: (activeCustomer?.count || 0) + passiveValue,
-      };
-    });
+    passives.forEach((passiveCustomer: Body, index: number) => {
+      if (set instanceof Set && passiveMap instanceof Map) {
+        const key = passiveCustomer[queryData.tabKey as Key] as string
+        set.add(key)
+        const value = passiveMap.get(key) || 0
+        passiveMap.set(key, value + passiveCustomer.count)
+        passiveCustomerNumbers[key] = passiveCustomer?.customerNumbersString || ''
+      }
+    })
+
+    const res: {}[] = []
+
+    const uniques = [...set]
+    uniques.forEach(key => {
+      if (activeMap instanceof Map && passiveMap instanceof Map) {
+        const active = activeMap.get(key) || 0
+        const passive = passiveMap.get(key) || 0
+        const total = active + passive
+
+        res.push({
+          [queryData.tabKey === 'region' ? 'ՄԱՐԶԵՐ' : queryData.text]: {
+            text: key,
+            tabKey: queryData.tabKey,
+            nextTabKey
+          },
+          active, passive, total
+        })
+      }
+    })
+
+    set = null
+    activeMap = null
+    passiveMap = null
+
+    console.log('ՄԱՐԶԵՐ: ', vz);
 
     const response = queryData.tabKey === 'country' ?
       {
@@ -160,20 +186,16 @@ export default defineCachedEventHandler(async (event) => {
           },
           'ակտիվ', 'պասիվ', 'ընդամենը'
         ],
-        body: [{
-          'Հայաստան': 'քանակ',
-          active: result[0]?.active,
-          passive: result[0]?.passive,
-          total: result[0]?.total,
-        }],
+        body: res,
         passiveCustomerNumbers
       } :
       {
         header: [queryData.tabKey === 'region' ? 'ՄԱՐԶԵՐ' : queryData.text, 'ակտիվ', 'պասիվ', 'ընդամենը'],
-        body: result,
+        body: res,
         passiveCustomerNumbers,
       }
 
+    console.log('response: ', response.body);
     return { [queryData.tabKey]: response }
   } catch (error) {
     console.error('error: ', error);

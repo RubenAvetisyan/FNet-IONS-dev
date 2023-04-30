@@ -3,7 +3,7 @@ import { startOfMonth } from 'date-fns';
 const route = useRoute()
 console.log('route query: ', route.query);
 const router = useRouter()
-const basePath = '/user/statements/totalClientPaymens'
+const basePath = '/user/statements/totalClientPayments'
 const { data: userInfo, status } = useAuth()
 const isAdmin = computed(() => userInfo.value.isAdmin)
 
@@ -14,7 +14,7 @@ const region = ref(isAdmin.value ? '' : userInfo?.value.region)
 // }
 
 const { dateFrom, dateTo } = useDate()
-dateFrom.value = startOfMonth(Date.now())
+dateFrom.value = route.query.dateFrom || startOfMonth(Date.now())
 
 const isDisabled = ref(false)
 const toggleDisabled = () => isDisabled.value = !isDisabled.value
@@ -29,9 +29,9 @@ const query = computed(() => {
     dateFrom: dateFrom.value,
     dateTo: dateTo.value,
     country: 'Հայաստան',
+    ...route.query,
     ...(region.value && { region: region.value }),
     ...(region.value && { tabKey: 'region' }),
-    ...route.query
   }
 })
 
@@ -41,7 +41,7 @@ const fetch = async (extendQuery = {}) => {
   const q = { ...query.value, ...extendQuery }
   console.log('q: ', q);
   const { data, refresh, error } = await useFetch('/api/get-payments-totals', {
-    key: dateFrom.value + dateTo.value,
+    key: q.dateFrom + q.dateTo,
     query: q
   })
 
@@ -50,26 +50,20 @@ const fetch = async (extendQuery = {}) => {
   return { data, refresh, error }
 }
 
-const { data, refresh, error } = await fetch({ tabKey: isAdmin.value ? 'country' : 'region' })
-
 const defaultVal = {
   header: ['', 'ակտիվ', 'պասիվ', 'ընդամենը'],
   body: [
   ]
 }
 
-// const brudcoumbs = ref(new Set([{
-//   text: 'Հայաստան',
-// }]))
-
-// const table = ref(transform(data.value.country, currentTable.value))
 const countrayTable = ref(defaultVal)
 const regionsTable = ref(defaultVal)
 const citiesTable = ref(defaultVal)
 const quarterTable = ref(defaultVal)
 const streetTable = ref(defaultVal)
 
-onMounted(() => {
+const { data } = await fetch({ tabKey: isAdmin.value ? 'country' : 'region' })
+onMounted(async () => {
   nextTick(() => {
     isAdmin.value
       ? countrayTable.value = transform(data.value?.country, currentTable)
@@ -143,21 +137,55 @@ async function restart() {
 
 const refreshAll = async () => {
   $startLoading()
-
-  try {
-    await refreshNuxtData()
-  } finally {
-    $finishLoading()
-  }
+  console.log('query.value: ', query.value);
+  navigateTo({
+    path: basePath,
+    replace: true,
+    query: {
+      tabKey: currentTable.value,
+      dateFrom: dateFrom.value,
+      dateTo: dateTo.value,
+    }
+  })
+  $finishLoading()
+  // try {
+  //   await refreshNuxtData(currentTable.value)
+  // } finally {
+  //   $finishLoading()
+  // }
 }
 
+const xlsxHeader = computed(() => {
+  return dynamicTable.value?.header.map((header, i) => {
+    return [0, 1, 2].includes(i) ? header?.text || header : ''
+  }).filter(s => s)
+})
+
+const xlsxBody = computed(() => {
+  return dynamicTable.value?.body.map((item) => {
+    const result = []
+    Object.values(item).forEach((v, i) => {
+      const itemValue = v?.text || v
+
+      if ([0, 1, 2].includes(i)) {
+        result.push(itemValue)
+      }
+
+    })
+    return result // zipobject(props.src.header, item)
+  })
+})
+
 watch(() => route.query, async (n, o) => {
-  if (!n || JSON.stringify(n) === JSON.stringify(o)) return
+  if (!n || JSON.stringify(n) === JSON.stringify(o) || !o) return
+
+  toggleDisabled()
   const { data: elseData } = await fetch({
+    ...query.value,
     ...n
   })
 
-  console.log('elseData.value: ', elseData.value[currentTable.value]);
+  console.log('elseData.value: ', elseData.value);
   elseData.value[currentTable.value]?.body.forEach(item => {
     const bodyFirstKey = elseData?.value[currentTable.value]?.header[0]
     item[bodyFirstKey] = {
@@ -171,6 +199,7 @@ watch(() => route.query, async (n, o) => {
   if (currentTable.value === 'city') citiesTable.value = elseData.value[currentTable.value]
   if (currentTable.value === 'quarter') quarterTable.value = elseData.value[currentTable.value]
   if (currentTable.value === 'street') streetTable.value = elseData.value[currentTable.value]
+  toggleDisabled()
 }, {
 
   immediate: true
@@ -179,39 +208,33 @@ watch(() => route.query, async (n, o) => {
 
 
 <template>
-    <div py-4 px-0 overflow-y-auto>
-        <div relative flex w-full>
-          <div v-if="isAdmin" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8 text-center px-2 flex
-            items-center text-light dark:text-dark @click="restart">
-            ՀԱՅԱՍՏԱՆ
-          </div>
-          <div v-if="regionsTable?.header[0] !== 'name'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500
-            h-8 text-center px-2 flex items-center text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ
-          </div>
-          <nuxt-link to="/user/statements/totalClients" btn rounded-0 hover:bg-indigo-300 bg-indigo-500 dark:bg-indigo-300 h-8
-            text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
-            քանակային</nuxt-link>
+                  <div px-0 overflow-y-auto>
+                    <div relative flex w-full>
+                      <div v-if="isAdmin" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8 text-center px-2 flex
+                        items-center text-light dark:text-dark @click="restart">
+                        ՀԱՅԱՍՏԱՆ
+                      </div>
+                      <div v-if="regionsTable?.header[0] !== 'name'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500
+                        h-8 text-center px-2 flex items-center text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ
+                      </div>
+                      <nuxt-link to="/user/statements/totalClients" btn rounded-0 hover:bg-indigo-300 bg-indigo-500 dark:bg-indigo-300 h-8
+                        text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
+                        քանակային</nuxt-link>
 
-        </div>
-        <div flex w-3xl h-full lg:h-4xl>
-          <FTable v-show="!$isLoading.value" :key="route.hash + JSON.stringify(query)" :footer="true"
-            :src="dynamicTable || defaultVal" :rows="dynamicTable?.body.length || 0" transition>
-            <template #caption>
-              <div flex items-end>
-                <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
-                <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" />
-                <div flex h-8 f-btn ml-4 p-2 items-center @click="() => {
-                  navigateTo({
-                    path: basePath,
-                    query: {
-                      ...query,
-                      dateFrom,
-                      dateTo
-                    }
-                  })
-                }">Թարմացնել տվյալները</div>
-            </div>
-          </template>
+                    </div>
+                    <div flex w-3xl h-full lg:h-4xl>
+                      <FTable v-show="!$isLoading.value" :disabled="isDisabled" :key="currentTable + route.hash" :footer="true"
+                        :src="dynamicTable || defaultVal" :rows="dynamicTable?.body.length || 0" transition>
+                        <template #caption>
+                          <div flex w-full items-end border b-0 b-b-1 mb-1 pb-1 px-0 mx-auto>
+                            <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
+                            <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" />
+                            <div :disabled="isDisabled" flex h-8 f-btn ml-4 p-2 items-center @click="refreshAll">Թարմացնել տվյալները</div>
+                          </div>
+                        </template>
+                        <template #save>
+                          <SaveXlsx :key="currentTable + dateFrom + dateTo" :header="xlsxHeader" :body="xlsxBody" float-right />
+                        </template>
         </FTable>
     </div>
   </div>

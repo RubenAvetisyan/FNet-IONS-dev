@@ -113,6 +113,7 @@ class MySQLConnection {
   }
 
   public async killThreadById(threadId: number) {
+    if (!threadId) console.log('threadId not defined')
     return new Promise((resolve, reject) => {
       const killQuery = `KILL ${threadId}`;
       this.pool.query(killQuery, (error, results) => {

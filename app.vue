@@ -1,16 +1,6 @@
 <script setup lang="ts">
-import {
-  initCarousels,
-  initCollapses,
-  initDials,
-  initDismisses,
-  initDrawers,
-  initDropdowns,
-  initModals,
-  initPopovers,
-  initTabs,
-  initTooltips
-} from 'flowbite'
+
+import { initFlowbite } from 'flowbite'
 useHead({
   title: 'FNet Payment System',
   htmlAttrs: {
@@ -33,17 +23,15 @@ const { data: token } = await useFetch('/api/token', { headers })
 console.log('token: ', token.value);
 
 onMounted(() => {
-  initCarousels()
-  initCollapses()
-  initDials()
-  initDismisses()
-  initDrawers()
-  initDropdowns()
-  initModals()
-  initPopovers()
-  initTabs()
-  initTooltips()
+  initFlowbite();
 })
+
+
+const { data: userInfo } = useAuth()
+const { uid = '' } = userInfo.value || {}
+
+const isRuben = ['75', '80'].includes(uid)
+
 </script>
 
 <template>

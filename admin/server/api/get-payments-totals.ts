@@ -228,5 +228,4 @@ export default defineCachedEventHandler(async (event) => {
   } catch (error) {
     console.error('error: ', error);
   }
-})
-
+}, { maxAge: 1 })

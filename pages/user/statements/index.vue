@@ -18,11 +18,9 @@ const links = new Link(route).links
     <!-- <ClientOnly> -->
     <div container m="4 x-auto" grid grid-cols-4 gap-4 gap-y-2>
       <card v-for="link in links" p-0>
-        <nuxt-link
-          :to="{
+          <nuxt-link :to="{
             path: link.path, query: link.query,
-          }" :page-key="link.text" cursor="pointer" block w-full h-full px-5 py-10
-        >
+        }" :page-key="link.text" cursor="pointer" block w-full h-full px-5 py-10>
           {{ link.text }}
         </nuxt-link>
       </card>

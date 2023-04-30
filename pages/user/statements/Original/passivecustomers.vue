@@ -1,5 +1,13 @@
 <script setup>
 
+const { data: user } = useAuth()
+
+if (user.value && !user.value.isAdmin) {
+  navigateTo({
+    path: '/protected'
+  })
+}
+
 const { data, pending } = useFetch('/api/get-passive-clients')
 const passiveCustomers = data.value
 
