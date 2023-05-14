@@ -1,6 +1,6 @@
 // account-class.ts
 import { parseStringPromise, Parser } from 'xml2js';
-import { LanBillingApi } from './main-api-class'
+import { LanBillingApi } from './lanbilling-api-class'
 
 type IsInsert = boolean | 0 | 1
 

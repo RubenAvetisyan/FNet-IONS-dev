@@ -1,13 +1,9 @@
 // agreements-class.ts
 
 import { Parser } from 'xml2js';
-import { LanBillingApi } from './main-api-class';
+import { LanBillingApi } from './lanbilling-api-class';
 
 export class Agreements extends LanBillingApi {
-
-  constructor(url: string, httpClient: HttpClient) {
-    super(url, httpClient);
-  }
 
   private async parseAgreements(xmlResponse: string): Promise<any> {
     try {
