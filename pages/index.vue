@@ -48,19 +48,21 @@ console.log('userInfo.isAdmin: ', userInfo.isAdmin);
 </script>
 
 <template>
-          <Logos mb-6></Logos>
-          <Suspense>
-            <template #fallback>
-              <div op50 italic>
-                <span animate-pulse>Loading...</span>
-              </div>
-            </template>
-          </Suspense>
-
-          <div font="500" text="2xl brand-primary dark:light-50" select="none">
-            Ներքին գործառնությունների իրականացման համակարգ
+    <div>
+      <Logos mb-6></Logos>
+      <Suspense>
+        <template #fallback>
+          <div op50 italic>
+            <span animate-pulse>Loading...</span>
           </div>
-          <div v-if="status === 'unauthenticated'" text="xl dark dark:light-700" select="none">
-            համակարգ մուտք գործելու համար անհրաժետ է նույնականացվել
+        </template>
+      </Suspense>
+
+      <div font="500" text="2xl brand-primary dark:light-50" select="none">
+        Ներքին գործառնությունների իրականացման համակարգ
+      </div>
+      <div v-if="status === 'unauthenticated'" text="xl dark dark:light-700" select="none">
+        համակարգ մուտք գործելու համար անհրաժետ է նույնականացվել
+      </div>
   </div>
 </template>

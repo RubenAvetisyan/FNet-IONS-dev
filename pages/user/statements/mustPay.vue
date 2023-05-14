@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { format } from 'date-fns'
 import { isDate } from '@antfu/utils'
 
+const { data: userInfo } = useAuth()
+
 
 const key = Date.now() + ''
 
@@ -35,15 +37,33 @@ $finishLoading()
 const mustPay = computed(() => {
   console.log('data.value: ', data.value);
   const header = data.value?.header || []
-  const body = data.value?.body || []
+  const indexOfRegion = header.indexOf('Մարզ')
+
+  const body = data.value?.body.filter(item => {
+    return item[indexOfRegion] === userInfo.value.region
+  }) || []
+
   return { header, body }
+})
+
+const indexOfPhone = computed(() => mustPay.value.header.indexOf('Հեռախոս'))
+const xlsxHeader = computed(() => [mustPay.value.header[indexOfPhone.value]])
+const xlsxBody = computed(() => {
+  const result = []
+  mustPay.value.body.forEach((item) => {
+    const phone = item[indexOfPhone.value]
+    if (phone?.length >= 6) result.push([phone])
+  })
+
+  return result
 })
 
 onMounted(() => {
   if ($isLoading.value) $startLoading()
-
   console.log('mustPay: ', data.value, mustPay.value);
+  console.log('xlsxBody: ', xlsxBody.value);
 })
+
 
 watch(() => pending.value, (loading) => {
   console.log('$isLoading: ', $isLoading.value);
@@ -53,10 +73,12 @@ watch(() => pending.value, (loading) => {
 
 <template>
   <ClientOnly>
-    <div m="4" p="b-50">
-      <p>Վճարման ենթակա ծառայությունների ցանկ</p>
-      {{ $isLoading }}
-      <FTable v-if="mustPay.body.length" :src="mustPay" rows="7" class="mt-8" />
-    </div>
+        <FTable v-if="mustPay?.body.length" :key="`must-pay-${mustPay.body.length}`"
+          name="Վճարման ենթակա ծառայությունների ցանկ" :src="mustPay" :footer="true" mt-8 h-full max-h-4xl>
+          <template #save>
+            <SaveXlsx key="save" :header="xlsxHeader" :body="xlsxBody" float-right />
+          </template>
+        </FTable>
+        <div w-fill h-full bg-brand-primaryDark text-dark:gray-400 font-300>Տվյալները բացակայում են</div>
   </ClientOnly>
 </template>

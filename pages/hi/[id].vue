@@ -35,8 +35,6 @@ definePageMeta({
       </p>
     </template>
 
-    <Counter />
-
     <div>
       <NuxtLink
         class="btn m-3 text-sm"

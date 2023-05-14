@@ -1,117 +1,75 @@
-<script setup>
-import { SelectSearch } from '@unocss/vue-select'
+<script setup lang="ts">
+import { computed, ref, withDefaults } from 'vue';
 
-const props = defineProps({
-  value: {
-    type: [String, Array],
-    default: ''
-  },
-  options: {
-    type: Array,
-    default: () => []
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  readonly: {
-    type: Boolean,
-    default: false
-  },
-  required: {
-    type: Boolean,
-    default: false
-  },
-  title: {
-    type: String,
-    default: ''
-  },
-  selectAllOption: {
-    type: String,
-    default: ''
-  },
-  multiple: {
-    type: Boolean,
-    default: false
-  },
-  searchPlaceholder: {
-    type: String,
-    default: 'Поиск...'
-  },
-  clearable: {
-    type: Boolean,
-    default: false
-  },
-  emptyOption: {
-    type: String,
-    default: ''
-  },
-  maxSelected: {
-    type: Number,
-    default: 0
-  }
-})
-
-defineEmits(['input'])
-
-const search = ref('')
-
-const sortedOptions = computed(() => {
-  return props.options.sort((a, b) => a.label.localeCompare(b.label))
-})
-const selectedValues = computed(() => {
-  return Array.isArray(props.value) ? props.value : [props.value]
-})
-
-const handleInput = (value) => {
-  if (props.maxSelected && selectedValues.value.length >= props.maxSelected && !selectedValues.value.includes(value)) {
-    return
-  }
-  emit('input', value)
+interface NewFSelectProps {
+  modelValue?: string | number | Array<string | number>;
+  label?: string;
+  id?: string;
+  options?: Array<{ value: string | number; label: string }>;
+  disabled?: boolean;
+  required?: boolean;
+  selectClass?: string;
+  multiple?: boolean;
+  customOptions?: Array<{ value: string | number; label: string }>;
+  optionsGroups?: Array<{ label: string; options: Array<{ value: string | number; label: string }> }>;
 }
 
-const selectAll = (event) => {
-  if (event.target.checked) {
-    const allValues = props.options.map((option) => option.value)
-    if (props.maxSelected && allValues.length > props.maxSelected) {
-      emit('input', allValues.slice(0, props.maxSelected))
-    } else {
-      emit('input', allValues)
-    }
+const props = withDefaults(defineProps<NewFSelectProps>(), {
+  modelValue: '',
+  label: '',
+  id: '',
+  options: () => [] as Array<{ value: string | number; label: string }>,
+  disabled: false,
+  required: false,
+  selectClass: '',
+  multiple: false,
+  customOptions: () => [] as Array<{ value: string | number; label: string }>,
+  optionsGroups: () => [] as Array<{ label: string; options: Array<{ value: string | number; label: string }> }>,
+});
+
+const emit = defineEmits(['update:modelValue', 'change']);
+
+const onSelect = (event: Event) => {
+  emit('update:modelValue', (event.target as HTMLSelectElement).value);
+};
+
+const onChange = (event: Event) => {
+  if (props.multiple) {
+    const selectedOptions = (event.target as HTMLSelectElement).selectedOptions;
+    const values = Array.from(selectedOptions).map((option: HTMLOptionElement) => option.value);
+    emit('change', values);
   } else {
-    emit('input', [])
+    emit('change', (event.target as HTMLSelectElement).value);
   }
-}
+};
 
-const reset = () => {
-  emit('input', '')
-  search.value = ''
-}
-
-const isGtMaxSelected = computed(() => props.maxSelected && selectedValues.length > props.maxSelected)
+const searchQuery = ref('');
+const filteredOptions = computed(() => {
+  return props.options.filter(option => option.label.toLowerCase().includes(searchQuery.value.toLowerCase()));
+});
 </script>
 
 <template>
-  <div w-full>
-    <div relative>
-      <SelectSearch :value="value" :options="sortedOptions" :disabled="disabled" :readonly="readonly" :required="required"
-        :title="title" @input="handleInput" v-model="search" :placeholder="searchPlaceholder" :clearable="clearable"
-        w-full p-2 border-2 rounded border-gray-300 transition duration-500 ease-in-out transform focus:border-blue-500>
-        <template v-if="emptyOption" #empty="{ search }">
-          <option value="">{{ emptyOption }}</option>
-        </template>
-      </SelectSearch>
-      <div v-if="selectAllOption" absolute top-0 right-0 m-2 flex items-cente>
-        <input type="checkbox" mr-2 @change="selectAll($event)" />
-        <label>Выбрать все</label>
-      </div>
-      <div v-if="isGtMaxSelected" absolute bottom-0 left-0 text-red-500 text-xs italic mt-1 ml-2>
-        Максимальное количество выбранных элементов: {{ maxSelected }}
-      </div>
-      <button v-if="clearable && value" focus:outline-none absolute top-0 right-0 m-2 p-2 rounded bg-gray-200
-        text-gray-500 hover:bg-gray-300 @click="reset">
-        Сбросить
-      </button>
-    </div>
+      <div p-4 bg-white border border-gray-300 rounded shadow-sm mb-4 relative>
+        <label v-if="label" :for="id" mb-2 text-base>{{ label }}</label>
+        <input v-model="searchQuery" type="text" placeholder="Поиск..." w-full py-2 mb-2 border-2 border-gray-300 rounded-md
+          bg-gray-100 outline-none />
+        <select :id="id" :value="modelValue" @input="onSelect" @change="onChange" :disabled="disabled" :required="required"
+          :class="selectClass" :multiple="multiple" w-full p-2 bg-transparent border-none outline-none appearance-none
+          cursor-pointer focus:outline-none>
+          <slot v-if="customOptions" name="custom-option">
+            <option v-for="(option, index) in customOptions" :key="index" :value="option.value">
+              {{ option.label }}
+            </option>
+          </slot>
+          <optgroup v-for="(group, index) in optionsGroups" :key="index" :label="group.label" v-if="optionsGroups">
+            <option v-for="(option, optionIndex) in group.options" :key="optionIndex" :value="option.value">
+              {{ option.label }}
+            </option>
+          </optgroup>
+          <option v-for="(option, index) in filteredOptions" :key="index" :value="option.value">
+            {{ option.label }}
+          </option>
+        </select>
   </div>
 </template>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const { $isLoading, $startLoading, $finishLoading } = useNuxtApp()
 $startLoading()
-const { data } = await useLazyAsyncData('ipon', () => $fetch('/api/get-ipon'), {
+const { data } = await useLazyAsyncData('ipon', async () => $fetch('/api/get-ipon', {
+  method: 'POST'
+}), {
   transform: data => {
     const header = ['ip', 'pon', 'AIM', 'serial', 'Պայմանա\nգիր №', 'Հասցե', 'Հեռ․']
     const body = data.body.map((b, i) => ([
@@ -32,49 +34,44 @@ onMounted(async () => {
     $finishLoading()
 })
 
+const filters = ref<Record<number, string>>({})
+
+const header = computed(() => {
+  return data.value?.header || []
+})
+
 const body = computed(() => {
-  return mainTable.value?.body || []
+  return Object.keys(filters.value).length ? data.value?.body || header.value.map(h => []) : []
 })
 
-const rows = computed(() => {
-  const mainTableRows = mainTable.value?.body.length || 0
-  return 21
-})
+watch(() => filters.value, value => {
+  console.log('value: ', value);
 
-const { list, containerProps, wrapperProps } = useVirtualList(unref(body), {
-  itemHeight: 80,
-  overscan: 5
 })
-
-// watch(() => data.value, (n) => {
-//   console.log('n: ', n);
-//   if (n) {
-//     mainTable.value = n
-//   }
-// })
 </script>
 
 <template>
-  <div h-screen>
-    <!-- <FTable v-if="rows && mainTable" :src="mainTable" :rows="mainTable.body.length" :footer="true">
+    <div h-screen>
+      <!-- <FTable v-if="rows && mainTable?.body.length" :src="mainTable" :rows="12" :footer="true">
       <template #save>
         <SaveXlsx :header="mainTable.header" :body="mainTable.body" float-right />
       </template>
     </FTable> -->
 
-    <lazy-c-table-main v-if="mainTable?.body" :header="mainTable.header" :body="mainTable.body" name="">
-      <template #head="{ headers }">
-        <lazy-c-table-headerTd v-for="(header, i) in headers" :key="header || i">
-          {{ header }}
-        </lazy-c-table-headerTd>
-      </template>
-      <div>Ruben</div>
-      <template #footer>
-        <span>
-          Footer
-        </span>
-      </template>
-    </lazy-c-table-main>
+      <c-table-main :headers="header" :body="body.slice(0, 100)" name="PON" :exactSearch="['IP']"
+        :searchFromFiltered="{ AIM: true }" v-model="filters">
+        <template #head="{ headers }">
+          <lazy-c-table-header-td v-for="(header, i) in headers" :key="header || i">
+            {{ header }}
+          </lazy-c-table-header-td>
+        </template>
+        <div>Ruben</div>
+        <template #footer>
+          <span>
+            Footer
+          </span>
+        </template>
+      </c-table-main>
 
   </div>
 </template>

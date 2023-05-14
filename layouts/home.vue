@@ -1,9 +1,7 @@
 <template>
-  <main class="py-20 px-10 text-center">
-    <slot />
-    <FooterM />
-    <div class="mt-5 mx-auto text-center opacity-25 text-sm">
-      [Home Layout]
+    <main class="container flex items-center justify-center text-center">
+      <div>
+        <slot />
     </div>
   </main>
 </template>

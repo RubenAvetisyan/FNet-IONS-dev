@@ -4,7 +4,7 @@ FROM (SELECT
 	if(CTO.time_to > curdate(), tariff_option.title, null) AS `Discount`,
 	if(CTO.time_to > curdate(), CTO.time_from, null) AS `Discount_Start_Date`,
 	if(CTO.time_to > curdate(), CTO.time_to, null) AS `discountEndDate`,
-  LEFT(contract.title, 7) AS `contract`,
+  if(contract.scid, (select c.title from contract as c where c.id=contract.scid), contract.title) AS `contract`,
   param1.val AS `customerName`,
 	CB.summa AS `balance`,
 	contract.date1 AS `Activation_Date`,

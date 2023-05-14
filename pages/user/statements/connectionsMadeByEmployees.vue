@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { format } from 'date-fns';
+
 
 const { data: user } = useAuth()
+const { $startLoading, $finishLoading } = useNuxtApp()
 
 if (!user.value?.isAdmin && !['127', '224'].includes(user.value?.uid)) {
   navigateTo({
@@ -9,7 +12,7 @@ if (!user.value?.isAdmin && !['127', '224'].includes(user.value?.uid)) {
 }
 
 const userConnectedConracts = ref('')
-const { data: userDetails } = await useLazyAsyncData('employees', () => $fetch('/api/get-employees-connections', {
+const { data: userDetails, pending: pendingConnections } = await useLazyAsyncData('employees', () => $fetch('/api/get-employees-connections', {
   method: 'post',
   body: {
     contractNumbers: userConnectedConracts.value
@@ -28,8 +31,11 @@ const { data: userDetails } = await useLazyAsyncData('employees', () => $fetch('
   watch: [userConnectedConracts]
 })
 
-const { data: userInfo } = await useFetch('/api/get-employees-connections', {
-  method: 'GET',
+const max = format(Date.now(), 'yyyy-MM-dd')
+const dateTime = ref(max)
+const date = computed(() => dateTime.value)
+
+const { data: userInfo, pending: pendingUserInfo } = await useLazyAsyncData('userInfo', () => $fetch(`/api/get-employees-connections?date=${date.value}`), {
   pick: ['header', 'body'],
   transform: (data) => {
     const header = [{
@@ -52,7 +58,8 @@ const { data: userInfo } = await useFetch('/api/get-employees-connections', {
       header,
       body,
     }
-  }
+  },
+  watch: [date]
 })
 
 const connectionsTable = computed(() => {
@@ -85,16 +92,33 @@ watch(() => userDetails.value, (n) => {
   }
   console.log('result.value : ', result.value);
 })
+
+watch([pendingUserInfo.value, pendingConnections.value], (n, o) => {
+  if (n.some(v => v)) {
+    $startLoading()
+  }
+  else {
+    $finishLoading()
+  }
+})
 </script>
 
 <template>
-                            <div>
-                                <div fixed top-0 bottom-0 flex justify-between>
-                                  <FTable :src="connectionsTable" :rows="connectionsTable.body.length" :footer="true" max-w-sm />
-                                  <FTable v-show="result" :key="result?.body.join('')" :src="result || {
-                                    header: [],
-                                    body: []
-                                  }" :rows="result?.body.length || 0" :footer="true" w-full lg:h-4xl />
-                                </div>
+    <div>
+      <div fixed top-0 bottom-0 flex justify-between>
+        <FTable :src="connectionsTable" :rows="connectionsTable.body.length" :footer="true" max-w-sm>
+          <template #caption>
+            <ion-datetime-button datetime="datetime"></ion-datetime-button>
+            <ion-modal :keep-contents-mounted="true">
+              <ion-datetime id="datetime" :show-default-buttons="true" :max="max" v-model="dateTime" size="cover"
+                presentation="month-year" locale="hy-AM"></ion-datetime>
+            </ion-modal>
+          </template>
+        </FTable>
+        <FTable v-show="result" :key="result?.body.join('')" :src="result || {
+          header: [],
+          body: []
+        }" :rows="result?.body.length || 0" :footer="true" w-full lg:h-4xl />
+      </div>
   </div>
 </template>

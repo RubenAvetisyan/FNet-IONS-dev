@@ -15,10 +15,7 @@ const msgs = computed(() => {
     <AdminDrawer top-0 left-0 />
 
     <div grow>
-      <!-- <Alerter /> -->
-      <div v-if="isAlert" fixed w="1/3" left-0 right-0 px-10 top-2 z-100 mx-auto>
-          <Alert />
-      </div>
+        <!-- <Alerter /> -->
 
         <div h-screen mx-auto relative>
         <slot />

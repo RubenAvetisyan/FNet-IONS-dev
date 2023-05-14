@@ -1,5 +1,6 @@
-import { resolve } from 'path';
-import { readFileSync } from 'fs';
+import { dirname, resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { defineNuxtConfig } from 'nuxt/config'
 import chalk from 'chalk'
 import * as flowbite from 'flowbite'
 import { log } from './utils/log'
@@ -7,8 +8,20 @@ import { prisma } from './server/api/db'
 import { description } from './package.json'
 import { addComponent } from '@nuxt/kit'
 
+const isDev = process.env.NODE_ENV === 'development'
+console.log('isDev: ', isDev);
+
 const sslKeyFile = process.env.NITRO_SSL_KEY;
 const sslCertFile = process.env.NITRO_SSL_CERT
+
+const pathsToextends: string[] = [
+  './admin',
+  './apiPaymentSystems',
+  './log',
+  './calc'
+].map(p => {
+  return resolve(dirname('./'), p)
+})
 
 process.on('SIGINT', async (signal) => {
   if (signal === 'SIGINT') {
@@ -49,13 +62,28 @@ const lanbilling: DbConfig = setDbConfig('LanBilling', 'billing')
 const abilling: DbConfig = setDbConfig('ABilling', 'billing', false);
 
 export default defineNuxtConfig({
-  extends: [
-    './admin',
-    './apiPaymentSystems',
-    './log',
-    // 'github.com:RubenAvetisyan/BGBilling.git'
-
-  ],
+  extends: pathsToextends,
+  nitro: {
+    [isDev ? 'devStorage' : 'storage']: {
+      'redis': {
+        driver: 'redis',
+        /* redis connector options */
+        // port: 6379, // Redis port
+        // host: "10.120.2.55", // Redis host
+        // username: "", // needs Redis >= 6
+        // password: "",
+        // db: 0, // Defaults to 0
+        // tls: {} // tls/ssl
+        url: 'redis://10.120.2.55:6379',
+      }
+    },
+    preset: 'node-server',
+  },
+  routeRules: {
+    '/': { ssr: false },
+    '/calc': { ssr: false, cors: true, prerender: true },
+    '/user/statements': { ssr: false, cors: true, prerender: false },
+  },
   app: {
     head: {
       charset: 'utf-16',
@@ -78,17 +106,17 @@ export default defineNuxtConfig({
     // ['./modules', {
     //   botToken: process.env.NUXT_BOT_TOKEN || '',
     // }],
-    function () {
-      for (const name of Object.keys(flowbite)) {
-        if (name.match(/^[A-Z]/)) {
-          addComponent({
-            export: name,
-            filePath: 'flowbite',
-            name
-          })
-        }
-      }
-    }
+    // function () {
+    //   for (const name of Object.keys(flowbite)) {
+    //     if (name.match(/^[A-Z]/)) {
+    //       addComponent({
+    //         export: name,
+    //         filePath: 'flowbite',
+    //         name
+    //       })
+    //     }
+    //   }
+    // }
   ],
 
   devtools: {
@@ -119,7 +147,9 @@ export default defineNuxtConfig({
     classSuffix: '',
   },
 
-  css: ['~/assets/index.css'],
+  css: [
+    '~/assets/index.css',
+  ],
 
   imports: {
     dirs: ['config', 'utils'],
@@ -155,10 +185,6 @@ export default defineNuxtConfig({
         process.exit(1)
       }
     },
-  },
-
-  nitro: {
-    preset: 'node-server',
   },
 
   // vite: {

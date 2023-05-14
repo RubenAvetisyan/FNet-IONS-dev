@@ -1,6 +1,4 @@
 <script setup lang="ts">
-
-import { initFlowbite } from 'flowbite'
 useHead({
   title: 'FNet Payment System',
   htmlAttrs: {
@@ -21,17 +19,6 @@ useHead({
 const headers = useRequestHeaders(['cookie']) as HeadersInit
 const { data: token } = await useFetch('/api/token', { headers })
 console.log('token: ', token.value);
-
-onMounted(() => {
-  initFlowbite();
-})
-
-
-const { data: userInfo } = useAuth()
-const { uid = '' } = userInfo.value || {}
-
-const isRuben = ['75', '80'].includes(uid)
-
 </script>
 
 <template>

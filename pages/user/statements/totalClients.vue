@@ -276,26 +276,26 @@ watch(() => details.value, (n) => {
 
 
 <template>
-                <div w-full h-full>
-                  <div relative flex w-full>
-                    <nuxt-link to="https://ions.fnet.am/user/statements/totalClients" btn rounded-0 hover:bg-indigo-500 bg-indigo-700
-                      dark:bg-indigo-500 h-8 text-center px-2 flex items-center text-light dark:text-dark>
-                      ՀԱՅԱՍՏԱՆ
-                    </nuxt-link>
-                    <div v-if="regionsTable.header[0] !== 'name'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8
-                      text-center px-2 flex items-center text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ</div>
-                    <nuxt-link to="/user/statements/totalClientPayments" btn rounded-0 hover:bg-indigo-300 bg-indigo-500
-                      dark:bg-indigo-300 h-8 text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
-                      գումարային</nuxt-link>
+    <div w-full h-full>
+      <div relative flex w-full>
+        <nuxt-link to="https://ions.fnet.am/user/statements/totalClients" btn rounded-0 hover:bg-indigo-500 bg-indigo-700
+          dark:bg-indigo-500 h-8 text-center px-2 flex items-center text-light dark:text-dark>
+          ՀԱՅԱՍՏԱՆ
+        </nuxt-link>
+        <div v-if="regionsTable.header[0] !== 'name'" btn rounded-0 hover:bg-indigo-500 bg-indigo-700 dark:bg-indigo-500 h-8
+          text-center px-2 flex items-center text-light dark:text-dark @click="() => currentTable = 'region'">ՄԱՐԶԵՐ</div>
+        <nuxt-link to="/user/statements/totalClientPayments" btn rounded-0 hover:bg-indigo-300 bg-indigo-500
+          dark:bg-indigo-300 h-8 text-center px-2 flex items-center text-light dark:text-dark>Տեսնել
+          գումարային</nuxt-link>
 
-                  </div>
-                  <div v-show="showDynamicTable" flex w-3xl h-full lg:h-4xl>
-                    <FTable :key="currentTable + dateFrom + dateTo" :footer="true" :src="dynamicTable" :rows="dynamicTable.body.length"
-                      transition w-prose max-w-700>
-            <template #caption>
-              <div flex items-end>
-                <!-- <DateFixedRange v-model="dateRange" /> -->
-                <!-- <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
+      </div>
+      <div v-show="showDynamicTable" flex w-3xl h-full lg:h-4xl>
+        <FTable :key="currentTable + dateFrom + dateTo" :footer="true" :src="dynamicTable" :rows="dynamicTable.body.length"
+          transition w-prose max-w-700>
+          <template #caption>
+            <div flex items-end>
+              <!-- <DateFixedRange v-model="dateRange" /> -->
+              <!-- <DatePicker :is-disabled="isDisabled" ml-10 name="date-from" label="սկիզբ" v-model="dateFrom" />
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <DatePicker :is-disabled="isDisabled" ml-10 name="date-to" label="վերջ" v-model="dateTo" /> -->
               <div flex h-8 f-btn ml-4 p-2 items-center @click="() => refreshAll()">Թարմացնել տվյալները</div>
             </div>

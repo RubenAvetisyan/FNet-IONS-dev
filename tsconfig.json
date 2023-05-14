@@ -21,9 +21,6 @@
     "@/admin/*": [
       "./<rootDir>/admin/*"
     ],
-    "assets/*": [
-      "./<rootDir>/assets/*"
-    ],
     "public/*": [
       "./<rootDir>/public/*"
     ]

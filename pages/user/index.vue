@@ -4,7 +4,8 @@ definePageMeta({
   auth: {
     unauthenticatedOnly: true,
     navigateAuthenticatedTo: '/',
-  }
+  },
+  layout: 'default'
 })
 
 const { data: userInfo } = useAuth()

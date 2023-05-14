@@ -1,5 +1,5 @@
 import { DbName } from '../../../utils/MySQL/connection-class';
-import { defineEventHandler, H3Error, readBody } from 'h3'
+import { defineEventHandler, H3Error, readBody, H3Event } from 'h3'
 import { endOfDay, parseISO, startOfDay } from 'date-fns'
 import { executeQuery } from '~~/admin/utils/sync/getPaymentsFromLanBilling'
 import { formatToSqlDate } from '@/utils/dateTime'
@@ -39,7 +39,10 @@ export default defineEventHandler(async (event) => {
         return await executeQuery<ConnectedConracts>(qs, DbName.A_BILLING)
       }
     } else {
-      return await executeQuery<Connections>(connectionsQuery, DbName.ERP)
+      const { date } = getQuery(event) as { date: string }
+      console.log('date: ', date);
+      const query = !date ? connectionsQuery : connectionsQuery.replace('NOW()', `'${date}'`)
+      return await executeQuery<Connections>(query, DbName.ERP)
     }
     // const CONTRACTS_IN_DETAIL_BY_CONTRACT_NUMBERS_RANGE = await executeQuery(contractsQuery.replace('contractNumbers',), DbName.A_BILLING)
   } catch (error: any) {

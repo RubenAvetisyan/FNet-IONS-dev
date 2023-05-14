@@ -3,10 +3,10 @@ import { readBody, H3Event } from 'h3';
 type PaymentSystemName = 'Easypay' | 'Tellcell' | 'Idram' | 'FnetPay';
 
 const paymentSystemUrls: Record<PaymentSystemName, string> = {
-  Easypay: 'http://localhost:3000/payment',
-  Tellcell: 'http://localhost:3000/telcell/?action=payment',
-  Idram: 'http://localhost:3000/idram/?action=payment',
-  FnetPay: 'http://localhost:3000/fnet-pay/?action=payment',
+  Easypay: 'https://payment.fnet.am/payment',
+  Tellcell: 'https://payment.fnet.am/telcell/?action=payment',
+  Idram: 'https://payment.fnet.am/idram/?action=payment',
+  FnetPay: 'https://payment.fnet.am/fnet-pay/?action=payment',
 };
 
 interface Data {data: {PaymentSystemName: PaymentSystemName; Checksum?: string}}

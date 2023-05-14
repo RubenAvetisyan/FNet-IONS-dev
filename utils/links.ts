@@ -1,5 +1,6 @@
+import { $enum } from 'ts-enum-util';
 import format from "date-fns/format"
-import { admins } from "./system/rules";
+import { admins, deafultRuels } from "./system/rules";
 
 type AccessRules = (string | number);
 type GroupID = AccessRules[];
@@ -32,11 +33,11 @@ class RouteRule<P extends string, T extends AccessTypes>{
 
 type RouteValue<P extends string, T extends AccessTypes> = {
   path: T;
-  rules: RouteRule<P, T>
+  rules: RouteRule<P, T>['rules']
 }
 
 class Route {
-  _routes: Map<string, RouteValue<string>>
+  private _routes: Map<string, RouteValue<string, AccessTypes>>
   constructor() {
     this._routes = new Map()
     const routes = useRouter().getRoutes()
@@ -49,10 +50,10 @@ class Route {
           [path]: {
             access: {
               groupIds: [],
-              userIds: [],
+              userIds: admins,
             }
           }
-        })
+        }).rules
 
       })
     })
@@ -64,6 +65,10 @@ class Route {
   }
 
   get routes() {
+    return this._routes
+  }
+
+  get routesEntries() {
     return this._routes.entries()
   }
 
@@ -75,7 +80,7 @@ class Route {
 interface SingleLink<Path extends string> {
   text: string;
   path: string;
-  rules?: RouteRule<Path, AccessTypes>;
+  rules?: RouteRule<Path, AccessTypes>['rules'];
   query?: { query: {} };
   components?: Component[];
   permissuions?: string[];
@@ -91,23 +96,40 @@ interface Component {
 
 const defaultLinks: SingleLink<string>[] = [
   {
+    text: 'AIM_PON',
+    path: '/user/statements/Special/pon',
+    rules: new RouteRule({
+      '/user/statements/Special/pon': {
+        access: {
+          groupIds: [],
+          userIds: [...admins, '47', '76', '122', '126', '131', '143', '144', '180']
+        }
+      }
+    }).rules
+  },
+  {
     text: 'վճարման ենթակա միացումների ցուցակ',
     path: '/user/statements/mustPay',
-    query: {
-      query: {},
-    },
     rules: new RouteRule({
       '/user/statements/mustPay': {
         access: {
           groupIds: [],
-          userIds: admins
+          userIds: [...admins, ...Object.keys(deafultRuels)]
         }
       }
-    })
+    }).rules
   },
   {
     text: 'Միացումների ցուցակ ըստ հասցեների և ամսաթվերի',
     path: '/user/statements/connectionsMadeByEmployees',
+    rules: new RouteRule({
+      '/user/statements/connectionsMadeByEmployees': {
+        access: {
+          groupIds: [],
+          userIds: [...admins, '224']
+        }
+      }
+    }).rules,
     components: [{
       name: 'FInput',
       type: 'input',
@@ -120,11 +142,53 @@ const defaultLinks: SingleLink<string>[] = [
   },
   {
     text: 'Պասիվ Հաճախորդներ',
-    path: '/user/statements/original/passivecustomers'
+    path: '/user/statements/original/passivecustomers',
+    rules: new RouteRule({
+      '/user/statements/original/passivecustomers': {
+        access: {
+          groupIds: [],
+          userIds: admins
+        }
+      }
+    }).rules
+  },
+  {
+    text: format(Date.now(), 'MM.yyyy') + ' միացված բաժանորդներ',
+    path: '/user/statements/newConnections',
+    rules: new RouteRule({
+      '/user/statements/newConnections': {
+        access: {
+          groupIds: [],
+          userIds: [...admins, '224']
+        }
+      }
+    }).rules,
+    permissuions: []
+  },
+  {
+    text: 'B2B Հավաքագրված գումարներ ըստ սակագնի',
+    path: '/user/statements/B2B/payments',
+    rules: new RouteRule({
+      '/user/statements/B2B/payments': {
+        access: {
+          groupIds: [],
+          userIds: [...admins, '145']
+        }
+      }
+    }).rules,
+    permissuions: []
   },
   {
     text: 'Հաճախորդներ',
     path: '/user/statements/totalClients',
+    rules: new RouteRule({
+      '/user/statements/totalClients': {
+        access: {
+          groupIds: [],
+          userIds: [...admins, ...Object.keys(deafultRuels)]
+        }
+      }
+    }).rules,
     permissuions: []
   },
 ]
@@ -133,17 +197,27 @@ export class Link {
   links: SingleLink<string>[]
   routes: Route
   // routes: Route
-  constructor(public route?: any) {
-    this.links = defaultLinks
-    //     .map(defaultLink => {
-    //     defaultLink.path = route.path ? this.setPath(defaultLink.path) : defaultLink.path
-    //     return defaultLink
-    // })
+  constructor(public route?: any, uid?: string) {
+    console.log('userInfo.value?.uid: ', uid);
+    this.links = []
+    defaultLinks.forEach(defaultLink => {
+      if (uid && defaultLink.rules && defaultLink.rules[defaultLink.path].access.userIds.includes(uid))
+        this.links.push(defaultLink)
+    })
     this.routes = new Route()
-    // console.log('this.routes: ', this.routes);
+    console.log('this.routes: ', this.routes);
   }
 
   setPath = (str: string) => `${this.route.path}/${str}`
+  getWithRestricted(uid: string) {
+    const result: RouteValue<string, AccessTypes>[] = []
+    this.routes.routes.forEach(v => {
+      if (v.rules[v.path].access.userIds.includes(uid))
+        result.push(v)
+    })
+
+    return result
+  }
 
   setBaseUrl(baseUrl: string) { }
 }

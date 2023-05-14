@@ -67,11 +67,10 @@ watch(adminLeftPanel.value, (panel) => {
                 tooltip-placement="right" :class="`group/${sub.name}`">
                 <div flex block items="center" w="full" max="md:w-64">
                   <div :key="sub?.icon || sub.name + '-icon'" :mx="computedMx" :class="sub?.icon"
-                    :mr="!isminified && 2" />
-                  <p v-show="!isminified" antialiased text="base left" max="w-prose">
-                    {{ sub.name }}
-                  </p>
-
+                      :mr="!isminified.value && 2" />
+                    <p v-show="!isminified.value" antialiased text="base left" max="w-prose">
+                      {{ sub.name }}
+                    </p>
                 </div>
               </n-list-item>
             </template>

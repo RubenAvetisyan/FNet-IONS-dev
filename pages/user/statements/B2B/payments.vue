@@ -2,11 +2,7 @@
 
 const { data: userInfo } = useAuth()
 
-if (!userInfo.value.isAdmin) {
-  navigateTo({
-    path: '/protected'
-  })
-}
+
 
 const updates = ref(0)
 
@@ -34,7 +30,13 @@ const result = ref({
 
 onMounted(() => {
   nextTick(() => {
-    if (userInfo.value?.uid !== '145' && !userInfo.value?.isAdmin) navigateTo('/')
+    const isAllowed = userInfo.value?.uid !== '145' || !userInfo.value?.isAdmin
+    console.log('isAllowed: ', isAllowed);
+    if (!isAllowed) {
+      navigateTo({
+        path: '/protected'
+      })
+    }
   })
 })
 
@@ -56,7 +58,10 @@ watch(() => payments.value, (newPayments, oldPayments) => {
 
       <FTable :src="result" :rows="result.body.length" :footer="true" name="Ըստ սակագնի B2B Վճարումների մասին">
         <template #default="{ body }">
-          <div>{{ body.total_pages }}</div>
+                      <div w-full>
+                        <span font-black>ընդամենը հավաքագրված գումար՝ </span>
+                        <span font-bold>{{ body.data.reduce((p: number, c: any) => p + c.summa, 0) }}</span>
+                      </div>
         </template>
       </FTable>
   </div>

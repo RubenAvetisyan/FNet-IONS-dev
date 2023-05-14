@@ -1,14 +1,20 @@
 <template>
-  <div
-    block h-max p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800
-    dark:border-gray-700 dark:hover:bg-gray-700
-  >
-    <div w-full h-max>
-      <slot />
-    </div>
+    <ion-card>
+      <ion-card-header v-if="$slots.title || $slots.subtitle">
+        <ion-card-title>
+          <slot name="title"></slot>
+        </ion-card-title>
+        <ion-card-subtitle>
+          <slot name="subtitle"></slot>
+        </ion-card-subtitle>
 
-    <div v-if="$slots.bottom" flex h-max items-end>
-      <slot name="bottom" />
-    </div>
-  </div>
+      </ion-card-header>
+      <ion-card-content v-if="$slots.default">
+        <slot />
+      </ion-card-content>
+
+      <div v-if="$slots.bottom" flex h-max items-end>
+        <slot name="bottom" />
+      </div>
+    </ion-card>
 </template>

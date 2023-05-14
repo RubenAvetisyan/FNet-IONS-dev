@@ -17,23 +17,16 @@ const mustPaySchema = z.object({
   header: z.array(z.string()),
   body: z.array(
     z.object({
-      street: z.string().optional().nullable(),
-      contract: z.string().nullable(),
-      balance: z.number().optional().nullable(),
-      tariff: z.string().optional().nullable(),
-      discount: z.string().optional().nullable(),
-      totalCostTariff: z.string().optional().nullable(),
-      discountEndDate: z.date().optional().nullable(),
-      dayOfPayment: z.string().optional().nullable(),
-      status: z.string().optional().nullable(),
-    }).transform((data) => ({
-      ...data,
-      totalCostTariff: typeof data.totalCostTariff === 'string' ? parseFloat(data.totalCostTariff) : data.totalCostTariff,
-      discountEndDate: !!data.discountEndDate && isDate(data.discountEndDate) ? format(data.discountEndDate, 'dd/MM/yyyy \n hh:mm') : data.discountEndDate,
-      balance: typeof data.balance === 'string' ? +data.balance : data.balance,
-      dayOfPayment: typeof data.dayOfPayment === 'string' ? parseFloat(data.dayOfPayment) : data.dayOfPayment,
-    }
-    ))
+      street: z.string(),
+      contract: z.string(),
+      balance: z.number(),
+      tariff: z.string(),
+      discount: z.string(),
+      totalCostTariff: z.string(),
+      discountEndDate: z.date(),
+      dayOfPayment: z.string(),
+      status: z.string(),
+    })
   ).nonempty()
 })
 
@@ -61,38 +54,7 @@ const responeSchema = z.object({
 type MustPay = z.TypeOf<typeof mustPaySchema>;
 type MustPayErpCustomer = z.TypeOf<typeof responeSchema>;
 
-const map: Map<string, z.TypeOf<typeof b>> = new Map()
-
-
-const getContractNumbers = (passiveCustomers: z.TypeOf<typeof b>) => {
-  if (map && passiveCustomers.contract)
-    map.set(passiveCustomers.contract, passiveCustomers)
-
-  return passiveCustomers.contract
-}
-
-async function getERPCustomers(erpCustomersQuerySrc: string, passiveCustomers: MustPay['body']) {
-  if (!erpCustomersQuerySrc) throw createError('erpCustomersQuerySrc not defined in function "getERPCustomers"')
-
-  let contractNumbers = passiveCustomers.map(getContractNumbers).filter(s => typeof s === 'string' && s.length) as string[]
-
-  contractNumbers = uniq(contractNumbers)
-
-  // await executeQuery(`SET @contractNumbers := '${contractNumbers}';`, 'erp');
-  return executeQuery<ErpCustomers>(erpCustomersQuerySrc.replace('@contractNumbers', contractNumbers.join(',')), DbName.ERP)
-}
-
-const getResponse = async (erpCustomers: ErpCustomers): Promise<ErpCustomers['body']> => await P(erpCustomers.body, { concurrency: 12 }).map((customers) => {
-  // customers.phone = customers.phone.split(',').join(', ')
-
-  if (!map)
-    return { ...customers }
-  customers.phone = customers.phone ? clearUndefined(uniq(intersection<string>(customers.phone.replace(/\s/gim, '').split(',')))).join(', ') : ''
-
-  const fullObj = map.get(customers.contract)
-  const result = { ...customers, ...fullObj }
-  return result
-})
+const map: Map<string, any> = new Map()
 
 export default defineEventHandler(async event => {
   try {
@@ -108,14 +70,76 @@ export default defineEventHandler(async event => {
       return []
     }
 
-    const erpCustomers = await getERPCustomers(queryStringErpCustomers, mustPayCustomers.body)
+    mustPayCustomers.body.forEach(mpc => map.set(mpc.contract, mpc))
+    const contractNumbers = [...map.keys()]
+
+    if (!contractNumbers.length) return null
+
+    const erpCustomersQuery = queryStringErpCustomers.replace('GROUP BY customer_link.object_title', ` AND customer_link.object_title IN (${contractNumbers.join()}) GROUP BY customer_link.object_title`)
+    const erpCustomers = await executeQuery<{
+      customerNumber: string;
+      customerName: string;
+      customerType: string;
+      phone: string;
+      country: string;
+      region: string;
+      city: string;
+      quarter: string;
+      street: string;
+      house: string;
+    }>(erpCustomersQuery, DbName.ERP)
 
     if (erpCustomers instanceof H3Error) {
       throw erpCustomers
     }
 
-    const body = await getResponse(erpCustomers)
-    return { ...erpCustomers, body }
+    const body: (string | number | null | undefined)[][] = []
+
+    erpCustomers.body.forEach((b) => {
+      const mpc = map.get(b.customerNumber)
+
+
+      if (mpc) {
+        const mustPaymAmount = +mpc.totalCostTariff - mpc.balance
+        body.push([
+          mpc.contract,
+          b.customerName,
+          mpc.tariff,
+          mpc.totalCostTariff,
+          mpc.balance,
+          mustPaymAmount,
+          mpc.dayOfPayment,
+          mpc.status,
+          b.phone,
+          b.country,
+          b.region,
+          b.city,
+          b.quarter,
+          b.street,
+          b.house,
+        ])
+      }
+    })
+
+    return {
+      header: [
+        'Պայմանագրի #',
+        'Անուն',
+        'Սակագին',
+        'Սկագնի\nարժեք',
+        'Հաշվեկշիռ',
+        'Վճարման\nենթակա\nգումար',
+        'Վճարման\тօր',
+        'Կարգա\nվիճակ',
+        'Հեռախոս',
+        'Երկիր',
+        'Մարզ',
+        'Քաղաք',
+        'Տարածք',
+        'Փողոց',
+        'Տուն',
+      ], body
+    }
   } catch (error) {
     console.error('error: ', error);
   }

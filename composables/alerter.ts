@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { Ref } from 'vue'
+import { alertController } from '@ionic/vue'
 
 enum AlertEnumType {
   success = 'success',
@@ -25,44 +25,49 @@ enum Color {
 }
 
 export const useAlertStore = defineStore('alert', () => {
-  /**
-     * Current named of the user.
-     */
   const message = ref<string[]>([])
   const alertType: Ref<AlertType> = ref(AlertEnumType.success)
 
-  const isAlert = computed(() => message.value.length, {
-    onTrigger(event) {
-      console.log('event: ', event);
-      if (event.newValue && event.type === 'add')
-        useTimeoutFn(() => {
-          message.value.splice(0, 1)
-        }, 3000, { immediate: true })
-    },
-  })
+  const isAlert = computed(() => message.value.length > 0)
   const alertMsg = computed(() => message.value)
   const alertIcon = computed(() => AlertIcon[alertType.value])
   const alertColor = computed(() => Color[alertType.value])
 
-  /**
-     * Sets the Alert message.
-     * It is important to set alert type.
-     *
-     * @param msg - new alert message to set
-     */
-  function setAlert(msg: string, alertTypeName: AlertType) {
+  watch(message, (msg) => {
+    if (msg.length) {
+      setTimeout(() => {
+        message.value.splice(0, 1)
+      }, 3000)
+    }
+  })
+
+  async function setAlert(msg: string, alertTypeName: AlertType) {
     message.value.push(msg)
     alertType.value = alertTypeName
-    console.log('alertType.value: ', alertType.value);
+
+    const alert = await alertController.create({
+      header: 'Ահազանգ',
+      // subHeader: 'Important message',
+      message: msg,
+      buttons: [{
+        text: 'ok',
+        cssClass: 'f-btn'
+      }],
+      animated: true,
+      cssClass: Color[alertTypeName],
+
+    })
+
+    await alert.present();
   }
 
   return {
     setAlert,
-    isAlert: isAlert.value,
-    alertMsg: alertMsg.value,
-    color: alertColor.value,
-    icon: alertIcon.value,
-    alertType: alertType.value,
+    isAlert,
+    alertMsg,
+    color: alertColor,
+    icon: alertIcon,
+    alertType,
     AlertEnumType,
   }
 })

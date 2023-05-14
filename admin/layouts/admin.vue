@@ -19,8 +19,7 @@ watch(() => useNuxtApp().$isLoading.value, (loading) => {
     <main fixed top="0" left="0" right="0" bottom="0" flex text-center h-screen bg="slate-50 dark:slate-900" relative>
       <Loading v-show="isLoading" />
       <AdminDrawer class="top-0 left-0" />
-      <!-- <AdminNewDrawer /> -->
-          <Alert />
+        <!-- <AdminNewDrawer /> -->
         <div class="grow place-content-center">
           <!-- <Alerter /> -->
           <!-- drawer init and show -->

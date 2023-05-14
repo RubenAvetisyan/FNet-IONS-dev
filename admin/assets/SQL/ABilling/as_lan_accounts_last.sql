@@ -4,9 +4,11 @@ SELECT
 	MAIN.*
 FROM (SELECT DISTINCT
     LEFT(contract.title, 7) AS `Договор`,
+    PARAMS.contractName as `Имя Конрагента`,
 		contract.date1 as `Дата подключения`,
     contract.date2 as `Дата отключения`,
     ifnull(CT.title, CTL.title) AS 'Тариф',
+    ifnull(CT.tpid, CTL.tree_id) AS 'tpid',
     if(CTO.time_to > curdate(), tariff_option.title, '') AS `Скидка`,
 		CASE WHEN locate('%', tariff_option.title) > 0 AND (CTO.time_to is null OR date(CTO.time_to) > now()) THEN CT.cost - tariff_option.title/100 * CT.cost
 			 WHEN locate('-', tariff_option.title) > 0 THEN SUBSTRING_INDEX(SUBSTRING_INDEX(tariff_option.title, '-', -1), ' ', 1)
@@ -21,7 +23,12 @@ FROM (SELECT DISTINCT
     coalesce(CP.dt, 'платежи отсутствуют') as `Дата последнего платежа`,
 		CASE
 				 WHEN contract.`status` = 0 THEN 'Ակտիվ'
-				 WHEN contract.`status` = 7 THEN 'Պասիվ'
+         WHEN contract.`status` = 2 THEN 'Անջատված'
+         WHEN contract.`status` = 3 THEN 'Փակված'
+         WHEN contract.`status` = 4 THEN 'Կասեցված'
+         WHEN contract.`status` = 5 THEN 'Փակ'
+         WHEN contract.`status` = 6 THEN 'Միացված չէ'
+				 WHEN contract.`status` = 7 THEN 'Վճարված չէ'
          ELSE NULL
 			END as `Статус`,
 		LEFT(CONCAT(contract.status_date, ''), 10) AS `Последняя Дата Блокировки`,
@@ -89,7 +96,7 @@ FROM
 										INNER JOIN billing.address_street ast ON ah.streetId = ast.id
 										INNER JOIN billing.address_area aa ON ah.areaId = aa.id
 										INNER JOIN billing.address_city ac ON aq.cityId = ac.id
-                    LEFT JOIN billing.contract_parameter_type_1 AS param1 ON param1.cid = contract.scid AND param1.pid = 13
+                    INNER JOIN billing.contract_parameter_type_1 cpt1 ON contract.id = cpt2.cid
 								-- WHERE
 -- 										ast.title LIKE '%Վարդանանց%'
 --                     AND ah.house IN (32)
@@ -121,8 +128,10 @@ WHERE
     AND PARAMS.contractName NOT like '%Речкалов Андрей%'
     AND contract.comment NOT REGEXP '(Речкалов|ест|Նոր Արեշ 11, д. 91|est|юл|TEst|Yan|եստ|բաժանորդ|TEST|Անուն|անուն|ազգանուն|Ազգանուն)'
 group by contract.title, contract.`status`) AS MAIN
+LEFT JOIN tariff_group_tariff as TGT ON TGT.tpid = MAIN.tpid
 WHERE MAIN.`Рекомендуемая сумма` IS NOT NULL
 AND MAIN.`Статус` IS NOT NULL
-AND MAIN.`Тариф` LIKE '%b2b%'
+AND TGT.tgid IN (2, 6)
+AND MAIN.`Статус` IN ('Ակտիվ', 'Վճարված չէ')
 GROUP BY MAIN.`Договор`
 ORDER BY MAIN.`Договор`;

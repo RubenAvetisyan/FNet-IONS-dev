@@ -5,7 +5,7 @@ definePageMeta({
 </script>
 
 <template>
-      <div w-full h-sceen>
+  <div w-full h-sceen>
     <NuxtPage />
     <!-- <Footer /> -->
     <StickyFooter />

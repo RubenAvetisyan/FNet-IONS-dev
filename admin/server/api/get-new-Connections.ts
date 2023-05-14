@@ -43,6 +43,8 @@ type Customers = {
 }
 export default defineCachedEventHandler(async (event) => {
   try {
+    const { date = '' }: { date?: string } = getQuery(event)
+    console.log('date: ', date);
     const [connectionsQuery, contractsQuery, customersQuery] = await readSqlFile(
       SqlFilePaths.ERP_MIACMAN_PROCESS_COUNTS_EMPLOYE,
       SqlFilePaths.CONTRACTS_IN_DETAIL_BY_CONTRACT_NUMBERS_RANGE,
@@ -54,7 +56,8 @@ export default defineCachedEventHandler(async (event) => {
       employee: string;
       user_id: number;
       contractNumbers: string
-    }>(connectionsQuery, DbName.ERP)
+    }>(connectionsQuery.replace('NOW()', date ? `'${date}-01'` : 'NOW()'), DbName.ERP)
+    console.log('empConnections: ', empConnections.body.length);
 
     const contractNumbers = empConnections.body.map(obj => obj.contractNumbers).join(',')
 

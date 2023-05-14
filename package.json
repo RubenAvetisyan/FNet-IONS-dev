@@ -17,10 +17,10 @@
     "generate": "nuxi generate"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.7",
     "async": "^3.2.4",
     "async-es": "^3.2.4",
     "date-fns": "^2.29.3",
+    "date-fns-tz": "^2.0.0",
     "exceljs": "^4.3.0",
     "flowbite": "^1.6.5",
     "flowbite-datepicker": "^1.2.2",
@@ -37,8 +37,6 @@
     "mysql": "^2.18.1",
     "next-auth": "4.21.1",
     "uuid": "^9.0.0",
-    "vue": "^3.2.45",
-    "vue-virtual-scroller": "2.0.0-beta.8",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
@@ -48,6 +46,7 @@
     "@iconify-json/twemoji": "1.1.5",
     "@nuxt/devtools": "^0.4.2",
     "@nuxtjs/color-mode": "latest",
+    "@nuxtjs/ionic": "^0.10.0",
     "@pinia-plugin-persistedstate/nuxt": "latest",
     "@pinia/nuxt": "latest",
     "@prisma/client": "latest",
@@ -82,6 +81,9 @@
     "ufo": "latest",
     "unocss-preset-scrollbar": "latest",
     "vue-router": "latest",
-    "zod": "latest"
+    "zod": "latest",
+    "@popperjs/core": "^2.11.7",
+    "vue": "^3.2.45",
+    "vue-virtual-scroller": "2.0.0-beta.8"
   }
 }
