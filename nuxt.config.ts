@@ -62,7 +62,10 @@ const lanbilling: DbConfig = setDbConfig('LanBilling', 'billing')
 const abilling: DbConfig = setDbConfig('ABilling', 'billing', false);
 
 export default defineNuxtConfig({
-  ignore: ['./calc/capacitor.config.ts'],
+  ignore: [
+    './calc/capacitor.config.ts',
+    './calc/layouts/'
+  ],
   extends: pathsToextends,
   nitro: {
     [isDev ? 'devStorage' : 'storage']: {
