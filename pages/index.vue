@@ -1,6 +1,11 @@
 <script setup>
 // import { keys } from 'lodash';
 
+definePageMeta({
+  layout: 'default',
+  alias: ['/', '/home']
+})
+
 
 // const { data } = await useLazyFetch('/api/lanbilling')
 // console.log('data: ', unref(data))
@@ -48,21 +53,23 @@ console.log('userInfo.isAdmin: ', userInfo.isAdmin);
 </script>
 
 <template>
-    <div>
-      <Logos mb-6></Logos>
-      <Suspense>
-        <template #fallback>
-          <div op50 italic>
-            <span animate-pulse>Loading...</span>
-          </div>
-        </template>
-      </Suspense>
+    <ion-page>
+      <ion-content class="ion-padding">
+        <Logos mb-6></Logos>
+        <Suspense>
+          <template #fallback>
+            <div op50 italic>
+              <span animate-pulse>Loading...</span>
+            </div>
+          </template>
+        </Suspense>
 
-      <div font="500" text="2xl brand-primary dark:light-50" select="none">
-        Ներքին գործառնությունների իրականացման համակարգ
-      </div>
-      <div v-if="status === 'unauthenticated'" text="xl dark dark:light-700" select="none">
-        համակարգ մուտք գործելու համար անհրաժետ է նույնականացվել
-      </div>
-  </div>
+        <div font="500" text="2xl brand-primary dark:light-50" select="none">
+          Ներքին գործառնությունների իրականացման համակարգ
+        </div>
+        <div v-if="status === 'unauthenticated'" text="xl dark dark:light-700" select="none">
+          համակարգ մուտք գործելու համար անհրաժետ է նույնականացվել
+        </div>
+      </ion-content>
+    </ion-page>
 </template>

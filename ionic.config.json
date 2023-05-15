@@ -1,5 +1,7 @@
 {
-  "name": "frontftenpaymentapi",
-  "integrations": {},
+  "name": "internalOperationsNetworkSystem",
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "vue"
 }

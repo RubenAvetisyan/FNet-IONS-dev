@@ -53,17 +53,22 @@ export const cachedAimPon = cachedFunction(async () => {
     erpCustomersQueryString
   ] = await readSqlFile(SqlFilePaths.OLT_PON_AIM_CONTRACT_ADDRESS, SqlFilePaths.ERP_Customers) as string[]
 
-  const [oltPonAimResult, erpCustomersResult] = await Promise.allSettled([
-    executeQuery<OltPonAim>(oltPonAimQueryString, DbName.A_BILLING),
-    executeQuery<ErpCustomers>(erpCustomersQueryString, DbName.ERP)
-  ])
 
-  if (oltPonAimResult.status === 'rejected' || erpCustomersResult.status === 'rejected') {
-    throw new H3Error('Failed to execute queries')
-  }
-
-  const oltPonAim = oltPonAimResult.value
-  const erpCustomers = erpCustomersResult.value
+  const oltPonAim = await executeQuery<OltPonAim>(oltPonAimQueryString, DbName.A_BILLING)
+  console.log('oltPonAim: ', oltPonAim.body.length);
+  let contractNums: string = ''
+  oltPonAim.body.forEach((b, i) => {
+    const seperator = i !== 0 ? ',' : ''
+    if (b['Պայմանագիր №'].match(/\d{7}/gim))
+      contractNums = contractNums + seperator + b['Պայմանագիր №']
+  })
+  console.log('contractNums: ', contractNums.split(',')[11]);
+  const erpQuery = erpCustomersQueryString.replace("customer.title NOT LIKE '%Андрей Речкалов%'",
+    `customer_link.object_title IN (${contractNums})
+    AND customer.title NOT LIKE '%Андрей Речкалов%'`
+  )
+  const erpCustomers = await executeQuery<ErpCustomers>(erpQuery, DbName.ERP)
+  console.log('erpCustomers: ', erpCustomers.body.length);
 
   const result: {
     header: string[];
@@ -86,6 +91,8 @@ export const cachedAimPon = cachedFunction(async () => {
       phone
     })
   }
+  console.log('lookup: ', Object.keys(lookup).length);
+  console.log('result: ', result.body.length);
 
   return result
 }, {

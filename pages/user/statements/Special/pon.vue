@@ -41,7 +41,8 @@ const header = computed(() => {
 })
 
 const body = computed(() => {
-  return Object.keys(filters.value).length ? data.value?.body || header.value.map(h => []) : []
+  // return Object.keys(filters.value).length ? data.value?.body || header.value.map(h => []) : []
+  return data.value?.body || []
 })
 
 watch(() => filters.value, value => {
@@ -52,26 +53,26 @@ watch(() => filters.value, value => {
 
 <template>
     <div h-screen>
-      <!-- <FTable v-if="rows && mainTable?.body.length" :src="mainTable" :rows="12" :footer="true">
-      <template #save>
-        <SaveXlsx :header="mainTable.header" :body="mainTable.body" float-right />
-      </template>
-    </FTable> -->
-
-      <c-table-main :headers="header" :body="body.slice(0, 100)" name="PON" :exactSearch="['IP']"
-        :searchFromFiltered="{ AIM: true }" v-model="filters">
-        <template #head="{ headers }">
-          <lazy-c-table-header-td v-for="(header, i) in headers" :key="header || i">
-            {{ header }}
-          </lazy-c-table-header-td>
+      <FTable :src="{ header, body }" :rows="100" :footer="true">
+        <template #save>
+          <SaveXlsx :header="header" :body="body" float-right />
         </template>
+      </FTable>
+
+      <!-- <c-table-main :headers="header" :body="body.slice(0, 100)" name="PON" :exactSearch="['IP']" :searchFromFiltered="{ AIM: true }"
+          v-model="filters">
+          <template #head="{ headers }">
+        <lazy-c-table-header-td v-for="(header, i) in headers" :key="header || i">
+          {{ header }}
+        </lazy-c-table-header-td>
+      </template>
         <div>Ruben</div>
         <template #footer>
           <span>
             Footer
           </span>
         </template>
-      </c-table-main>
+      </c-table-main> -->
 
   </div>
 </template>

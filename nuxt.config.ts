@@ -62,6 +62,7 @@ const lanbilling: DbConfig = setDbConfig('LanBilling', 'billing')
 const abilling: DbConfig = setDbConfig('ABilling', 'billing', false);
 
 export default defineNuxtConfig({
+  ignore: ['./calc/capacitor.config.ts'],
   extends: pathsToextends,
   nitro: {
     [isDev ? 'devStorage' : 'storage']: {
@@ -99,6 +100,7 @@ export default defineNuxtConfig({
     '@nuxt/devtools',
     '@vueuse/nuxt',
     '@unocss/nuxt',
+    '@nuxtjs/ionic',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/color-mode',

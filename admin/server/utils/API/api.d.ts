@@ -1,5 +1,7 @@
 export { };
 
+declare module 'soap-cookie';
+
 declare global {
   interface HttpClient {
     post: (url: string, body: any, options?: any) => Promise<any>;
@@ -43,6 +45,15 @@ declare global {
     vendorsormname: string;
     roleids: number[];
     isInsert: boolean;
+  }
+
+  type AccountData = {
+    uid: Pick<SoapAccount, 'uid'>,
+    login: Pick<SoapAccount, 'login'>,
+    pass: string,
+    block: number,
+    balance: number,
+    agrmnum: string
   }
 
   /**

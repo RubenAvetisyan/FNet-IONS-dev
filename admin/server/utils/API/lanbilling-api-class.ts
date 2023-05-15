@@ -1,21 +1,47 @@
-// import { ofetch } from 'ofetch'
-import { parseString, parseStringPromise, Parser } from 'xml2js'
-import { fetchWrapper } from '~/admin/server/utils/API/helpers/fetcher'
+import * as soap from 'soap';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+
+class AxiosHttpClient implements soap.IHttpClient {
+  private axiosInstance = axios;
+
+  request(
+    url: string,
+    data: any,
+    callback: (error: any, response: any, body?: any) => any,
+    exheaders?: soap.IHeaders,
+    exoptions?: soap.IExOptions,
+  ): any {
+    const axiosConfig: AxiosRequestConfig = {
+      method: 'POST',
+      url,
+      data,
+      headers: exheaders,
+      ...exoptions,
+    };
+
+    return this.axiosInstance.request(axiosConfig)
+      .then((response: AxiosResponse) => {
+        callback(null, response, response.data);
+      })
+      .catch((error: any) => {
+        callback(error, null, null);
+      });
+  }
+}
 
 export class LanBillingApi {
-  protected httpClient: HttpClient;
   protected url: string;
-  protected soapHeader: string
-  protected sessnum: string
+  protected soapClient: soap.Client | undefined;
+  protected soapHeader: any;
+  protected sessnum: string;
 
-  constructor(url: string, httpClient: HttpClient = fetchWrapper) {
+  constructor(url: string) {
     this.url = url;
-    this.httpClient = httpClient;
-    this.soapHeader = ''
-    this.sessnum = ''
+    this.soapHeader = undefined;
+    this.sessnum = '';
   }
 
-  protected extractSessnum(cookies: string[]) {
+  protected extractSessnum(cookies: string[]): string {
     let sessnum = '';
     const sessnumRegex = /sessnum=([^;]+)/;
 
@@ -30,64 +56,53 @@ export class LanBillingApi {
     return sessnum;
   }
 
-  protected async parseLogin(xmlResponse: string) {
-    try {
-      const parser = new Parser({ explicitArray: false });
-      const result = await parser.parseStringPromise(xmlResponse);
-      return result['lbapi:LoginResponse'].ret.manager;
-    } catch (error) {
-      console.error('Ошибка при преобразовании XML в JSON:', error);
-      throw error;
+  protected async makeSoapRequest(method: string, args: object): Promise<any> {
+    if (!this.soapClient) {
+      throw new Error('SOAP client not initialized');
     }
-  }
 
-  protected async makeSoapRequest(bodyContent: string): Promise<any> {
     try {
-      const body = `<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:api3">
-      <soap:Header />
-      <soap:Body>
-        ${bodyContent}
-      </soap:Body>
-    </soap:Envelope>`;
-
-      console.log('body: ', body);
-
-      const response = await this.httpClient.post(this.url, body, {
-        headers: {
-          'Cookie': this.sessnum
-        }
-      });
-
-      return response.data;
+      return await this.soapClient[method](args)
     } catch (error) {
       throw error
     }
   }
 
   protected setSoapHeader(sessionId: string) {
-    this.soapHeader = `<SessionHeader xmlns="urn:api3">
-      <sessionid>${sessionId}</sessionid>
-    </SessionHeader>`
+    this.soapHeader = {
+      'SessionHeader': {
+        'sessionid': sessionId
+      }
+    };
+    if (this.soapClient) {
+      this.soapClient.addSoapHeader(this.soapHeader);
+    }
   }
 
-  public async login(username: string, password: string): Promise<void> {
-    try {
-      const bodyContent = `<Login xmlns="urn:api3">
-        <login>${username}</login>
-        <pass>${password}</pass>
-      </Login>`
+  public async init() {
+    const wsdlOptions: soap.IOptions = {
+      httpClient: new AxiosHttpClient()
+    };
+    this.soapClient = await soap.createClientAsync(this.url, wsdlOptions);
+    return
+  }
 
-      const response = await this.httpClient.post(this.url, bodyContent);
-      const parsedResponse = await this.parseLogin(response.data);
+  public async login(username: string, password: string): Promise<any> {
+    const args = {
+      login: username,
+      pass: password
+    };
 
-      const sessnum = this.extractSessnum(response.cookies)
-      this.sessnum = 'sessnum=' + sessnum
+    const response = await this.makeSoapRequest('Login', args);
 
-      // this.setSoapHeader(sessnum)
-
-      return parsedResponse
-    } catch (error) {
-      throw error;
+    const cookies = response.response.headers['set-cookie'];
+    if (cookies) {
+      this.sessnum = this.extractSessnum(cookies);
+      this.setSoapHeader(this.sessnum);
+    } else {
+      throw new Error("Failed to retrieve session cookie");
     }
+
+    return response;
   }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { format, parseISO } from 'date-fns';
 import { withDefaults } from 'vue';
+import { } from '@vueuse/core'
 
 const emit = defineEmits(['update:modelValue', 'change'])
 
@@ -44,7 +45,7 @@ const filteredData = computed(() => {
   return props.body.filter(row => {
     return Object.entries(filters.value).every(([colIndex, searchQuery]) => {
       const exactSearchEnabled = Array.isArray(props.exactSearch)
-        ? props.exactSearch.includes(props.headers[colIndex])
+        ? props.exactSearch.includes(props.headers[+colIndex])
         : props.exactSearch;
 
       if (exactSearchEnabled) {
@@ -93,9 +94,9 @@ const toggleGroupColumn = (colIndex: number) => {
 </script>
 
 <template>
-          <ion-content class="ion-margin" disabled:opacity-75 border-separate bg-gray-3 w-pros h-full overflow-hidden font-300
-            text-gray-500 text-dark:gray-400 relative>
-            <!-- <ion-grid v-show="showCaption"
+    <ion-content class="ion-margin" disabled:opacity-75 border-separate bg-gray-3 w-pros h-full overflow-hidden font-300
+      text-gray-500 text-dark:gray-400 relative>
+      <!-- <ion-grid v-show="showCaption"
         class="w-full py-2 px-4 font-semibold text-lg left gray-900 dark:white bg-white dark:gray-800 justify-between">
         <ion-row>
           <ion-col size="auto">
@@ -110,43 +111,42 @@ const toggleGroupColumn = (colIndex: number) => {
         </ion-row>
       </ion-grid> -->
 
-            <ion-grid>
-              <ion-row color="medium" class="ion-text-center ion-align-items-center">
-                <ion-col v-for="(header, index) in headers" :key="index" class="ion-no-padding">
-                  <ion-button fill="clear" @click="toggleGroupColumn(index)">{{ header }}</ion-button>
-                  <ion-searchbar @input="onSearch($event, index)" debounce="500" />
-                </ion-col>
-              </ion-row>
-              <template v-if="groupColumnIndex !== null && groupColumnIndex !== undefined" && grouping>
-                <template v-for="(group, groupKey) in groupedData">
-                  <ion-row color="primary" class="group-header" border bb-1>
-                    <ion-col class="group-title">{{ groupKey }}</ion-col>
-                  </ion-row>
-                  <ion-row class="ion-text-center ion-align-items-center" v-for="(row, rowIndex) in group" :key="rowIndex" border
-                    bb-1>
-                    <ion-col v-for="(value, colIndex) in row" :key="colIndex">
-                      {{ value }}
-                    </ion-col>
-                  </ion-row>
-                </template>
-              </template>
-              <template v-else>
-                <ion-row class="ion-text-center ion-align-items-center" v-for="(row, rowIndex) in filteredData" :key="rowIndex"
-                  even:bg-indigo-100 even:dark:bg-gray-800 odd:dark:bg-gray-700 hover:text-dark-700 dark:hover:text-white b-1>
-                  <ion-col v-for="(value, colIndex) in row" :key="colIndex">
-                    {{ value }}
-                  </ion-col>
-                </ion-row>
-              </template>
+      <ion-grid>
+        <ion-row color="medium" class="ion-text-center ion-align-items-center">
+          <ion-col v-for="(header, index) in headers" :key="index" class="ion-no-padding">
+            <ion-button fill="clear" @click="toggleGroupColumn(index)">{{ header }}</ion-button>
+            <ion-searchbar @input="onSearch($event, index)" debounce="500" />
+          </ion-col>
+        </ion-row>
+        <template v-if="groupColumnIndex !== null && groupColumnIndex !== undefined" && grouping>
+          <template v-for="(group, groupKey) in groupedData">
+            <ion-row color="primary" class="group-header" border bb-1>
+              <ion-col class="group-title">{{ groupKey }}</ion-col>
+            </ion-row>
+            <ion-row class="ion-text-center ion-align-items-center" v-for="(row, rowIndex) in group" :key="rowIndex" border
+              bb-1>
+              <ion-col v-for="(value, colIndex) in row" :key="colIndex">
+                {{ value }}
+              </ion-col>
+            </ion-row>
+          </template>
+        </template>
+        <template v-else>
+          <ion-row class="ion-text-center ion-align-items-center" v-for="(row, rowIndex) in filteredData" :key="rowIndex"
+            even:bg-indigo-100 even:dark:bg-gray-800 odd:dark:bg-gray-700 hover:text-dark-700 dark:hover:text-white b-1>
+            <ion-col v-for="(value, colIndex) in row" :key="colIndex">
+              {{ value }}
+            </ion-col>
+          </ion-row>
+        </template>
 
-
-            </ion-grid>
-            <ion-footer sticky bottom-0 flex flex-row w-full h-12 justify-between items-center pt-1 bg-gray-200 dark:bg-gray-700>
-              <ion-button id="hover-trigger" @click="resetSearch">Չեղարկել</ion-button>
-              <ion-popover trigger="hover-trigger" trigger-action="context-menu" alignment="center" :dismiss-on-select="true">
-                <ion-content class="ion-padding">Չեղարկել փնտրման պարամատրերը</ion-content>
-              </ion-popover>
-              <slot name="footer"></slot>
-            </ion-footer>
-          </ion-content>
+      </ion-grid>
+      <ion-footer sticky bottom-0 flex flex-row w-full h-12 justify-between items-center pt-1 bg-gray-200 dark:bg-gray-700>
+        <ion-button id="hover-trigger" @click="resetSearch">Չեղարկել</ion-button>
+        <ion-popover trigger="hover-trigger" trigger-action="context-menu" alignment="center" :dismiss-on-select="true">
+          <ion-content class="ion-padding">Չեղարկել փնտրման պարամատրերը</ion-content>
+        </ion-popover>
+        <slot name="footer"></slot>
+      </ion-footer>
+    </ion-content>
 </template>
